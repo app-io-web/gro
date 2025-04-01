@@ -2,27 +2,48 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+
+    <!-- Ícone e Manifesto -->
     <link rel="icon" type="image/png" href="/gro/icons/icon-192x192.png" />
     <link rel="manifest" href="/gro/manifest.webmanifest" />
+
+    <!-- iOS Web App Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="apple-touch-icon" href="/gro/pwa-192x192.png" />
+
+    <!-- Tema e título -->
     <meta name="theme-color" content="#ffffff" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ordens de Serviço</title>
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Script principal -->
     <script type="module" src="/gro/src/main.jsx"></script>
+
+    <!-- Redirecionamento inteligente para SPA com hash -->
     <script>
-        // esse aqui vai no final
-        (function () {
-          const currentPath = window.location.pathname;
-          const isRoot = currentPath === "/" || currentPath === "";
-  
-          if (!isRoot && !currentPath.startsWith("/#/")) {
-            const hashPath = "/#" + currentPath;
-            const newUrl = window.location.origin + hashPath + window.location.search + window.location.hash;
-            window.location.replace(newUrl);
-          }
-        })();
-      </script>
+      (function () {
+        const currentPath = window.location.pathname;
+        const isRoot = currentPath === "/" || currentPath === "";
+
+        if (!isRoot && !currentPath.startsWith("/#/")) {
+          const hashPath = "/#" + currentPath;
+          const newUrl =
+            window.location.origin +
+            hashPath +
+            window.location.search +
+            window.location.hash;
+          window.location.replace(newUrl);
+        }
+      })();
+    </script>
+
+    <!-- Fix iOS Keyboard Bug em PWAs -->
+    <script>
+      document.addEventListener('touchend', function () {}, true);
+    </script>
   </body>
 </html>
