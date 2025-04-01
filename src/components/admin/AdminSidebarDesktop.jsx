@@ -1,5 +1,13 @@
-import { Box, VStack, Text, Button, Icon } from '@chakra-ui/react'
-import { FiHome, FiSettings, FiLogOut, FiFileText, FiUserPlus, FiUsers  } from 'react-icons/fi' // 👈 adicionado
+import { Box, VStack, Text, Button } from '@chakra-ui/react'
+import {
+  FiHome,
+  FiSettings,
+  FiLogOut,
+  FiFileText,
+  FiUserPlus,
+  FiUsers,
+  FiClipboard // 👈 importado para ordens em aberto
+} from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 
 function SidebarAdminDesktop() {
@@ -49,7 +57,18 @@ function SidebarAdminDesktop() {
         </Button>
 
         <Button
-          leftIcon={<FiUserPlus color="white" />} // 👈 botão novo
+          leftIcon={<FiClipboard color="white" />} // 👈 novo botão aqui
+          color="white"
+          justifyContent="start"
+          variant="ghost"
+          _hover={{ bg: 'blue.600' }}
+          onClick={() => navigate('/admin/ordens-abertas')}
+        >
+          Ordens em Aberto
+        </Button>
+
+        <Button
+          leftIcon={<FiUserPlus color="white" />}
           color="white"
           justifyContent="start"
           variant="ghost"

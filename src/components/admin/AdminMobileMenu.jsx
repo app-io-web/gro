@@ -41,6 +41,9 @@ function AdminMobileMenu() {
           <Button size="sm" onClick={() => navigate('/admin/empresas')}>
             🏢 Empresas Cadastradas
           </Button>
+          <Button size="sm" onClick={() => navigate('/admin/ordens-abertas')}>
+            ✔ Ordens em Aberto
+          </Button>
         </VStack>
       </Collapse>
     </Box>

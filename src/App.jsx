@@ -7,6 +7,8 @@ import AdminDashboard from './pages/AdminDashboard.jsx'
 import EmpresaDashboard from './pages/EmpresaDashboard.jsx'
 import CadastroEmpresa from './pages/CadastroEmpresa'
 import EmpresasCadastradas from './pages/EmpresasCadastradas'
+import OrdensEmAberto from './pages/OrdensEmAberto'
+
 
 
 
@@ -117,6 +119,17 @@ function App() {
               )
             }
           />
+          <Route
+            path="/admin/ordens-abertas"
+            element={
+              auth && tipo === 'admin' ? (
+                <OrdensEmAberto />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
       </Routes>
     </Router>
   )
