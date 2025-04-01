@@ -46,7 +46,7 @@ function EmpresasCadastradas() {
   const [empresas, setEmpresas] = useState([])
   const [loading, setLoading] = useState(true)
   const [empresaSelecionada, setEmpresaSelecionada] = useState(null)
-  const [formEdit, setFormEdit] = useState({ empresa_nome: '', nome: '', Email: '', UnicID: '' })
+  const [formEdit, setFormEdit] = useState({ empresa_nome: '', nome: '', Email: '', UnicID: '', telefone: '', password: ''  })
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
   const isMobile = useBreakpointValue({ base: true, md: false })
@@ -83,6 +83,7 @@ function EmpresasCadastradas() {
         empresa_nome: empresa.empresa_nome || '',
         nome: empresa.nome || '',
         Email: empresa.Email || '',
+        telefone: empresa.telefone || '',
         UnicID: empresa.UnicID || '',
         password: empresa.password || ''
       })
@@ -102,6 +103,8 @@ function EmpresasCadastradas() {
       empresa_nome: formEdit.empresa_nome,
       nome: formEdit.nome,
       Email: formEdit.Email,
+      password: formEdit.password,
+      telefone: formEdit.telefone,
       UnicID: formEdit.UnicID
     }
   
@@ -184,7 +187,7 @@ function EmpresasCadastradas() {
                     <Th>Empresa</Th>
                     <Th>Responsável</Th>
                     <Th>Email</Th>
-                    <Th>UnicID</Th>
+                    <Th>telefone</Th>
                     <Th>Status</Th>
                     <Th>Ações</Th>
                 </Tr>
@@ -195,7 +198,7 @@ function EmpresasCadastradas() {
                     <Td>{empresa.empresa_nome}</Td>
                     <Td>{empresa.nome}</Td>
                     <Td>{empresa.Email}</Td>
-                    <Td>{empresa.UnicID}</Td>
+                    <Td>{empresa.telefone}</Td>
                     <Td>
                         {empresa.status === 'ativo' ? (
                         <Icon as={CheckCircleIcon} color="green.400" />
@@ -261,6 +264,10 @@ https://maxfibra.com.br/login
                 <FormControl>
                   <FormLabel>Responsável</FormLabel>
                   <Input name="nome" value={formEdit.nome} onChange={handleChangeEdit} />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Telefone</FormLabel>
+                  <Input name="telefone" value={formEdit.telefone} onChange={handleChangeEdit} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Email</FormLabel>

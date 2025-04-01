@@ -48,6 +48,7 @@ function Login({ setAuth }) {
         localStorage.setItem('tipo', tipoUsuario)
         localStorage.setItem('nome', user.nome || '')
         localStorage.setItem('foto_perfil', user.picture_perfil || '')
+        localStorage.setItem('telefone', user.telefone || '')
         localStorage.setItem('UnicID', user.UnicID || '')
 
   
