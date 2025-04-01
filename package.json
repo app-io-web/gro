@@ -3,7 +3,6 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://app-io-web.github.io/gro",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

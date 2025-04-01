@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/gro/icons/icon-192x192.png" />
+    <link rel="manifest" href="/gro/manifest.webmanifest" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordens de Serviço</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/gro/src/main.jsx"></script>
+    <script>
+        // esse aqui vai no final
+        (function () {
+          const currentPath = window.location.pathname;
+          const isRoot = currentPath === "/" || currentPath === "";
+  
+          if (!isRoot && !currentPath.startsWith("/#/")) {
+            const hashPath = "/#" + currentPath;
+            const newUrl = window.location.origin + hashPath + window.location.search + window.location.hash;
+            window.location.replace(newUrl);
+          }
+        })();
+      </script>
+  </body>
+</html>
