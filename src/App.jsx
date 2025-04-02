@@ -19,6 +19,7 @@ import PerfilTecnico from './pages/tecnico/PerfilTecnico.jsx'
 import OrdensEmAbertoEmpresa from './pages/empresa/OrdensEmAbertoEmpresa'
 import OrdensFinalizadasEmpresa from './pages/empresa/OrdensFinalizadasEmpresa.jsx'
 import DetalheOrdemFinalizadaEmpresa from './pages/empresa/DetalheOrdemFinalizadaEmpresa'
+import AbrirOrdemEmpresa from './pages/empresa/AbrirOrdemEmpresa'
 
 
 
@@ -159,6 +160,7 @@ function App() {
           />
           <Route path="/empresa/ordens-finalizadas" element={<OrdensFinalizadasEmpresa />} />
           <Route path="/empresa/ordem-finalizada/:id" element={<DetalheOrdemFinalizadaEmpresa />} />
+          <Route path="/empresa/abrir-ordem" element={<AbrirOrdemEmpresa />} />
 
 
 

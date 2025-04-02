@@ -40,7 +40,7 @@ function OrdensEmAbertoEmpresa() {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchOrdens()
-    }, 10000) // 10 segundos
+    }, 1000) // 10 segundos
   
     return () => clearInterval(interval)
   }, [])
@@ -59,7 +59,7 @@ function OrdensEmAbertoEmpresa() {
         const json = typeof rawJson === 'string' ? JSON.parse(rawJson) : rawJson
         if (!json?.empresas) return []
   
-        const statusPermitidos = ['Em Aberto', 'Agendada', 'Reagendada', 'Pendente', 'Atribuido']
+        const statusPermitidos = ['Em Aberto', 'Agendada', 'Reagendada', 'Pendente', 'Atribuido', 'Enviado']
   
         return json.empresas
           .filter(emp => emp.UnicID_Empresa === UnicID_Empresa_Logada)
@@ -99,27 +99,32 @@ function OrdensEmAbertoEmpresa() {
         ? JSON.parse(registro['Ordem de Serviços'])
         : registro['Ordem de Serviços']
 
-      const novaEstrutura = {
-        ...json,
-        empresas: json.empresas.map(emp => {
-          if (emp.UnicID_Empresa !== UnicID_Empresa_Logada) return emp
-
-          return {
-            ...emp,
-            Ordens_de_Servico: emp.Ordens_de_Servico.map(os => {
-              if (os.UnicID_OS !== ordemSelecionada.UnicID_OS) return os
-              return {
-                ...os,
-                Observacao_Empresa: novaObservacao,
-                Telefone1_Cliente: telefone1,
-                Telefone2_Cliente: telefone2,
-                Tipo_OS: tipo,
-                Endereco_Cliente: endereco
-              }
-            })
-          }
-        })
-      }
+        const novaEstrutura = {
+          ...json,
+          empresas: json.empresas.map(emp => {
+            // Apenas modifica a empresa logada, as outras permanecem iguais
+            if (emp.UnicID_Empresa !== UnicID_Empresa_Logada) return emp
+        
+            return {
+              ...emp,
+              Ordens_de_Servico: emp.Ordens_de_Servico.map(os => {
+                // Só altera a ordem selecionada
+                if (os.UnicID_OS !== ordemSelecionada.UnicID_OS) return os
+        
+                return {
+                  ...os,
+                  Observacao_Empresa: novaObservacao,
+                  Telefone1_Cliente: telefone1,
+                  Telefone2_Cliente: telefone2,
+                  Tipo_OS: tipo,
+                  Endereco_Cliente: endereco,
+                  Data_Atualizacao: new Date().toISOString() // opcional: útil p/ histórico
+                }
+              })
+            }
+          })
+        }
+        
 
       await apiPatch('/api/v2/tables/mtnh21kq153to8h/records', {
         Id: registro.Id,

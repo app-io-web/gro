@@ -11,8 +11,7 @@ import { useNavigate } from 'react-router-dom'
 
 function AdminBottomNav() {
   const navigate = useNavigate()
-
-  const tipoUsuario = localStorage.getItem('tipo') // pega o tipo do usuário
+  const tipoUsuario = localStorage.getItem('tipo') // 'admin' ou 'empresa'
 
   const irParaPerfil = () => {
     if (tipoUsuario === 'admin') {
@@ -38,33 +37,37 @@ function AdminBottomNav() {
         <IconButton
           icon={<FiHome />}
           variant="ghost"
-          onClick={() => navigate('/admin')}
+          onClick={() => navigate(tipoUsuario === 'admin' ? '/admin' : '/empresa')}
           aria-label="Dashboard"
-        />
-        <IconButton
-          icon={<FiFolder />}
-          variant="ghost"
-          onClick={() => navigate('/admin/ordens')}
-          aria-label="Ordens"
         />
 
         <IconButton
-          icon={<FiPlus />}
-          colorScheme="blue"
-          rounded="full"
-          size="lg"
-          mt="-30px"
-          boxShadow="md"
-          onClick={() => navigate('/admin/criar')}
-          aria-label="Nova O.S"
+          icon={<FiFolder />}
+          variant="ghost"
+          onClick={() => navigate(tipoUsuario === 'admin' ? '/admin/ordens' : '/empresa/ordens')}
+          aria-label="Ordens"
         />
+
+        {tipoUsuario === 'empresa' && (
+          <IconButton
+            icon={<FiPlus />}
+            colorScheme="blue"
+            rounded="full"
+            size="lg"
+            mt="-30px"
+            boxShadow="md"
+            onClick={() => navigate('/empresa/abrir-ordem')}
+            aria-label="Nova O.S"
+          />
+        )}
 
         <IconButton
           icon={<FiBarChart2 />}
           variant="ghost"
-          onClick={() => navigate('/admin/metricas')}
+          onClick={() => navigate(tipoUsuario === 'admin' ? '/admin/metricas' : '/empresa/metricas')}
           aria-label="Métricas"
         />
+
         <IconButton
           icon={<FiUser />}
           variant="ghost"

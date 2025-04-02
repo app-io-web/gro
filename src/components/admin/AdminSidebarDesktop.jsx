@@ -33,16 +33,20 @@ function SidebarAdminDesktop() {
       </Text>
 
       <VStack align="stretch" spacing={4}>
-        <Button
-          leftIcon={<FiHome color="white" />}
-          color="white"
-          justifyContent="start"
-          variant="ghost"
-          _hover={{ bg: 'blue.600' }}
-          onClick={() => navigate('/admin')}
-        >
-          Dashboard
-        </Button>
+
+      <Button
+        leftIcon={<FiHome color="white" />}
+        color="white"
+        justifyContent="start"
+        variant="ghost"
+        _hover={{ bg: 'blue.600' }}
+        onClick={() =>
+          navigate(tipoUsuario === 'empresa' ? '/empresa-dashboard' : '/admin')
+        }
+      >
+        Dashboard
+      </Button>
+
 
         {/* =================== ORDENS DE SERVIÇO =================== */}
         <Button
@@ -124,6 +128,14 @@ function SidebarAdminDesktop() {
                 >
                   Finalizadas
                 </Button>
+
+                <Button
+                  size="sm"
+                  onClick={() => navigate('/empresa/abrir-ordem')}
+                >
+                  📝 Abrir O.S
+                </Button>
+
               </>
             )}
           </VStack>
