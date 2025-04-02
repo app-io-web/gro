@@ -7,7 +7,8 @@ import {
   Spinner,
   Badge,
   useToast,
-  useBreakpointValue
+  useBreakpointValue,
+  Flex // 👈 adiciona aqui
 } from '@chakra-ui/react'
 import {
     Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton,
@@ -16,6 +17,7 @@ import {
 
 import { CopyIcon, ExternalLinkIcon } from '@chakra-ui/icons'
 import { Tooltip, IconButton, HStack, Link } from '@chakra-ui/react'
+import { DownloadIcon } from '@chakra-ui/icons'
 
 
 import { useDisclosure } from '@chakra-ui/react'
@@ -373,9 +375,26 @@ function OrdensEmAberto() {
             )}
 
             <Box mt={6}>
-                <Text fontSize="sm" color="gray.500">Tipo</Text>
+              <Text fontSize="sm" color="gray.500" mb={1}>Tipo</Text>
+              <Flex justify="space-between" align="center">
                 <Text fontSize="lg" fontWeight="bold">{ordemSelecionada?.Tipo_OS}</Text>
+                {ordemSelecionada?.Link_Ordem_PDF && (
+                  <Button
+                    size="sm"
+                    colorScheme="blue"
+                    variant="outline"
+                    as="a"
+                    href={ordemSelecionada.Link_Ordem_PDF}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Baixar Ordem
+                  </Button>
+                )}
+
+              </Flex>
             </Box>
+
 
             <Box mt={4}>
                 <Text fontSize="sm" color="gray.500">Cliente</Text>
@@ -470,23 +489,44 @@ function OrdensEmAberto() {
 
         <Modal isOpen={isOpenObservacao} onClose={onCloseObservacao} isCentered>
         <ModalOverlay />
-        <ModalContent>
+
+        <ModalContent
+            maxW="400px"
+            maxH="80vh" // Limita a altura do modal
+            overflowY="auto" // Ativa rolagem se passar
+          >
             <ModalHeader>Nova Observação</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-            <Textarea
+              <Textarea
                 placeholder="Escreva a nova observação..."
                 value={novaObservacao}
-                onChange={(e) => setNovaObservacao(e.target.value)}
-            />
+                onChange={(e) => {
+                  if (e.target.value.length <= 300) {
+                    setNovaObservacao(e.target.value)
+                  }
+                }}
+                maxLength={300}
+                h="150px" // Altura fixa da Textarea
+                resize="none" // Impede que o usuário aumente com o mouse
+              />
+              <Box mt={2} textAlign="right" fontSize="sm" color="gray.500">
+                {novaObservacao.length}/300 caracteres
+              </Box>
             </ModalBody>
             <ModalFooter>
-            <Button colorScheme="purple" mr={3} onClick={salvarNovaObservacao}>
+              <Button colorScheme="purple" mr={3} onClick={salvarNovaObservacao}>
                 Salvar
-            </Button>
-            <Button variant="ghost" onClick={onCloseObservacao}>Cancelar</Button>
+              </Button>
+              <Button variant="ghost" onClick={onCloseObservacao}>
+                Cancelar
+              </Button>
             </ModalFooter>
-        </ModalContent>
+          </ModalContent>
+
+
+
+
         </Modal>
 
 

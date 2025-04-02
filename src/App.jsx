@@ -8,6 +8,16 @@ import EmpresaDashboard from './pages/EmpresaDashboard.jsx'
 import CadastroEmpresa from './pages/CadastroEmpresa'
 import EmpresasCadastradas from './pages/EmpresasCadastradas'
 import OrdensEmAberto from './pages/OrdensEmAberto'
+import CadastroTecnico from './pages/admin/CadastroTecnico.jsx'
+import TecnicosList from './pages/admin/TecnicosList.jsx'
+import PaginaMetricaTecnico from './pages/admin/PaginaMetricaTecnico.jsx'
+import OrdensEmExecucao from './pages/OrdensExecucao.jsx'
+import DetalheOrdemExecucao from './pages/admin/DetalheOrdemExecucao.jsx'
+import PerfilAdmin from './pages/admin/PerfilAdmin'
+import PerfilEmpresaPage from './pages/empresa/PerfilEmpresaPage'
+import PerfilTecnico from './pages/tecnico/PerfilTecnico.jsx'
+
+
 
 
 
@@ -129,6 +139,21 @@ function App() {
               )
             }
           />
+          <Route path="/admin/cadastrar-tecnico" element={<CadastroTecnico />} />
+          <Route path="/admin/tecnicos" element={<TecnicosList />} />
+          <Route path="/admin/tecnico/:id" element={<PaginaMetricaTecnico />} />
+          <Route path="/admin/ordens-andamento" element={<OrdensEmExecucao />} />
+          <Route path="/admin/ordem-execucao/:id" element={<DetalheOrdemExecucao />} />
+
+          <Route path="/admin/perfil" element={<PerfilAdmin />} />
+          <Route path="/empresa/perfil" element={<PerfilEmpresaPage />} />
+          <Route path="/tecnico/perfil" element={<PerfilTecnico />} />
+
+
+
+
+
+
 
       </Routes>
     </Router>

@@ -1,95 +1,157 @@
 {
-    "empresas": [
-      {
-        "empresa": "empresa tal",
-        "UnicID_Empresa": "HAJKJSH231",
-        "Ordens_de_Servico": [
-          {
-            "Status_OS": "Pendente",
-            "UnicID_OS": "ADAJHAKHKAH",
-            "Numero_OS": 1,
-            "Tipo_OS": "Instalação",
-            "Nome_Cliente": "Joaozinho",
-            "Telefone1_Cliente": "+5522999999-9999",
-            "Telefone2_Cliente": "+5522991999-9999",
-            "Endereco_Cliente": "Rua Tal, nº 21, bairro tal tal",
-            "Observacao_Empresa": "cliente está em casa apenas às 16:00",
-            "Observacao_Administrador": "Cliente atendeu",
-            "Data_Envio_OS": "2025-03-31T08:00:00Z",
-            "Data_Entrega_OS": "2025-04-01T16:00:00Z",
-            "Tecnico_Responsavel": "Isaque Reis",
-            "ID_Tecnico_Responsavel": "135487er",
-            "Andamento_técnico": {
-                "Msg0": "Iniciou a O.S 2025-03-30T14:30:00Z",
-                "Msg1": "chegou ao Local",
-                "Msg2": "O.S em Execução"
+  "empresas": [
+    {
+      "empresa": "empresa tal",
+      "UnicID_Empresa": "HAJKJSH231",
+      "Ordens_de_Servico": [
+        {
+          "Status_OS": "Finalizado",
+          "UnicID_OS": "ADAJHAKHKAH",
+          "Numero_OS": 1,
+          "Tipo_OS": "Instalação",
+          "Nome_Cliente": "Joaozinho",
+          "Telefone1_Cliente": "+5522999999-9999",
+          "Telefone2_Cliente": "+5522991999-9999",
+          "Endereco_Cliente": "Rua Tal, nº 21, bairro tal tal",
+          "Observacao_Empresa": "cliente está em casa apenas às 16:00",
+          "Observacao_Administrador": {
+            "Msg0": "Cliente atendeu",
+            "Msg1": "Ajuste",
+            "Msg2": "Teste"
+          },
+          "Data_Envio_OS": "2025-03-31T14:30:00Z",
+          "Data_Entrega_OS": "2025-04-01T16:00:00Z",
+          "Tecnico_Responsavel": "Isaque Reis",
+          "ID_Tecnico_Responsavel": "a3cd42e6-7917-4f45-813f-ff8b19b7e653",
+          "Andamento_técnico": {
+            "Msg0": "Iniciou a O.S 2025-03-30T14:30:00Z",
+            "Msg1": "chegou ao Local",
+            "Msg2": "O.S em Execução"
+          },
+          "Evidencias": {
+            "Foto1": {
+              "url": "Foto1.png",
+              "comentario": "Foto tirada na entrada principal"
             },
-
-            "Geolocalizacao": {
-              "longitude": -213131,
-              "latitude": -4000000
+            "Foto2": {
+              "url": "Foto2.png",
+              "comentario": "Mostra o painel de controle danificado"
+            },
+            "Foto3": {
+              "url": "Foto3.png",
+              "comentario": "Área técnica com acesso restrito"
+            },
+            "Foto4": {
+              "url": "Foto4.png",
+              "comentario": "Finalização da manutenção"
             }
           },
-          {
-            "Status_OS": "Pendente",
-            "UnicID_OS": "JKAHSD9823H",
-            "Numero_OS": 2,
-            "Tipo_OS": "Manutenção",
-            "Nome_Cliente": "Maria",
-            "Telefone1_Cliente": "+5522988888-8888",
-            "Telefone2_Cliente": "+5522977777-7777",
-            "Endereco_Cliente": "Rua Azul, nº 45, bairro centro",
-            "Observacao_Empresa": "ligar antes de chegar",
-            "Observacao_Administrador": "Agendado para amanhã",
-            "Data_Envio_OS": "2025-03-30T14:30:00Z",
-            "Data_Entrega_OS": "2025-04-02T10:00:00Z",
-            "Tecnico_Responsavel": "Fabricio Shopp",
-            "ID_Tecnico_Responsavel": "134679se",
-            "Andamento_técnico": {
-                "Msg0": "Iniciou a O.S 2025-03-30T14:30:00Z",
-                "Msg1": "chegou ao Local",
-                "Msg2": "O.S em Execução"
+          "Geolocalizacao": {
+            "longitude": -213131,
+            "latitude": -4000000
+          },
+          "Link_Ordem_PDF": "LINK.PDF"
+        },
+        {
+          "Status_OS": "Pendente",
+          "UnicID_OS": "JKAHSD9823H",
+          "Numero_OS": 2,
+          "Tipo_OS": "Manutenção",
+          "Nome_Cliente": "Maria",
+          "Telefone1_Cliente": "+5522988888-8888",
+          "Telefone2_Cliente": "+5522977777-7777",
+          "Endereco_Cliente": "Rua Azul, nº 45, bairro centro",
+          "Observacao_Empresa": "ligar antes de chegar",
+          "Observacao_Administrador": "Agendado para amanhã",
+          "Data_Envio_OS": "2025-03-31T14:30:00Z",
+          "Data_Entrega_OS": "2025-04-02T10:00:00Z",
+          "Tecnico_Responsavel": "Fabricio Shopp",
+          "ID_Tecnico_Responsavel": "6d31a4b4-71c1-4754-a334-ae4c781be198",
+          "Andamento_técnico": {
+            "Msg0": "Iniciou a O.S 2025-03-30T14:30:00Z",
+            "Msg1": "chegou ao Local",
+            "Msg2": "O.S em Execução"
+          },
+          "Evidencias": {
+            "Foto1": {
+              "url": "Foto1.png",
+              "comentario": "Foto tirada na entrada principal"
             },
-            "Geolocalizacao": {
-              "longitude": -213140,
-              "latitude": -3999999
+            "Foto2": {
+              "url": "Foto2.png",
+              "comentario": "Mostra o painel de controle danificado"
+            },
+            "Foto3": {
+              "url": "Foto3.png",
+              "comentario": "Área técnica com acesso restrito"
+            },
+            "Foto4": {
+              "url": "Foto4.png",
+              "comentario": "Finalização da manutenção"
             }
-          }
-        ]
-      },
-      {
-        "empresa": "empresa tal 2",
-        "UnicID_Empresa": "POIUYTREWQ",
-        "Ordens_de_Servico": [
-          {
-            "Status_OS": "Finalizado",
-            "UnicID_OS": "QWE123ASD",
-            "Numero_OS": 3,
-            "Tipo_OS": "Instalação",
-            "Nome_Cliente": "Carlos",
-            "Telefone1_Cliente": "+5522966666-6666",
-            "Telefone2_Cliente": "+5522955555-5555",
-            "Endereco_Cliente": "Av. Principal, nº 1000, bairro industrial",
-            "Observacao_Empresa": "tudo certo",
-            "Observacao_Administrador": {
-              "Msg0": "Cliente Não Atendeu Time Técnico",
-              "Msg1": "Evidencias adicionados na O.S"
+          },
+          "Geolocalizacao": {
+            "longitude": -213140,
+            "latitude": -3999999
+          },
+          "Link_Ordem_PDF": "LINK.PDF"
+        }
+      ]
+    },
+    {
+      "empresa": "empresa tal 2",
+      "UnicID_Empresa": "POIUYTREWQ",
+      "Ordens_de_Servico": [
+        {
+          "Status_OS": "Execução",
+          "UnicID_OS": "QWE123ASD",
+          "Numero_OS": 3,
+          "Tipo_OS": "Instalação",
+          "Nome_Cliente": "Carlos",
+          "Telefone1_Cliente": "+5522966666-6666",
+          "Telefone2_Cliente": "+5522955555-5555",
+          "Endereco_Cliente": "Av. Principal, nº 1000, bairro industrial",
+          "Observacao_Empresa": "tudo certo",
+          "Observacao_Administrador": {
+            "Msg0": "Cliente Não Atendeu Time Técnico",
+            "Msg1": "Evidencias adicionados na O.S"
+          },
+          "Data_Envio_OS": "2025-03-28T09:00:00Z",
+          "Data_Entrega_OS": "2025-03-30T12:00:00Z",
+          "Tecnico_Responsavel": "Isaque Reis",
+          "ID_Tecnico_Responsavel": "a3cd42e6-7917-4f45-813f-ff8b19b7e653",
+          "Andamento_técnico": {
+            "Msg0": "Iniciou a O.S 2025-03-30T14:30:00Z",
+            "Msg1": "Técnico em Deslocamento",
+            "Msg2": "chegou ao Local",
+            "Msg3": "O.S em Execução",
+            "Msg4": "O.S Pendenciada"
+          },
+          "Evidencias": {
+            "Foto1": {
+              "url": "Foto1.png",
+              "comentario": "Foto tirada na entrada principal"
             },
-            "Data_Envio_OS": "2025-03-28T09:00:00Z",
-            "Data_Entrega_OS": "2025-03-29T13:00:00Z",
-            "Tecnico_Responsavel": "Isaque Reis",
-            "ID_Tecnico_Responsavel": "135487er",
-            "Andamento_técnico": {
-                "Msg0": "Iniciou a O.S 2025-03-30T14:30:00Z",
-                "Msg1": "chegou ao Local",
-                "Msg2": "O.S em Execução"
+            "Foto2": {
+              "url": "Foto2.png",
+              "comentario": "Mostra o painel de controle danificado"
             },
-            "Geolocalizacao": {
-              "longitude": -213150,
-              "latitude": -4000100
+            "Foto3": {
+              "url": "Foto3.png",
+              "comentario": "Área técnica com acesso restrito"
+            },
+            "Foto4": {
+              "url": "Foto4.png",
+              "comentario": "Finalização da manutenção"
             }
-          }
-        ]
-      }
-    ]
-  }
+          },
+          "Geolocalizacao": {
+            "longitude": -213150,
+            "latitude": -4000100
+          },
+          "Link_Ordem_PDF": "LINK.PDF"
+        }
+      ]
+    }
+  ]
+}

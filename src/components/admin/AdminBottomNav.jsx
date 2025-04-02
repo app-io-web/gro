@@ -12,6 +12,16 @@ import { useNavigate } from 'react-router-dom'
 function AdminBottomNav() {
   const navigate = useNavigate()
 
+  const tipoUsuario = localStorage.getItem('tipo') // pega o tipo do usuário
+
+  const irParaPerfil = () => {
+    if (tipoUsuario === 'admin') {
+      navigate('/admin/perfil')
+    } else {
+      navigate('/empresa/perfil')
+    }
+  }
+
   return (
     <Box
       pos="fixed"
@@ -58,7 +68,7 @@ function AdminBottomNav() {
         <IconButton
           icon={<FiUser />}
           variant="ghost"
-          onClick={() => navigate('/admin/perfil')}
+          onClick={irParaPerfil}
           aria-label="Perfil"
         />
       </Flex>
