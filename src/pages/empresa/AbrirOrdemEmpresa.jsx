@@ -109,6 +109,14 @@ function AbrirOrdemEmpresa() {
 
   return (
 <Box display="flex">
+<Box as="style" dangerouslySetInnerHTML={{ __html: `
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+` }} />
+
   {!isMobile && <AdminSidebarDesktop />}
   {isMobile && <AdminMobileMenu />}
   {isMobile && <AdminBottomNav />}
@@ -141,10 +149,24 @@ function AbrirOrdemEmpresa() {
         <Accordion allowToggle border="1px solid #E2E8F0" borderRadius="md" mb={2}>
           <AccordionItem>
             <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="left">📍 Endereço do Cliente</Box>
-                <AccordionIcon />
-              </AccordionButton>
+            <AccordionButton>
+              <Box flex="1" textAlign="left" display="flex" alignItems="center" gap={2}>
+                📍 Endereço do Cliente
+                {isMobile && (
+                  (!form.Rua || !form.Numero || !form.Bairro || !form.Cidade || !form.Estado) && (
+                    <Box
+                      w="10px"
+                      h="10px"
+                      bg="red.500"
+                      borderRadius="full"
+                      animation="pulse 1s infinite"
+                    />
+                  )
+                )}
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+
             </h2>
             <AccordionPanel pb={4}>
               <FormControl isRequired>
