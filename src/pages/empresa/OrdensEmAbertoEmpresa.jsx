@@ -207,46 +207,64 @@ function OrdensEmAbertoEmpresa() {
                 bg="white"
                 _hover={{ bg: 'gray.50' }}
               >
-                <Flex justify="space-between" align="center">
-                  <Box>
-                    <Text><strong>Cliente:</strong> {os.Nome_Cliente}</Text>
-                    <Text><strong>Endereço:</strong> {os.Endereco_Cliente}</Text>
-                    <Text><strong>Tipo:</strong> {os.Tipo_OS}</Text>
-                    <Badge colorScheme="yellow">{os.Status_OS}</Badge>
-                  </Box>
-                  <Flex gap={2}>
-                    <Tooltip label="Ordens com status finalizado não podem ser alteradas." isDisabled={os.Status_OS !== 'Finalizado'}>
-                      <Button
-                        size="sm"
-                        colorScheme="blue"
-                        onClick={() => {
-                          setOrdemSelecionada(os)
-                          setNovaObservacao(os.Observacao_Empresa || '')
-                          setTelefone1(os.Telefone1_Cliente || '')
-                          setTelefone2(os.Telefone2_Cliente || '')
-                          setTipo(os.Tipo_OS || '')
-                          setEndereco(os.Endereco_Cliente || '')
-                          onOpenEdicao()
-                        }}
-                        isDisabled={os.Status_OS === 'Finalizado'}
-                      >
-                        Editar O.S.
-                      </Button>
-                    </Tooltip>
+              <Flex
+                direction={{ base: 'column', md: 'row' }}
+                justify="space-between"
+                align={{ base: 'flex-start', md: 'center' }}
+                gap={4}
+              >
+                <Box fontSize="sm">
+                  <Text><strong>Cliente:</strong> {os.Nome_Cliente}</Text>
+                  <Text whiteSpace="pre-wrap" wordBreak="break-word">
+                    <strong>Endereço:</strong> {os.Endereco_Cliente}
+                  </Text>
+                  <Text><strong>Tipo:</strong> {os.Tipo_OS}</Text>
+                  <Badge colorScheme="yellow" mt={1}>{os.Status_OS}</Badge>
+                </Box>
 
+                <Flex
+                  gap={2}
+                  direction={{ base: 'column', md: 'row' }}
+                  w={{ base: '100%', md: 'auto' }}
+                >
+                  <Tooltip
+                    label="Ordens com status finalizado não podem ser alteradas."
+                    isDisabled={os.Status_OS !== 'Finalizado'}
+                  >
                     <Button
                       size="sm"
-                      colorScheme="red"
-                      variant="outline"
+                      colorScheme="blue"
+                      w={{ base: '100%', md: 'auto' }}
                       onClick={() => {
                         setOrdemSelecionada(os)
-                        onOpenConfirmarCancelamento()
+                        setNovaObservacao(os.Observacao_Empresa || '')
+                        setTelefone1(os.Telefone1_Cliente || '')
+                        setTelefone2(os.Telefone2_Cliente || '')
+                        setTipo(os.Tipo_OS || '')
+                        setEndereco(os.Endereco_Cliente || '')
+                        onOpenEdicao()
                       }}
+                      isDisabled={os.Status_OS === 'Finalizado'}
                     >
-                      Cancelar Ordem
+                      Editar O.S.
                     </Button>
-                  </Flex>
+                  </Tooltip>
+
+                  <Button
+                    size="sm"
+                    colorScheme="red"
+                    variant="outline"
+                    w={{ base: '100%', md: 'auto' }}
+                    onClick={() => {
+                      setOrdemSelecionada(os)
+                      onOpenConfirmarCancelamento()
+                    }}
+                  >
+                    Cancelar Ordem
+                  </Button>
                 </Flex>
+              </Flex>
+
               </Box>
             ))}
           </VStack>
