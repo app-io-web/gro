@@ -30,17 +30,14 @@ function Login({ setAuth }) {
     }
   
     try {
-      // Sem aspas no where!
       const where = `(Email,eq,${emailLimpo})~and(password,eq,${senhaLimpa})`
       const query = encodeURIComponent(where)
       const res = await apiGet(`/api/v2/tables/mga2sghx95o3ssp/records?where=${query}`)
-  
   
       if (res.list && res.list.length > 0) {
         const user = res.list[0]
         const tipoUsuario = user.tipo?.toLowerCase()
   
-        // Salva no localStorage
         localStorage.setItem('token', 'empresa-logada')
         localStorage.setItem('empresa_id', user.Id)
         localStorage.setItem('empresa_nome', user.empresa_nome || '')
@@ -50,22 +47,30 @@ function Login({ setAuth }) {
         localStorage.setItem('foto_perfil', user.picture_perfil || '')
         localStorage.setItem('telefone', user.telefone || '')
         localStorage.setItem('UnicID', user.UnicID || '')
-
   
-        if (tipoUsuario === 'admin') {
-          window.location.replace('/ordens-servico-app/#/admin')
-        } else {
-          window.location.replace('/ordens-servico-app/#/empresa')
-        }
-        
+        // Atualiza estados globais
+        setAuth(true)
+  
+        setTimeout(() => {
+          if (tipoUsuario === 'admin') {
+            navigate('/admin')
+          } else if (tipoUsuario === 'empresa') {
+            navigate('/empresa')
+          } else {
+            navigate('/')
+          }
+        }, 100)
+  
       } else {
         toast({ title: 'E-mail ou senha inválidos.', status: 'error', duration: 2000 })
       }
+  
     } catch (err) {
       console.error(err)
       toast({ title: 'Erro ao conectar com o servidor.', status: 'error', duration: 2000 })
     }
   }
+  
   
   
   

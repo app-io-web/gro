@@ -4,7 +4,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import Login from './pages/Login.jsx'
 import OrdemServico from './pages/OrdemServico.jsx'
 import AdminDashboard from './pages/AdminDashboard.jsx'
-import EmpresaDashboard from './pages/EmpresaDashboard.jsx'
+import EmpresaDashboard from './pages/empresa/EmpresaDashboard.jsx'
 import CadastroEmpresa from './pages/CadastroEmpresa'
 import EmpresasCadastradas from './pages/EmpresasCadastradas'
 import OrdensEmAberto from './pages/OrdensEmAberto'
@@ -16,6 +16,10 @@ import DetalheOrdemExecucao from './pages/admin/DetalheOrdemExecucao.jsx'
 import PerfilAdmin from './pages/admin/PerfilAdmin'
 import PerfilEmpresaPage from './pages/empresa/PerfilEmpresaPage'
 import PerfilTecnico from './pages/tecnico/PerfilTecnico.jsx'
+import OrdensEmAbertoEmpresa from './pages/empresa/OrdensEmAbertoEmpresa'
+import OrdensFinalizadasEmpresa from './pages/empresa/OrdensFinalizadasEmpresa.jsx'
+import DetalheOrdemFinalizadaEmpresa from './pages/empresa/DetalheOrdemFinalizadaEmpresa'
+
 
 
 
@@ -148,6 +152,13 @@ function App() {
           <Route path="/admin/perfil" element={<PerfilAdmin />} />
           <Route path="/empresa/perfil" element={<PerfilEmpresaPage />} />
           <Route path="/tecnico/perfil" element={<PerfilTecnico />} />
+
+          <Route
+            path="/empresa/ordens-abertas"
+            element={auth && tipo === 'empresa' ? <OrdensEmAbertoEmpresa /> : <Navigate to="/login" />}
+          />
+          <Route path="/empresa/ordens-finalizadas" element={<OrdensFinalizadasEmpresa />} />
+          <Route path="/empresa/ordem-finalizada/:id" element={<DetalheOrdemFinalizadaEmpresa />} />
 
 
 

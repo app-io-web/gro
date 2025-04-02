@@ -1,4 +1,3 @@
-// src/components/admin/AdminMobileMenu.jsx
 import { IconButton, VStack, Button, Collapse, Box } from '@chakra-ui/react'
 import { SettingsIcon } from '@chakra-ui/icons'
 import { useState } from 'react'
@@ -7,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 function AdminMobileMenu() {
   const [showOptions, setShowOptions] = useState(false)
   const navigate = useNavigate()
+  const tipoUsuario = localStorage.getItem('tipo')
 
   return (
     <Box position="fixed" bottom="80px" right="20px" zIndex="30">
@@ -35,15 +35,28 @@ function AdminMobileMenu() {
           align="stretch"
           mt={2}
         >
-          <Button size="sm" onClick={() => navigate('/admin/cadastrar-empresa')}>
-            ➕ Cadastrar Empresa
-          </Button>
-          <Button size="sm" onClick={() => navigate('/admin/empresas')}>
-            🏢 Empresas Cadastradas
-          </Button>
-          <Button size="sm" onClick={() => navigate('/admin/ordens-abertas')}>
-            ✔ Ordens em Aberto
-          </Button>
+          {tipoUsuario === 'admin' ? (
+            <>
+              <Button size="sm" onClick={() => navigate('/admin/cadastrar-empresa')}>
+                ➕ Cadastrar Empresa
+              </Button>
+              <Button size="sm" onClick={() => navigate('/admin/empresas')}>
+                🏢 Empresas Cadastradas
+              </Button>
+              <Button size="sm" onClick={() => navigate('/admin/ordens-abertas')}>
+                ✔ Ordens em Aberto
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button size="sm" onClick={() => navigate('/empresa/ordens-abertas')}>
+                📄 Ordens Abertas
+              </Button>
+              <Button size="sm" onClick={() => navigate('/empresa/ordens-finalizadas')}>
+                ✅ Finalizadas
+              </Button>
+            </>
+          )}
         </VStack>
       </Collapse>
     </Box>
