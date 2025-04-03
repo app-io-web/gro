@@ -25,6 +25,7 @@ import AdminSidebarDesktop from '../../components/admin/AdminSidebarDesktop'
 import AdminBottomNav from '../../components/admin/AdminBottomNav'
 import AdminMobileMenu from '../../components/admin/AdminMobileMenu'
 import StepperOrdemServico from '../admin/StepperOrdemServico'
+import semImagem from '../../assets/sem imagem.webp'
 
 const steps = [
   { label: 'Atribuído', key: 'Msg0' },
@@ -231,29 +232,36 @@ export default function DetalheOrdemCanceladaEmpresa() {
           <Box mt={10}>
             <Heading size="md" mb={4} color="red.500">📸 Evidências</Heading>
             <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={4}>
-              {Object.entries(ordem.Evidencias).map(([key, foto], idx) => (
-                <Card
-                  key={idx}
-                  boxShadow="md"
-                  cursor="pointer"
-                  onClick={() => {
-                    setImagemSelecionada(foto)
-                    onOpen()
-                  }}
-                >
-                  <Image
-                    src={foto.url.startsWith('http') ? foto.url : `/evidencias/${foto.url}`}
-                    alt={foto.comentario || `Foto ${key}`}
-                    objectFit="cover"
-                    roundedTop="md"
-                    maxH="200px"
-                    w="full"
-                  />
-                  <CardBody>
-                    <Text fontSize="sm" color="gray.600">{foto.comentario}</Text>
-                  </CardBody>
-                </Card>
-              ))}
+              {Object.entries(ordem.Evidencias).map(([key, foto], idx) => {
+                const imagemUrl = foto.url?.startsWith('http') ? foto.url : `/evidencias/${foto.url}`
+                return (
+                  <Card
+                    key={idx}
+                    boxShadow="md"
+                    cursor="pointer"
+                    onClick={() => {
+                      setImagemSelecionada(foto)
+                      onOpen()
+                    }}
+                  >
+                    <Image
+                      src={imagemUrl}
+                      alt={foto.comentario || `Foto ${key}`}
+                      objectFit="cover"
+                      roundedTop="md"
+                      maxH="200px"
+                      w="full"
+                      onError={(e) => {
+                        e.target.onerror = null
+                        e.target.src = semImagem
+                      }}
+                    />
+                    <CardBody>
+                      <Text fontSize="sm" color="gray.600">{foto.comentario}</Text>
+                    </CardBody>
+                  </Card>
+                )
+              })}
             </SimpleGrid>
 
             <Modal isOpen={isOpen} onClose={onClose} size="xl" isCentered>
