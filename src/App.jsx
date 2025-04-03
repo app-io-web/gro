@@ -29,7 +29,7 @@ import DetalheOrdemCanceladaEmpresa from './pages/empresa/DetalheOrdemCanceladaE
 import OrdensPendenciadasEmpresa from './pages/empresa/OrdensPendenciadasEmpresa.jsx'
 import DetalheOrdemPendenciadaEmpresa from './pages/empresa/DetalheOrdemPendenciadaEmpresa.jsx'
 
-
+import TecnicoDashboard from './pages/tecnico/TecnicoDashboard.jsx'
 
 
 
@@ -174,7 +174,10 @@ function App() {
           <Route path="/empresa/ordens-canceladas/:id" element={<DetalheOrdemCanceladaEmpresa />} />
 
           <Route path="/empresa/ordens-pendenciadas" element={<OrdensPendenciadasEmpresa />} />
-        <Route path="/empresa/ordens-pendenciadas/:id" element={<DetalheOrdemPendenciadaEmpresa />} />
+          <Route path="/empresa/ordens-pendenciadas/:id" element={<DetalheOrdemPendenciadaEmpresa />} />
+
+
+          <Route path="/tecnico" element={<TecnicoDashboard />} />
 
 
 

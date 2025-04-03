@@ -28,16 +28,22 @@ function Login({ setAuth }) {
       toast({ title: 'Preencha todos os campos.', status: 'error', duration: 2000 })
       return
     }
-  
+
+      
     try {
-      const where = `(Email,eq,${emailLimpo})~and(password,eq,${senhaLimpa})`
-      const query = encodeURIComponent(where)
-      const res = await apiGet(`/api/v2/tables/mga2sghx95o3ssp/records?where=${query}`)
-  
-      if (res.list && res.list.length > 0) {
-        const user = res.list[0]
+      const emailLimpo = email.trim().toLowerCase()
+      const senhaLimpa = senha.trim()
+    
+      // 1. Primeiro tenta login como empresa/admin
+      const whereEmpresa = `(Email,eq,${emailLimpo})~and(password,eq,${senhaLimpa})`
+      const queryEmpresa = encodeURIComponent(whereEmpresa)
+
+      const resEmpresa = await apiGet(`/api/v2/tables/mga2sghx95o3ssp/records?where=${queryEmpresa}`)
+    
+      if (resEmpresa.list && resEmpresa.list.length > 0) {
+        const user = resEmpresa.list[0]
         const tipoUsuario = user.tipo?.toLowerCase()
-  
+    
         localStorage.setItem('token', 'empresa-logada')
         localStorage.setItem('empresa_id', user.Id)
         localStorage.setItem('empresa_nome', user.empresa_nome || '')
@@ -48,28 +54,39 @@ function Login({ setAuth }) {
         localStorage.setItem('telefone', user.telefone || '')
         localStorage.setItem('UnicID', user.UnicID || '')
         localStorage.setItem('Limite_de_Ordem', user.Limite_de_Ordem || '')
-  
-        // Atualiza estados globais
+    
         setAuth(true)
-  
-        setTimeout(() => {
-          if (tipoUsuario === 'admin') {
-            navigate('/admin')
-          } else if (tipoUsuario === 'empresa') {
-            navigate('/empresa')
-          } else {
-            navigate('/')
-          }
-        }, 100)
-  
-      } else {
-        toast({ title: 'E-mail ou senha inválidos.', status: 'error', duration: 2000 })
+        return navigate(tipoUsuario === 'admin' ? '/admin' : '/empresa')
       }
-  
+    
+      // 2. Tenta login como técnico
+      const whereTecnico = `(email_tecnico,eq,${emailLimpo})~and(senha,eq,${senhaLimpa})`
+      const queryTecnico = encodeURIComponent(whereTecnico)
+      const resTecnico = await apiGet(`/api/v2/tables/mpyestriqe5a1kc/records?where=${queryTecnico}`)
+
+
+      if (resTecnico.list && resTecnico.list.length > 0) {
+        const tecnico = resTecnico.list[0]
+    
+        localStorage.setItem('token', 'tecnico-logado')
+        localStorage.setItem('tecnico_id', tecnico.Id)
+        localStorage.setItem('email', tecnico.email_tecnico)
+        localStorage.setItem('nome', tecnico.Tecnico_Responsavel || '')
+        localStorage.setItem('telefone', tecnico.telefone || '')
+        localStorage.setItem('ID_Tecnico_Responsavel', tecnico.ID_Tecnico_Responsavel || '')
+        localStorage.setItem('tipo', 'tecnico')
+    
+        setAuth(true)
+        return navigate('/tecnico')
+      }
+    
+      // 3. Se não achou em nenhum
+      toast({ title: 'E-mail ou senha inválidos.', status: 'error', duration: 3000 })
+    
     } catch (err) {
       console.error(err)
-      toast({ title: 'Erro ao conectar com o servidor.', status: 'error', duration: 2000 })
-    }
+      toast({ title: 'Erro ao conectar com o servidor.', status: 'error', duration: 3000 })
+    }    
   }
   
   
