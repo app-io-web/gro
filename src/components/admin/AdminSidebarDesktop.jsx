@@ -6,11 +6,20 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
+import { usarVerificacaoLimiteOS } from '../utils/verificarLimiteOS'
+
+import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton } from '@chakra-ui/react'
+
+
 function SidebarAdminDesktop() {
   const navigate = useNavigate()
   const [openCadastro, setOpenCadastro] = useState(false)
   const [openOrdens, setOpenOrdens] = useState(false)
   const tipoUsuario = localStorage.getItem('tipo')
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const handleAbrirOS = usarVerificacaoLimiteOS(navigate, onOpen)
+
 
   const handleLogout = () => {
     localStorage.clear()
@@ -41,7 +50,7 @@ function SidebarAdminDesktop() {
         variant="ghost"
         _hover={{ bg: 'blue.600' }}
         onClick={() =>
-          navigate(tipoUsuario === 'empresa' ? '/empresa-dashboard' : '/admin')
+          navigate(tipoUsuario === 'empresa' ? '/empresa' : '/admin')
         }
       >
         Dashboard
@@ -115,7 +124,7 @@ function SidebarAdminDesktop() {
                   color="white"
                   variant="ghost"
                   justifyContent="start"
-                  onClick={() => navigate('/empresa/abrir-ordem')}
+                  onClick={handleAbrirOS}
                   _hover={{ bg: 'blue.600', color: 'white' }}
                 >
                   Abrir O.S
@@ -271,6 +280,21 @@ function SidebarAdminDesktop() {
         >
           Sair
         </Button>
+
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Limite Atingido</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              O limite de O.S. foi atingido. Por favor, entre em contato com os administradores para solicitar mais ordens.
+            </ModalBody>
+            <ModalFooter>
+              <Button onClick={onClose}>Fechar</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
       </VStack>
     </Box>
   )

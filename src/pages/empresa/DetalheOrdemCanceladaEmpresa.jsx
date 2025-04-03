@@ -82,6 +82,47 @@ export default function DetalheOrdemCanceladaEmpresa() {
 
   const currentStep = steps.findIndex(step => ordem.Status_OS?.toLowerCase().includes(step.label.toLowerCase()))
 
+
+
+  function renderMensagensRecursivamente(obj, level = 0, parentKey = '', renderedSet = new Set()) {
+    return Object.entries(obj).flatMap(([key, value], index) => {
+      const currentKey = `${parentKey}.${key}`
+  
+      if (typeof value === 'object' && value !== null) {
+        return renderMensagensRecursivamente(value, level + 1, currentKey, renderedSet)
+      }
+  
+      if (typeof value === 'string') {
+        const trimmed = value.trim()
+        if (trimmed === '' || renderedSet.has(trimmed)) {
+          return [] // ignora vazias ou já exibidas
+        }
+  
+        renderedSet.add(trimmed)
+  
+        return (
+          <Box
+            key={`${currentKey}-${index}`}
+            p={2}
+            bg="gray.50"
+            borderRadius="md"
+            border="1px solid #eee"
+            ml={level * 2}
+          >
+            <Text fontSize="sm" color="gray.700">
+              <strong>Administrador:</strong> {trimmed}
+            </Text>
+          </Box>
+        )
+      }
+  
+      return []
+    })
+  }
+  
+  
+  
+
   return (
     <Box display="flex" flexDirection="column">
       {!isMobile && <AdminSidebarDesktop />}
@@ -131,25 +172,20 @@ export default function DetalheOrdemCanceladaEmpresa() {
             </AccordionButton>
           </h2>
           <AccordionPanel p={4} bg="white" border="1px solid #eee" borderTop="none" borderBottomRadius="lg">
-            <Stack spacing={2}>
-              {ordem.Motivo_Cancelamento ? (
-                <Box p={2} bg="gray.50" borderRadius="md" border="1px solid #eee">
-                  <Text fontSize="sm" color="gray.700">
-                    <strong>{ordem.empresa}:</strong> {ordem.Motivo_Cancelamento}
-                  </Text>
-                </Box>
-              ) : (
-                ordem.Observacao_Administrador &&
-                Object.entries(ordem.Observacao_Administrador).map(([_, msg], index) => (
-                  <Box key={index} p={2} bg="gray.50" borderRadius="md" border="1px solid #eee">
-                    <Text fontSize="sm" color="gray.700">
-                      <strong>Administrador:</strong> {msg}
-                    </Text>
-                  </Box>
-                ))
-              )}
-            </Stack>
-          </AccordionPanel>
+  <Stack spacing={2}>
+    {ordem.Motivo_Cancelamento ? (
+      <Box p={2} bg="gray.50" borderRadius="md" border="1px solid #eee">
+        <Text fontSize="sm" color="gray.700">
+          <strong>{ordem.empresa}:</strong> {ordem.Motivo_Cancelamento}
+        </Text>
+      </Box>
+    ) : (
+      ordem.Observacao_Administrador &&
+      renderMensagensRecursivamente(ordem.Observacao_Administrador)
+    )}
+  </Stack>
+</AccordionPanel>
+
         </AccordionItem>
       </Accordion>
     </Box>
@@ -172,25 +208,19 @@ export default function DetalheOrdemCanceladaEmpresa() {
           </AccordionButton>
         </h2>
         <AccordionPanel p={4} bg="white" border="1px solid #eee" borderTop="none" borderBottomRadius="lg">
-          <Stack spacing={2}>
-            {ordem.Motivo_Cancelamento ? (
-              <Box p={2} bg="gray.50" borderRadius="md" border="1px solid #eee">
-                <Text fontSize="sm" color="gray.700">
-                  <strong>{ordem.empresa}:</strong> {ordem.Motivo_Cancelamento}
-                </Text>
-              </Box>
-            ) : (
-              ordem.Observacao_Administrador &&
-              Object.entries(ordem.Observacao_Administrador).map(([_, msg], index) => (
-                <Box key={index} p={2} bg="gray.50" borderRadius="md" border="1px solid #eee">
-                  <Text fontSize="sm" color="gray.700">
-                    <strong>Administrador:</strong> {msg}
-                  </Text>
-                </Box>
-              ))
-            )}
-          </Stack>
-        </AccordionPanel>
+  <Stack spacing={2}>
+    {ordem.Motivo_Cancelamento && (
+      <Box p={2} bg="gray.50" borderRadius="md" border="1px solid #eee">
+        <Text fontSize="sm" color="gray.700">
+          <strong>{ordem.empresa}:</strong> {ordem.Motivo_Cancelamento}
+        </Text>
+      </Box>
+    )}
+    {ordem.Observacao_Administrador &&
+      renderMensagensRecursivamente(ordem.Observacao_Administrador)}
+  </Stack>
+</AccordionPanel>
+
       </AccordionItem>
     </Accordion>
   )
@@ -221,12 +251,15 @@ export default function DetalheOrdemCanceladaEmpresa() {
                 boxShadow="md"
               >
                 <Text color="gray.600">
-                  {ordem?.Andamento_técnico?.[step.key] || 'Nenhuma informação registrada'}
+                  {typeof ordem?.Andamento_técnico?.[step.key] === 'string'
+                    ? ordem.Andamento_técnico[step.key]
+                    : 'Nenhuma informação registrada'}
                 </Text>
               </Box>
             </Collapse>
           ))}
         </Stack>
+
 
         {ordem.Evidencias && (
           <Box mt={10}>

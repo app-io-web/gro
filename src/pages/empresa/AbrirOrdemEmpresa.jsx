@@ -2,13 +2,10 @@ import {
   Box, Button, FormControl, FormLabel, Input, Select, Textarea, useToast,
   Heading, useBreakpointValue, VStack, Text, Icon, Flex
 } from '@chakra-ui/react'
-
 import {
   Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon
 } from '@chakra-ui/react'
-
-
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { apiGet, apiPatch } from '../../services/api'
 import AdminSidebarDesktop from '../../components/admin/AdminSidebarDesktop'
@@ -17,25 +14,52 @@ import AdminMobileMenu from '../../components/admin/AdminMobileMenu'
 import UploadArquivoPDF from './UploadArquivoPDF'
 import { FiSend } from 'react-icons/fi'
 
+import {
+  Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter,
+  ModalCloseButton, useDisclosure
+} from '@chakra-ui/react'
+
+import { usarVerificacaoLimiteOS } from '../../components/utils/verificarLimiteOS'
+
+
+
 function AbrirOrdemEmpresa() {
   const [form, setForm] = useState({
-    Nome_Cliente: '',
-    Telefone1_Cliente: '',
-    Telefone2_Cliente: '',
-    Rua: '',
-    Numero: '',
-    Bairro: '',
-    Cidade: '',
-    Estado: '',
-    Tipo_OS: '',
-    Observacao_Empresa: ''
+    Nome_Cliente: '', Telefone1_Cliente: '', Telefone2_Cliente: '',
+    Rua: '', Numero: '', Bairro: '', Cidade: '', Estado: '',
+    Tipo_OS: '', Observacao_Empresa: ''
   })
   const [linkPdf, setLinkPdf] = useState('')
+  const [limiteAtingido, setLimiteAtingido] = useState(false)
+
   const toast = useToast()
   const isMobile = useBreakpointValue({ base: true, md: false })
   const UnicID_Empresa = localStorage.getItem('UnicID')
-  const NomeEmpresa = localStorage.getItem('empresa')
+  const limitePermitido = parseInt(localStorage.getItem('Limite_de_Ordem') || '0', 10)
   const dataAtual = new Date().toLocaleString('pt-BR')
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+
+  // Verificação do limite de ordens no carregamento do componente
+  useEffect(() => {
+    const verificar = usarVerificacaoLimiteOS(
+      (atingiuLimite) => {
+        setLimiteAtingido(atingiuLimite)
+        if (atingiuLimite) onOpen()
+      },
+      () => {
+        setLimiteAtingido(true)
+        onOpen()
+      },
+      true // somenteVerificar
+    )
+  
+    verificar()
+  }, [])
+  
+
+  
 
   const handleChange = e => {
     const { name, value } = e.target
@@ -106,6 +130,18 @@ function AbrirOrdemEmpresa() {
       toast({ title: 'Erro ao abrir ordem', status: 'error' })
     }
   }
+
+  if (limiteAtingido) {
+    return (
+      <Box p={6} textAlign="center" maxW="lg" mx="auto">
+        <Heading color="red.500" size="lg">❌ Limite de O.S Atingido</Heading>
+        <Text mt={4}>Você atingiu o limite de ordens de serviço para este mês.</Text>
+        <Text mt={2} fontSize="sm" color="gray.500">📅 {dataAtual}</Text>
+        <Text mt={4}>Entre em contato com os administradores para liberar mais ordens.</Text>
+      </Box>
+    )
+  }
+
 
   return (
 <Box display="flex">
@@ -245,14 +281,33 @@ function AbrirOrdemEmpresa() {
       <UploadArquivoPDF onUpload={setLinkPdf} />
 
       <Button
-        colorScheme="blue"
-        leftIcon={<Icon as={FiSend} />}
-        size="lg"
-        onClick={handleSubmit}
-      >
-        Abrir Ordem
-      </Button>
+          colorScheme="blue"
+          leftIcon={<Icon as={FiSend} />}
+          size="lg"
+          onClick={handleSubmit}
+          isDisabled={limiteAtingido}
+        >
+          Abrir Ordem
+        </Button>
+
     </VStack>
+
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+  <ModalOverlay />
+  <ModalContent>
+    <ModalHeader>❌ Limite de Ordens Atingido</ModalHeader>
+    <ModalCloseButton />
+    <ModalBody>
+      Você atingiu o limite de ordens de serviço permitidas para este mês. <br />
+      Entre em contato com os administradores para liberar mais ordens.
+    </ModalBody>
+
+    <ModalFooter>
+      <Button colorScheme="blue" onClick={onClose}>Entendi</Button>
+    </ModalFooter>
+  </ModalContent>
+</Modal>
+
   </Box>
 </Box>
   )

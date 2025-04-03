@@ -68,6 +68,43 @@ export default function DetalheOrdemPendenciadaEmpresa() {
 
   const currentStep = steps.findIndex(step => ordem.Status_OS?.toLowerCase().includes(step.label.toLowerCase()))
 
+  function renderMensagensRecursivamente(obj, level = 0, parentKey = '', renderedSet = new Set()) {
+    return Object.entries(obj).flatMap(([key, value], index) => {
+      const currentKey = `${parentKey}.${key}`
+  
+      if (typeof value === 'object' && value !== null) {
+        return renderMensagensRecursivamente(value, level + 1, currentKey, renderedSet)
+      }
+  
+      if (typeof value === 'string') {
+        const trimmed = value.trim()
+        if (trimmed === '' || renderedSet.has(trimmed)) return []
+  
+        renderedSet.add(trimmed)
+  
+        return (
+          <Box
+            key={`${currentKey}-${index}`}
+            p={2}
+            bg="gray.50"
+            borderRadius="md"
+            border="1px solid #eee"
+            ml={level * 2}
+          >
+            <Text fontSize="sm" color="gray.700">
+              <strong>Administrador:</strong> {trimmed}
+            </Text>
+          </Box>
+        )
+      }
+  
+      return []
+    })
+  }
+  
+
+
+
   return (
     <Box display="flex" flexDirection="column">
       {!isMobile && <AdminSidebarDesktop />}
@@ -118,6 +155,8 @@ export default function DetalheOrdemPendenciadaEmpresa() {
             </AccordionItem>
           </Accordion>
         )}
+
+        
 
         <Heading size="md" mb={4} color="purple.600">🔄 Andamento da Ordem</Heading>
 
