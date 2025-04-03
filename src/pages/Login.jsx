@@ -17,15 +17,18 @@ function Login({ setAuth }) {
   const [senha, setSenha] = useState('')
   const toast = useToast()
   const navigate = useNavigate() // 👈 aqui
+  const [carregandoLogin, setCarregandoLogin] = useState(false)
 
   const handleLogin = async (e) => {
     e.preventDefault()
-  
+    setCarregandoLogin(true)
+
     const emailLimpo = email.trim().toLowerCase()
     const senhaLimpa = senha.trim()
   
     if (!emailLimpo || !senhaLimpa) {
       toast({ title: 'Preencha todos os campos.', status: 'error', duration: 2000 })
+      setCarregandoLogin(false)
       return
     }
 
@@ -86,7 +89,9 @@ function Login({ setAuth }) {
     } catch (err) {
       console.error(err)
       toast({ title: 'Erro ao conectar com o servidor.', status: 'error', duration: 3000 })
-    }    
+    } finally {
+      setCarregandoLogin(false) // sempre desativa
+    }
   }
   
   
@@ -114,7 +119,7 @@ function Login({ setAuth }) {
             <FormLabel>Senha</FormLabel>
             <Input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} placeholder="••••••••" />
           </FormControl>
-          <Button colorScheme="blue" type="submit" w="full">Entrar</Button>
+          <Button colorScheme="blue" type="submit" w="full" isLoading={carregandoLogin}>Entrar</Button>
         </form>
       </Box>
     </Flex>
