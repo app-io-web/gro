@@ -5,28 +5,34 @@
       "UnicID_Empresa": "c00292c9-5f7c-4650-8999-ce77c120b344",
       "Ordens_de_Servico": [
         {
-          "Status_OS": "Finalizado",
+          "Status_OS": "Cancelado",
           "UnicID_OS": "ADAJHAKHKAH",
           "Numero_OS": 1,
           "Tipo_OS": "Instalação",
           "Nome_Cliente": "Joaozinho",
-          "Telefone1_Cliente": "+5522999999-9999",
-          "Telefone2_Cliente": "+5522991999-9999",
+          "Telefone1_Cliente": "+5527998168674",
+          "Telefone2_Cliente": "+5527998168672",
           "Endereco_Cliente": "Rua Tal, nº 21, bairro tal tal",
           "Observacao_Empresa": "cliente está em casa apenas às 16:00",
+          "Motivo_Cancelamento": "",
           "Observacao_Administrador": {
             "Msg0": "Cliente atendeu",
             "Msg1": "Ajuste",
-            "Msg2": "Teste"
+            "Msg2": "Teste",
+            "Msg3": "Ordem cancelada por quê chegou incompleto",
+            "Msg4": "Teste de Justificativa Administrativa"
           },
           "Data_Envio_OS": "2025-03-31T14:30:00Z",
           "Data_Entrega_OS": "2025-04-01T16:00:00Z",
           "Tecnico_Responsavel": "Isaque Reis",
+          "Motivo_Pendenciamento": "",
           "ID_Tecnico_Responsavel": "a3cd42e6-7917-4f45-813f-ff8b19b7e653",
           "Andamento_técnico": {
             "Msg0": "Iniciou a O.S 2025-03-30T14:30:00Z",
-            "Msg1": "chegou ao Local",
-            "Msg2": "O.S em Execução"
+            "Msg1": "Técnico em Deslocamento",
+            "Msg2": "chegou ao Local",
+            "Msg3": "O.S em Execução",
+            "Msg4": "Finalizado"
           },
           "Evidencias": {
             "Foto1": {
@@ -53,48 +59,68 @@
           "Link_Ordem_PDF": "LINK.PDF"
         },
         {
-          "Status_OS": "Pendente",
-          "UnicID_OS": "JKAHSD9823H",
-          "Numero_OS": 2,
+          "Nome_Cliente": "JOAO CARLOS TESTE",
+          "Telefone1_Cliente": "27998168674",
+          "Telefone2_Cliente": "27998168675",
+          "Endereco_Cliente": "RUA CLOVIS",
+          "Tipo_OS": "Instalação",
+          "Observacao_Empresa": "TESTE",
+          "UnicID_OS": "9ad0ea30-a144-4d68-9305-11b1754ed535",
+          "Status_OS": "Finalizado",
+          "Motivo_Pendenciamento": "",
+          "Numero_OS": 1743618548428,
+          "Data_Envio_OS": "2025-04-02T18:29:08.428Z",
+          "Link_Ordem_PDF": "https://nocodb.nexusnerds.com.br/download/2025/04/02/8f99d8daf0b028dd1b4d17075a76251bb8f397a0/OS_HOg-h.pdf",
+          "Observacao_Administrador": {
+            "Msg0": "",
+            "Msg1": "OBSERVAÇÃO TÉCNICO"
+          }
+        },
+        {
+          "Nome_Cliente": "João carlos lopes",
+          "Telefone1_Cliente": "2799816874",
+          "Telefone2_Cliente": "27998168674",
+          "Endereco_Cliente": "Rua Sao silvano, nº 04, São paulo, Viana - Es",
+          "Tipo_OS": "Instalação",
+          "Observacao_Empresa": "Cliente tá em casa somente às 10:00",
+          "UnicID_OS": "c657a930-2382-443c-9288-4eb8b36d4531",
+          "Status_OS": "Cancelado",
+          "Numero_OS": 1743626900936,
+          "Data_Envio_OS": "2025-04-02T20:48:20.936Z",
+          "Link_Ordem_PDF": "https://nocodb.nexusnerds.com.br/download/2025/04/02/8f99d8daf0b028dd1b4d17075a76251bb8f397a0/ComprovanteSantander-1739981414.088125_Yoyy7.pdf",
+          "Observacao_Administrador": {
+            "Msg0": "",
+            "Msg1": "Teste de Justificativa, foi adicionado para fins de teste"
+          }
+        },
+        {
+          "Nome_Cliente": "Luanzinho Gamepray",
+          "Telefone1_Cliente": "27998168674",
+          "Telefone2_Cliente": "27998168675",
+          "Data_Envio_OS": "2025-04-02T20:57:04.461Z",
+          "Endereco_Cliente": "Rua Sao silvano, nº 04, Caxias, Viana - Es",
           "Tipo_OS": "Manutenção",
-          "Nome_Cliente": "Maria",
-          "Telefone1_Cliente": "+5522988888-8888",
-          "Telefone2_Cliente": "+5522977777-7777",
-          "Endereco_Cliente": "Rua Azul, nº 45, bairro centro",
-          "Observacao_Empresa": "ligar antes de chegar",
-          "Observacao_Administrador": "Agendado para amanhã",
-          "Data_Envio_OS": "2025-03-31T14:30:00Z",
-          "Data_Entrega_OS": "2025-04-02T10:00:00Z",
-          "Tecnico_Responsavel": "Fabricio Shopp",
-          "ID_Tecnico_Responsavel": "6d31a4b4-71c1-4754-a334-ae4c781be198",
+          "Observacao_Empresa": "Teste",
+          "Motivo_Cancelamento": "TESTE",
+          "UnicID_OS": "4a521ec1-f632-43cc-b307-be6bf909f592",
+          "Status_OS": "Cancelado",
+          "Numero_OS": 1743627424461,
+          "Tecnico_Responsavel": "Isaque Reis",
+          "ID_Tecnico_Responsavel": "a3cd42e6-7917-4f45-813f-ff8b19b7e653",
+          "Motivo_Pendenciamento": "Cliente Não Atendeu",
           "Andamento_técnico": {
             "Msg0": "Iniciou a O.S 2025-03-30T14:30:00Z",
-            "Msg1": "chegou ao Local",
-            "Msg2": "O.S em Execução"
+            "Msg1": "Técnico em Deslocamento",
+            "Msg2": "chegou ao Local",
+            "Msg3": "O.S em Execução",
+            "Msg4": "O.S Pendenciada"
           },
-          "Evidencias": {
-            "Foto1": {
-              "url": "Foto1.png",
-              "comentario": "Foto tirada na entrada principal"
-            },
-            "Foto2": {
-              "url": "Foto2.png",
-              "comentario": "Mostra o painel de controle danificado"
-            },
-            "Foto3": {
-              "url": "Foto3.png",
-              "comentario": "Área técnica com acesso restrito"
-            },
-            "Foto4": {
-              "url": "Foto4.png",
-              "comentario": "Finalização da manutenção"
+          "Link_Ordem_PDF": "",
+          "Observacao_Administrador": {
+            "Msg1": {
+              "Msg1": "Cliente Informou que Cancelou"
             }
-          },
-          "Geolocalizacao": {
-            "longitude": -213140,
-            "latitude": -3999999
-          },
-          "Link_Ordem_PDF": "LINK.PDF"
+          }
         }
       ]
     },
@@ -112,6 +138,7 @@
           "Telefone2_Cliente": "+5522955555-5555",
           "Endereco_Cliente": "Av. Principal, nº 1000, bairro industrial",
           "Observacao_Empresa": "tudo certo",
+          "Motivo_Cancelamento": "",
           "Observacao_Administrador": {
             "Msg0": "Cliente Não Atendeu Time Técnico",
             "Msg1": "Evidencias adicionados na O.S"
@@ -120,6 +147,7 @@
           "Data_Entrega_OS": "2025-03-30T12:00:00Z",
           "Tecnico_Responsavel": "Isaque Reis",
           "ID_Tecnico_Responsavel": "a3cd42e6-7917-4f45-813f-ff8b19b7e653",
+          "Motivo_Pendenciamento": "Cliente Não Atendeu",
           "Andamento_técnico": {
             "Msg0": "Iniciou a O.S 2025-03-30T14:30:00Z",
             "Msg1": "Técnico em Deslocamento",
@@ -129,20 +157,20 @@
           },
           "Evidencias": {
             "Foto1": {
-              "url": "Foto1.png",
+              "url": "https://www.fashionbubbles.com/wp-content/uploads/2023/11/jardim-de-grama-fachadas-de-casas-simples-4.jpg",
               "comentario": "Foto tirada na entrada principal"
             },
             "Foto2": {
-              "url": "Foto2.png",
-              "comentario": "Mostra o painel de controle danificado"
+              "url": "https://media.rmix.com.br/2022/07/37985a45-alt-800x445.jpeg",
+              "comentario": "Mostra a CTO danificada"
             },
             "Foto3": {
-              "url": "Foto3.png",
-              "comentario": "Área técnica com acesso restrito"
+              "url": "https://www.sulinfoco.com.br/wp-content/uploads/2023/09/EDER.jpg",
+              "comentario": "Ajustando a CTO"
             },
             "Foto4": {
-              "url": "Foto4.png",
-              "comentario": "Finalização da manutenção"
+              "url": "https://http2.mlstatic.com/D_NQ_NP_665616-MLB28266304351_092018-O.webp",
+              "comentario": "Equipamento danificado"
             }
           },
           "Geolocalizacao": {

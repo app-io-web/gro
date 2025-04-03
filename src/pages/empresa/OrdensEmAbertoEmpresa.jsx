@@ -36,6 +36,8 @@ function OrdensEmAbertoEmpresa() {
   const UnicID_Empresa_Logada = localStorage.getItem('UnicID')
   const isFinalizada = ordemSelecionada?.Status_OS === 'Finalizado'
   const [shouldRefresh, setShouldRefresh] = useState(false)
+  const [motivoCancelamento, setMotivoCancelamento] = useState('')
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -162,7 +164,8 @@ function OrdensEmAbertoEmpresa() {
               if (os.UnicID_OS !== ordemSelecionada.UnicID_OS) return os
               return {
                 ...os,
-                Status_OS: 'Cancelado'
+                Status_OS: 'Cancelado',
+                Motivo_Cancelamento: motivoCancelamento
               }
             })
           }
@@ -176,12 +179,14 @@ function OrdensEmAbertoEmpresa() {
   
       toast({ title: 'Ordem cancelada com sucesso', status: 'success' })
       onCloseConfirmarCancelamento()
-      setShouldRefresh(prev => !prev) // <- Adiciona AQUI
+      setMotivoCancelamento('') // limpa após enviar
+      setShouldRefresh(prev => !prev)
     } catch (err) {
       console.error(err)
       toast({ title: 'Erro ao cancelar a ordem', status: 'error' })
     }
   }
+  
   
 
 
@@ -412,16 +417,37 @@ function OrdensEmAbertoEmpresa() {
 
 
         <Modal isOpen={isOpenConfirmarCancelamento} onClose={onCloseConfirmarCancelamento} isCentered>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Tem certeza que deseja cancelar esta ordem?</ModalHeader>
-            <ModalCloseButton />
-            <ModalFooter>
-              <Button colorScheme="red" mr={3} onClick={cancelarOrdem}>Confirmar</Button>
-              <Button variant="ghost" onClick={onCloseConfirmarCancelamento}>Voltar</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Cancelar Ordem</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <Text mb={2}>Informe o motivo do cancelamento:</Text>
+                  <Textarea
+                    placeholder="Ex: O.S aberta errada, cliente desistiu, etc."
+                    value={motivoCancelamento}
+                    onChange={(e) => setMotivoCancelamento(e.target.value)}
+                    rows={4}
+                    h="150px" // Altura fixa da Textarea
+                    resize="none" // Impede que o usuário aumente com o mouse
+                  />
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    colorScheme="red"
+                    mr={3}
+                    onClick={cancelarOrdem}
+                    isDisabled={!motivoCancelamento.trim()}
+                  >
+                    Confirmar Cancelamento
+                  </Button>
+                  <Button variant="ghost" onClick={onCloseConfirmarCancelamento}>
+                    Voltar
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+
 
 
       </Box>

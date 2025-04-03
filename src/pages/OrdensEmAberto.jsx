@@ -115,7 +115,21 @@ function OrdensEmAberto() {
                 ? {
                     ...os,
                     Status_OS: novoStatus,
-                    Observacao_Administrador: mensagemAndamento
+                    Observacao_Administrador: (() => {
+                      const obsAntigas = typeof os.Observacao_Administrador === 'object'
+                        ? os.Observacao_Administrador
+                        : { Msg0: os.Observacao_Administrador }
+                    
+                      const novaMsgKey = `Msg${Object.keys(obsAntigas).length}`
+                      const justificativa = ['Cancelado', 'Improdutiva'].includes(novoStatus)
+                        ? novaObservacao.trim() || 'Sem justificativa informada'
+                        : mensagemAndamento
+                    
+                      return {
+                        ...obsAntigas,
+                        [novaMsgKey]: justificativa
+                      }
+                    })()
                   }
                 : os
             )
@@ -262,17 +276,20 @@ function OrdensEmAberto() {
                         <Text>Endereço: {os.Endereco_Cliente}</Text>
                         <Text>Data de Entrega: {new Date(os.Data_Entrega_OS).toLocaleString('pt-BR')}</Text>
                         <Badge
-                        colorScheme={
+                          colorScheme={
                             os.Status_OS === 'Pendente'
-                            ? 'yellow'
-                            : os.Status_OS === 'Finalizado'
-                            ? 'green'
-                            : os.Status_OS === 'Execução'
-                            ? 'blue'
-                            : os.Status_OS === 'Atribuido'
-                            ? 'purple'
-                            : 'gray'
-                        }
+                              ? 'yellow'
+                              : os.Status_OS === 'Finalizado'
+                              ? 'green'
+                              : os.Status_OS === 'Execução'
+                              ? 'blue'
+                              : os.Status_OS === 'Atribuido'
+                              ? 'purple'
+                              : os.Status_OS === 'Improdutivo'
+                              ? 'red'
+                              : 'gray'
+                          }
+
                         >
                         {os.Status_OS}
                         </Badge>
@@ -445,9 +462,26 @@ function OrdensEmAberto() {
                 <option value="Enviado">Enviado</option>
                 <option value="Execução">Execução</option>
                 <option value="Pendente">Pendente</option>
+                <option value="Improdutiva">Improdutiva</option>
+                <option value="Cancelado">Cancelado</option>
                 <option value="Finalizado">Finalizado</option>
                 </Select>
             </Box>
+
+            {['Cancelado', 'Improdutiva'].includes(novoStatus) && (
+              <Box mt={4}>
+                <Text fontSize="sm" color="gray.600" mb={1}>Justificativa:</Text>
+                <Textarea
+                  placeholder="Descreva a justificativa para o status selecionado..."
+                  value={novaObservacao}
+                  onChange={(e) => setNovaObservacao(e.target.value)}
+                  isRequired
+                  h="150px" // Altura fixa da Textarea
+                  resize="none" // Impede que o usuário aumente com o mouse
+                />
+              </Box>
+            )}
+
 
             <Box display="flex" justifyContent="space-between" alignItems="center" mt={6}>
                 <Box>

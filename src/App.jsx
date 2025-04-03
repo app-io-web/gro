@@ -20,8 +20,14 @@ import OrdensEmAbertoEmpresa from './pages/empresa/OrdensEmAbertoEmpresa'
 import OrdensFinalizadasEmpresa from './pages/empresa/OrdensFinalizadasEmpresa.jsx'
 import DetalheOrdemFinalizadaEmpresa from './pages/empresa/DetalheOrdemFinalizadaEmpresa'
 import AbrirOrdemEmpresa from './pages/empresa/AbrirOrdemEmpresa'
+import MetricasEmpresa from './pages/empresa/MetricasEmpresa'
+import OrdensExecucaoEmpresa from './pages/empresa/OrdensExecucaoEmpresa'
+import DetalheOrdemExecucaoEmpresa from './pages/empresa/DetalheOrdemExecucaoEmpresa' // depois vamos criar
+import OrdensCanceladasEmpresa from './pages/empresa/OrdensCanceladasEmpresa'
 
-
+import DetalheOrdemCanceladaEmpresa from './pages/empresa/DetalheOrdemCanceladaEmpresa.jsx'
+import OrdensPendenciadasEmpresa from './pages/empresa/OrdensPendenciadasEmpresa.jsx'
+import DetalheOrdemPendenciadaEmpresa from './pages/empresa/DetalheOrdemPendenciadaEmpresa.jsx'
 
 
 
@@ -161,7 +167,14 @@ function App() {
           <Route path="/empresa/ordens-finalizadas" element={<OrdensFinalizadasEmpresa />} />
           <Route path="/empresa/ordem-finalizada/:id" element={<DetalheOrdemFinalizadaEmpresa />} />
           <Route path="/empresa/abrir-ordem" element={<AbrirOrdemEmpresa />} />
+          <Route path="/empresa/metricas" element={<MetricasEmpresa />} />
+          <Route path="/empresa/ordens-andamento" element={<OrdensExecucaoEmpresa />} />
+          <Route path="/empresa/ordens-andamento/:id" element={<DetalheOrdemExecucaoEmpresa />} />
+          <Route path="/empresa/ordens-canceladas" element={<OrdensCanceladasEmpresa />} />
+          <Route path="/empresa/ordens-canceladas/:id" element={<DetalheOrdemCanceladaEmpresa />} />
 
+          <Route path="/empresa/ordens-pendenciadas" element={<OrdensPendenciadasEmpresa />} />
+        <Route path="/empresa/ordens-pendenciadas/:id" element={<DetalheOrdemPendenciadaEmpresa />} />
 
 
 

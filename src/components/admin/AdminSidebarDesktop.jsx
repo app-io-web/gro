@@ -48,66 +48,78 @@ function SidebarAdminDesktop() {
       </Button>
 
 
-        {/* =================== ORDENS DE SERVIÇO =================== */}
-        <Button
-          leftIcon={openOrdens ? <FiChevronUp color="white" /> : <FiChevronDown color="white" />}
-          color="white"
-          justifyContent="start"
-          variant="ghost"
-          _hover={{ bg: 'blue.600' }}
-          onClick={() => setOpenOrdens(!openOrdens)}
-        >
-          Ordens de Serviço
-        </Button>
-
-        <Collapse in={openOrdens} animateOpacity>
-          <VStack align="stretch" pl={6} spacing={2}>
+            {/* =================== ORDENS DE SERVIÇO =================== */}
             {tipoUsuario === 'admin' && (
               <>
                 <Button
+                  leftIcon={openOrdens ? <FiChevronUp color="white" /> : <FiChevronDown color="white" />}
                   color="white"
-                  variant="ghost"
                   justifyContent="start"
-                  onClick={() => navigate('/admin/ordens-abertas')}
-                  _hover={{ bg: 'blue.600', color: 'white' }}
-                >
-                  Em Aberto
-                </Button>
-                <Button
-                  color="white"
                   variant="ghost"
-                  justifyContent="start"
-                  onClick={() => navigate('/admin/ordens-andamento')}
-                  _hover={{ bg: 'blue.600', color: 'white' }}
+                  _hover={{ bg: 'blue.600' }}
+                  onClick={() => setOpenOrdens(!openOrdens)}
                 >
-                  Em Andamento
+                  Ordens de Serviço
                 </Button>
-                <Button
-                  color="white"
-                  variant="ghost"
-                  justifyContent="start"
-                  onClick={() => navigate('/admin/ordens-finalizadas')}
-                  _hover={{ bg: 'blue.600', color: 'white' }}
-                >
-                  Finalizadas
-                </Button>
-                <Button
-                  color="white"
-                  variant="ghost"
-                  justifyContent="start"
-                  onClick={() => navigate('/admin/evidencias')}
-                  _hover={{ bg: 'blue.600', color: 'white' }}
-                >
-                  Evidências
-                </Button>
+
+                <Collapse in={openOrdens} animateOpacity>
+                  <VStack align="stretch" pl={6} spacing={2}>
+                    <Button
+                      color="white"
+                      variant="ghost"
+                      justifyContent="start"
+                      onClick={() => navigate('/admin/ordens-abertas')}
+                      _hover={{ bg: 'blue.600', color: 'white' }}
+                    >
+                      Em Aberto
+                    </Button>
+                    <Button
+                      color="white"
+                      variant="ghost"
+                      justifyContent="start"
+                      onClick={() => navigate('/admin/ordens-andamento')}
+                      _hover={{ bg: 'blue.600', color: 'white' }}
+                    >
+                      Em Andamento
+                    </Button>
+                    <Button
+                      color="white"
+                      variant="ghost"
+                      justifyContent="start"
+                      onClick={() => navigate('/admin/ordens-finalizadas')}
+                      _hover={{ bg: 'blue.600', color: 'white' }}
+                    >
+                      Finalizadas
+                    </Button>
+                    <Button
+                      color="white"
+                      variant="ghost"
+                      justifyContent="start"
+                      onClick={() => navigate('/admin/evidencias')}
+                      _hover={{ bg: 'blue.600', color: 'white' }}
+                    >
+                      Evidências
+                    </Button>
+                  </VStack>
+                </Collapse>
               </>
             )}
 
-            {/* EMPRESA - SOMENTE ACESSOS DELA */}
+            {/* =================== ACESSOS EMPRESA (SEM COLLAPSE) =================== */}
             {tipoUsuario === 'empresa' && (
               <>
                 <Divider borderColor="gray.600" />
                 <Text fontSize="sm" color="gray.400" px={2}>Empresa</Text>
+
+                <Button
+                  color="white"
+                  variant="ghost"
+                  justifyContent="start"
+                  onClick={() => navigate('/empresa/abrir-ordem')}
+                  _hover={{ bg: 'blue.600', color: 'white' }}
+                >
+                  Abrir O.S
+                </Button>
 
                 <Button
                   color="white"
@@ -123,6 +135,16 @@ function SidebarAdminDesktop() {
                   color="white"
                   variant="ghost"
                   justifyContent="start"
+                  onClick={() => navigate('/empresa/ordens-andamento')}
+                  _hover={{ bg: 'blue.600', color: 'white' }}
+                >
+                  Em Andamento
+                </Button>
+
+                <Button
+                  color="white"
+                  variant="ghost"
+                  justifyContent="start"
                   onClick={() => navigate('/empresa/ordens-finalizadas')}
                   _hover={{ bg: 'blue.600', color: 'white' }}
                 >
@@ -130,91 +152,112 @@ function SidebarAdminDesktop() {
                 </Button>
 
                 <Button
-                  size="sm"
-                  onClick={() => navigate('/empresa/abrir-ordem')}
+                  color="white"
+                  variant="ghost"
+                  justifyContent="start"
+                  onClick={() => navigate('/empresa/ordens-pendenciadas')}
+                  _hover={{ bg: 'blue.600', color: 'white' }}
                 >
-                  📝 Abrir O.S
+                  Pendenciadas
                 </Button>
 
+                <Button
+                  color="white"
+                  variant="ghost"
+                  justifyContent="start"
+                  onClick={() => navigate('/empresa/ordens-canceladas')}
+                  _hover={{ bg: 'blue.600', color: 'white' }}
+                >
+                  Canceladas
+                </Button>
+
+                <Button
+                  color="white"
+                  variant="ghost"
+                  justifyContent="start"
+                  onClick={() => navigate('/empresa/metricas')}
+                  _hover={{ bg: 'blue.600', color: 'white' }}
+                >
+                  Métricas
+                </Button>
               </>
             )}
-          </VStack>
-        </Collapse>
 
-        {/* =================== ÁREA DE ADMINISTRADOR =================== */}
-        {tipoUsuario === 'admin' && (
-          <>
-            <Divider borderColor="gray.600" mt={6} />
-            <Text fontSize="sm" color="gray.400" px={2}>Administração</Text>
 
-            <Button
-              leftIcon={openCadastro ? <FiChevronUp color="white" /> : <FiChevronDown color="white" />}
-              color="white"
-              justifyContent="start"
-              variant="ghost"
-              _hover={{ bg: 'blue.600' }}
-              onClick={() => setOpenCadastro(!openCadastro)}
-            >
-              Cadastros
-            </Button>
+                    {/* =================== ÁREA DE ADMINISTRADOR =================== */}
+                    {tipoUsuario === 'admin' && (
+                      <>
+                        <Divider borderColor="gray.600" mt={6} />
+                        <Text fontSize="sm" color="gray.400" px={2}>Administração</Text>
 
-            <Collapse in={openCadastro} animateOpacity>
-              <VStack align="stretch" pl={6} spacing={2}>
-                <Button
-                  color="white"
-                  variant="ghost"
-                  justifyContent="start"
-                  onClick={() => navigate('/admin/cadastrar-empresa')}
-                  _hover={{ bg: 'blue.600', color: 'white' }}
-                >
-                  Cadastrar Empresa
-                </Button>
-                <Button
-                  color="white"
-                  variant="ghost"
-                  justifyContent="start"
-                  onClick={() => navigate('/admin/cadastrar-tecnico')}
-                  _hover={{ bg: 'blue.600', color: 'white' }}
-                >
-                  Cadastrar Técnico
-                </Button>
-              </VStack>
-            </Collapse>
+                        <Button
+                          leftIcon={openCadastro ? <FiChevronUp color="white" /> : <FiChevronDown color="white" />}
+                          color="white"
+                          justifyContent="start"
+                          variant="ghost"
+                          _hover={{ bg: 'blue.600' }}
+                          onClick={() => setOpenCadastro(!openCadastro)}
+                        >
+                          Cadastros
+                        </Button>
 
-            <Button
-              leftIcon={<FiUsers color="white" />}
-              color="white"
-              justifyContent="start"
-              variant="ghost"
-              _hover={{ bg: 'blue.600' }}
-              onClick={() => navigate('/admin/empresas')}
-            >
-              Empresas
-            </Button>
+                        <Collapse in={openCadastro} animateOpacity>
+                          <VStack align="stretch" pl={6} spacing={2}>
+                            <Button
+                              color="white"
+                              variant="ghost"
+                              justifyContent="start"
+                              onClick={() => navigate('/admin/cadastrar-empresa')}
+                              _hover={{ bg: 'blue.600', color: 'white' }}
+                            >
+                              Cadastrar Empresa
+                            </Button>
+                            <Button
+                              color="white"
+                              variant="ghost"
+                              justifyContent="start"
+                              onClick={() => navigate('/admin/cadastrar-tecnico')}
+                              _hover={{ bg: 'blue.600', color: 'white' }}
+                            >
+                              Cadastrar Técnico
+                            </Button>
+                          </VStack>
+                        </Collapse>
 
-            <Button
-              leftIcon={<FiUser color="white" />}
-              color="white"
-              justifyContent="start"
-              variant="ghost"
-              _hover={{ bg: 'blue.600' }}
-              onClick={() => navigate('/admin/tecnicos')}
-            >
-              Técnicos
-            </Button>
+                        <Button
+                          leftIcon={<FiUsers color="white" />}
+                          color="white"
+                          justifyContent="start"
+                          variant="ghost"
+                          _hover={{ bg: 'blue.600' }}
+                          onClick={() => navigate('/admin/empresas')}
+                        >
+                          Empresas
+                        </Button>
 
-            <Button
-              leftIcon={<FiSettings color="white" />}
-              color="white"
-              justifyContent="start"
-              variant="ghost"
-              _hover={{ bg: 'blue.600' }}
-              onClick={() => navigate('/admin/config')}
-            >
-              Configurações
-            </Button>
-          </>
-        )}
+                        <Button
+                          leftIcon={<FiUser color="white" />}
+                          color="white"
+                          justifyContent="start"
+                          variant="ghost"
+                          _hover={{ bg: 'blue.600' }}
+                          onClick={() => navigate('/admin/tecnicos')}
+                        >
+                          Técnicos
+                        </Button>
+
+                        <Button
+                          leftIcon={<FiSettings color="white" />}
+                          color="white"
+                          justifyContent="start"
+                          variant="ghost"
+                          _hover={{ bg: 'blue.600' }}
+                          onClick={() => navigate('/admin/config')}
+                        >
+                          Configurações
+                        </Button>
+                      </>
+                    )}
 
         {/* =================== LOGOUT =================== */}
         <Button

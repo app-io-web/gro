@@ -47,6 +47,7 @@ function Login({ setAuth }) {
         localStorage.setItem('foto_perfil', user.picture_perfil || '')
         localStorage.setItem('telefone', user.telefone || '')
         localStorage.setItem('UnicID', user.UnicID || '')
+        localStorage.setItem('Limite_de_Ordem', user.Limite_de_Ordem || '')
   
         // Atualiza estados globais
         setAuth(true)
