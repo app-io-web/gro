@@ -173,12 +173,21 @@ function App() {
           path="/"
           element={
             auth ? (
-              tipo === 'admin' ? <Navigate to="/admin" /> : <Navigate to="/empresa" />
+              tipo === 'admin' ? (
+                <Navigate to="/admin" />
+              ) : tipo === 'empresa' ? (
+                <Navigate to="/empresa" />
+              ) : tipo === 'tecnico' ? (
+                <Navigate to="/tecnico" />
+              ) : (
+                <Navigate to="/login" />
+              )
             ) : (
               <Navigate to="/login" />
             )
           }
         />
+
 
         <Route path="/ordem/:id" element={auth ? <OrdemServico /> : <Navigate to="/login" />} />
         <Route
@@ -249,10 +258,46 @@ function App() {
           <Route path="/empresa/ordens-pendenciadas/:id" element={<DetalheOrdemPendenciadaEmpresa />} />
 
 
-          <Route path="/tecnico" element={<TecnicoDashboard />} />
-          <Route path="/tecnico/ordens" element={<OrdensAtribuidasTecnico />} />
-          <Route path="/tecnico/ordem/:id" element={<DetalheOrdemTecnico />} />
-          <Route path="/tecnico/finalizar-os/:id" element={<FinalizarOS />} />
+          <Route
+            path="/tecnico"
+            element={
+              auth && tipo === 'tecnico' ? (
+                <TecnicoDashboard />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/tecnico/ordens"
+            element={
+              auth && tipo === 'tecnico' ? (
+                <OrdensAtribuidasTecnico />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/tecnico/ordem/:id"
+            element={
+              auth && tipo === 'tecnico' ? (
+                <DetalheOrdemTecnico />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/tecnico/finalizar-os/:id"
+            element={
+              auth && tipo === 'tecnico' ? (
+                <FinalizarOS />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
 
 
 
