@@ -1,4 +1,5 @@
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { Spinner, Center } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import Dashboard from './pages/Dashboard.jsx'
 import Login from './pages/Login.jsx'
@@ -68,6 +69,7 @@ function App() {
 
   useEffect(() => {
     const autoLogin = async () => {
+      setLoading(true) // ⬅️ começa carregando
       const savedEmail = localStorage.getItem('savedEmail')
       const savedSenha = localStorage.getItem('savedSenha')
   
@@ -76,7 +78,6 @@ function App() {
           const queryEmpresa = encodeURIComponent(`(Email,eq,${savedEmail})~and(password,eq,${savedSenha})`)
           const queryTecnico = encodeURIComponent(`(email_tecnico,eq,${savedEmail})~and(senha,eq,${savedSenha})`)
   
-          // tenta as duas requisições ao mesmo tempo
           const [resEmpresa, resTecnico] = await Promise.all([
             apiGet(`/api/v2/tables/mga2sghx95o3ssp/records?where=${queryEmpresa}`),
             apiGet(`/api/v2/tables/mpyestriqe5a1kc/records?where=${queryTecnico}`)
@@ -117,15 +118,17 @@ function App() {
             setTipo('tecnico')
             return
           }
-  
         } catch (err) {
           console.error('Erro no auto login:', err)
         }
       }
+  
+      setLoading(false) // ⬅️ terminou carregamento
     }
   
     autoLogin()
   }, [])
+  
     
   
 
@@ -162,7 +165,20 @@ function App() {
   
   
 
-  if (loading) return <div>Carregando...</div>
+  if (loading) {
+    return (
+      <Center minH="100vh" bg="gray.100">
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+        />
+      </Center>
+    )
+  }
+  
 
   return (
     <Router>
