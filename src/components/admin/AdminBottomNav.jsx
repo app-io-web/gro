@@ -88,25 +88,44 @@ function AdminBottomNav() {
       py={2}
     >
       <Flex justify="space-between" align="center">
-        <IconButton icon={<FiHome />} variant="ghost" onClick={() => navigate(tipoUsuario === 'admin' ? '/admin' : '/empresa')} aria-label="Dashboard" />
-        <IconButton icon={<FiFolder />} variant="ghost" onClick={() => navigate(tipoUsuario === 'admin' ? '/admin/ordens' : '/empresa/ordens-abertas')} aria-label="Ordens" />
-
-        {tipoUsuario === 'empresa' && (
-          <IconButton
-            icon={<FiPlus />}
-            colorScheme="blue"
-            rounded="full"
-            size="lg"
-            mt="-30px"
-            boxShadow="md"
-            onClick={handleAbrirOS}
-            aria-label="Nova O.S"
-          />
+        {tipoUsuario === 'admin' && (
+          <>
+            <IconButton icon={<FiHome />} variant="ghost" onClick={() => navigate('/admin')} aria-label="Dashboard" />
+            <IconButton icon={<FiFolder />} variant="ghost" onClick={() => navigate('/admin/ordens')} aria-label="Ordens" />
+            <IconButton icon={<FiBarChart2 />} variant="ghost" onClick={() => navigate('/admin/metricas')} aria-label="Métricas" />
+            <IconButton icon={<FiUser />} variant="ghost" onClick={() => navigate('/admin/perfil')} aria-label="Perfil" />
+          </>
         )}
 
-        <IconButton icon={<FiBarChart2 />} variant="ghost" onClick={() => navigate(tipoUsuario === 'admin' ? '/admin/metricas' : '/empresa/metricas')} aria-label="Métricas" />
-        <IconButton icon={<FiUser />} variant="ghost" onClick={irParaPerfil} aria-label="Perfil" />
+        {tipoUsuario === 'empresa' && (
+          <>
+            <IconButton icon={<FiHome />} variant="ghost" onClick={() => navigate('/empresa')} aria-label="Dashboard" />
+            <IconButton icon={<FiFolder />} variant="ghost" onClick={() => navigate('/empresa/ordens-abertas')} aria-label="Ordens" />
+            <IconButton
+              icon={<FiPlus />}
+              colorScheme="blue"
+              rounded="full"
+              size="lg"
+              mt="-30px"
+              boxShadow="md"
+              onClick={handleAbrirOS}
+              aria-label="Nova O.S"
+            />
+            <IconButton icon={<FiBarChart2 />} variant="ghost" onClick={() => navigate('/empresa/metricas')} aria-label="Métricas" />
+            <IconButton icon={<FiUser />} variant="ghost" onClick={() => navigate('/empresa/perfil')} aria-label="Perfil" />
+          </>
+        )}
+
+        {tipoUsuario === 'tecnico' && (
+          <>
+            <IconButton icon={<FiHome />} variant="ghost" onClick={() => navigate('/tecnico')} aria-label="Dashboard" />
+            <IconButton icon={<FiFolder />} variant="ghost" onClick={() => navigate('/tecnico/ordens')} aria-label="Ordens" />
+            <IconButton icon={<FiBarChart2 />} variant="ghost" onClick={() => navigate('/tecnico/metricas')} aria-label="Métricas" />
+            <IconButton icon={<FiUser />} variant="ghost" onClick={() => navigate('/tecnico/perfil')} aria-label="Perfil" />
+          </>
+        )}
       </Flex>
+
 
       {/* Modal de aviso */}
       <Modal isOpen={isOpen} onClose={onClose} isCentered>

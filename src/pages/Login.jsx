@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom' // 👈 aqui
 import { apiGet } from '../services/api'
 import {
@@ -12,16 +12,32 @@ import {
   useToast
 } from '@chakra-ui/react'
 
+
+
+
 function Login({ setAuth }) {
-  const [email, setEmail] = useState('')
-  const [senha, setSenha] = useState('')
+  const [email, setEmail] = useState(() => sessionStorage.getItem('temp_email') || '')
+  const [senha, setSenha] = useState(() => sessionStorage.getItem('temp_senha') || '')
+
+
+  
+  
   const toast = useToast()
   const navigate = useNavigate() // 👈 aqui
   const [carregandoLogin, setCarregandoLogin] = useState(false)
 
+  useEffect(() => {
+    sessionStorage.setItem('temp_email', email)
+    sessionStorage.setItem('temp_senha', senha)
+  }, [email, senha])
+  
+
   const handleLogin = async (e) => {
     e.preventDefault()
     setCarregandoLogin(true)
+
+
+    
 
     const emailLimpo = email.trim().toLowerCase()
     const senhaLimpa = senha.trim()
@@ -46,6 +62,7 @@ function Login({ setAuth }) {
       if (resEmpresa.list && resEmpresa.list.length > 0) {
         const user = resEmpresa.list[0]
         const tipoUsuario = user.tipo?.toLowerCase()
+        
     
         localStorage.setItem('token', 'empresa-logada')
         localStorage.setItem('empresa_id', user.Id)
@@ -58,8 +75,18 @@ function Login({ setAuth }) {
         localStorage.setItem('UnicID', user.UnicID || '')
         localStorage.setItem('Limite_de_Ordem', user.Limite_de_Ordem || '')
     
+
+
+        localStorage.setItem('savedEmail', emailLimpo)
+        localStorage.setItem('savedSenha', senhaLimpa)
+
+
         setAuth(true)
-        return navigate(tipoUsuario === 'admin' ? '/admin' : '/empresa')
+        setTimeout(() => {
+          navigate(tipoUsuario === 'admin' ? '/admin' : '/empresa')
+        }, 50)
+
+        return // <-- aqui evita execução do resto
       }
     
       // 2. Tenta login como técnico
@@ -78,9 +105,19 @@ function Login({ setAuth }) {
         localStorage.setItem('telefone', tecnico.telefone || '')
         localStorage.setItem('ID_Tecnico_Responsavel', tecnico.ID_Tecnico_Responsavel || '')
         localStorage.setItem('tipo', 'tecnico')
+
+
+        localStorage.setItem('savedEmail', emailLimpo)
+        localStorage.setItem('savedSenha', senhaLimpa)
+
     
         setAuth(true)
-        return navigate('/tecnico')
+        setTimeout(() => {
+          navigate('/tecnico')
+        }, 50)
+
+
+        return // <-- aqui também evita execução do resto
       }
     
       // 3. Se não achou em nenhum

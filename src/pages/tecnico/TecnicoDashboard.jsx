@@ -1,71 +1,48 @@
-import { Box, Heading, Text, Flex } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { apiGet } from '../../services/api'
+import {
+  Box, Heading, Text, Flex, Spinner
+} from '@chakra-ui/react'
+import AdminSidebarDesktop from '../../components/admin/AdminSidebarDesktop'
+import AgendaTecnico from './AgendaTecnico' // 👈 aqui importa a agenda
 
 function TecnicoDashboard() {
-  const [metricas, setMetricas] = useState({
-    total: 0,
-    execucao: 0,
-    pendente: 0,
-    reagendada: 0,
-    finalizada: 0
-  })
+  const [tecnico, setTecnico] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const carregarMetricas = async () => {
-      const tecnicoID = localStorage.getItem('ID_Tecnico_Responsavel')
-      const res = await apiGet('/api/v2/tables/mtnh21kq153to8h/records')
+    const fetchTecnico = async () => {
+      const tecnicoId = localStorage.getItem('tecnico_id')
+      if (!tecnicoId) return setLoading(false)
 
-      const todasOrdens = res.list.flatMap(item => {
-        const json = typeof item['Ordem de Serviços'] === 'string'
-          ? JSON.parse(item['Ordem de Serviços'])
-          : item['Ordem de Serviços']
-
-        return json.empresas.flatMap(emp =>
-          emp.Ordens_de_Servico.map(ordem => ({
-            ...ordem,
-            UnicID_Empresa: emp.UnicID_Empresa
-          }))
-        )
-      })
-
-      const ordensDoTecnico = todasOrdens.filter(
-        ordem => ordem.ID_Tecnico_Responsavel === tecnicoID
-      )
-
-      setMetricas({
-        total: ordensDoTecnico.length,
-        execucao: ordensDoTecnico.filter(o => o.Status_OS === 'Execução').length,
-        pendente: ordensDoTecnico.filter(o => o.Status_OS === 'Pendente').length,
-        reagendada: ordensDoTecnico.filter(o => o.Status_OS === 'Reagendada').length,
-        finalizada: ordensDoTecnico.filter(o => o.Status_OS === 'Finalizado').length
-      })
+      try {
+        const res = await apiGet(`/api/v2/tables/mpyestriqe5a1kc/records/${tecnicoId}`)
+        setTecnico(res)
+      } catch (err) {
+        console.error('Erro ao buscar dados do técnico:', err)
+      } finally {
+        setLoading(false)
+      }
     }
 
-    carregarMetricas()
+    fetchTecnico()
   }, [])
 
-  return (
-    <Box p={6}>
-      <Heading mb={4}>Painel do Técnico</Heading>
+  if (loading) return <Spinner mt={10} />
+  if (!tecnico) return <Text>Técnico não encontrado</Text>
 
-      <Flex gap={4} wrap="wrap">
-        {Object.entries(metricas).map(([chave, valor]) => (
-          <Box
-            key={chave}
-            p={4}
-            borderRadius="lg"
-            bg="gray.100"
-            boxShadow="md"
-            minW="150px"
-            textAlign="center"
-          >
-            <Text fontWeight="bold">{chave.toUpperCase()}</Text>
-            <Text fontSize="2xl">{valor}</Text>
-          </Box>
-        ))}
-      </Flex>
-    </Box>
+  return (
+    <Flex minH="100vh">
+      {/* Sidebar só no desktop */}
+      <Box display={{ base: 'none', md: 'block' }}>
+        <AdminSidebarDesktop />
+      </Box>
+
+      {/* Conteúdo principal com agenda */}
+      <Box flex="1" p={0} ml={{ base: 0, md: '250px' }}>
+        <AgendaTecnico /> {/* Aqui vem a tela de agenda direto */}
+      </Box>
+    </Flex>
   )
 }
 

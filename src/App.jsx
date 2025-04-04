@@ -30,6 +30,9 @@ import OrdensPendenciadasEmpresa from './pages/empresa/OrdensPendenciadasEmpresa
 import DetalheOrdemPendenciadaEmpresa from './pages/empresa/DetalheOrdemPendenciadaEmpresa.jsx'
 
 import TecnicoDashboard from './pages/tecnico/TecnicoDashboard.jsx'
+import OrdensAtribuidasTecnico from './pages/tecnico/OrdensAtribuidasTecnico'
+import DetalheOrdemTecnico from './pages/tecnico/DetalheOrdemTecnico'
+import FinalizarOS from './pages/tecnico/FinalizarOS.jsx'
 
 
 
@@ -62,6 +65,52 @@ function App() {
   }, [])
 
   useEffect(() => {
+    const autoLogin = async () => {
+      const savedEmail = localStorage.getItem('savedEmail')
+      const savedSenha = localStorage.getItem('savedSenha')
+  
+      if (savedEmail && savedSenha && !localStorage.getItem('token')) {
+        try {
+          const queryEmpresa = encodeURIComponent(`(Email,eq,${savedEmail})~and(password,eq,${savedSenha})`)
+          const resEmpresa = await apiGet(`/api/v2/tables/mga2sghx95o3ssp/records?where=${queryEmpresa}`)
+  
+          if (resEmpresa.list && resEmpresa.list.length > 0) {
+            const user = resEmpresa.list[0]
+            const tipoUsuario = user.tipo?.toLowerCase()
+  
+            localStorage.setItem('token', 'empresa-logada')
+            localStorage.setItem('empresa_id', user.Id)
+            localStorage.setItem('email', user.Email)
+            localStorage.setItem('tipo', tipoUsuario)
+            setAuth(true)
+            setTipo(tipoUsuario)
+            return
+          }
+  
+          const queryTecnico = encodeURIComponent(`(email_tecnico,eq,${savedEmail})~and(senha,eq,${savedSenha})`)
+          const resTecnico = await apiGet(`/api/v2/tables/mpyestriqe5a1kc/records?where=${queryTecnico}`)
+  
+          if (resTecnico.list && resTecnico.list.length > 0) {
+            const tecnico = resTecnico.list[0]
+  
+            localStorage.setItem('token', 'tecnico-logado')
+            localStorage.setItem('tecnico_id', tecnico.Id)
+            localStorage.setItem('email', tecnico.email_tecnico)
+            localStorage.setItem('tipo', 'tecnico')
+            setAuth(true)
+            setTipo('tecnico')
+          }
+        } catch (err) {
+          console.error('Erro no auto login:', err)
+        }
+      }
+    }
+  
+    autoLogin()
+  }, [])
+  
+
+  useEffect(() => {
     const interval = setInterval(() => {
       const token = localStorage.getItem('token')
       const tipoUsuario = localStorage.getItem('tipo')
@@ -82,10 +131,14 @@ function App() {
     sessionStorage.clear()
     setAuth(false)
     setTipo(null)
+    localStorage.removeItem('savedEmail')
+    localStorage.removeItem('savedSenha')
   
     // Redirecionamento total, evitando cache e histórico
     window.location.replace('/ordens-servico-app/#/login')
   }
+  
+
   
   
   
@@ -178,6 +231,12 @@ function App() {
 
 
           <Route path="/tecnico" element={<TecnicoDashboard />} />
+          <Route path="/tecnico/ordens" element={<OrdensAtribuidasTecnico />} />
+          <Route path="/tecnico/ordem/:id" element={<DetalheOrdemTecnico />} />
+          <Route path="/tecnico/finalizar-os/:id" element={<FinalizarOS />} />
+
+
+
 
 
 
