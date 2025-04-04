@@ -74,7 +74,13 @@ function App() {
       if (savedEmail && savedSenha && !localStorage.getItem('token')) {
         try {
           const queryEmpresa = encodeURIComponent(`(Email,eq,${savedEmail})~and(password,eq,${savedSenha})`)
-          const resEmpresa = await apiGet(`/api/v2/tables/mga2sghx95o3ssp/records?where=${queryEmpresa}`)
+          const queryTecnico = encodeURIComponent(`(email_tecnico,eq,${savedEmail})~and(senha,eq,${savedSenha})`)
+  
+          // tenta as duas requisições ao mesmo tempo
+          const [resEmpresa, resTecnico] = await Promise.all([
+            apiGet(`/api/v2/tables/mga2sghx95o3ssp/records?where=${queryEmpresa}`),
+            apiGet(`/api/v2/tables/mpyestriqe5a1kc/records?where=${queryTecnico}`)
+          ])
   
           if (resEmpresa.list && resEmpresa.list.length > 0) {
             const user = resEmpresa.list[0]
@@ -96,9 +102,6 @@ function App() {
             return
           }
   
-          const queryTecnico = encodeURIComponent(`(email_tecnico,eq,${savedEmail})~and(senha,eq,${savedSenha})`)
-          const resTecnico = await apiGet(`/api/v2/tables/mpyestriqe5a1kc/records?where=${queryTecnico}`)
-  
           if (resTecnico.list && resTecnico.list.length > 0) {
             const tecnico = resTecnico.list[0]
   
@@ -112,7 +115,9 @@ function App() {
   
             setAuth(true)
             setTipo('tecnico')
+            return
           }
+  
         } catch (err) {
           console.error('Erro no auto login:', err)
         }
@@ -121,7 +126,7 @@ function App() {
   
     autoLogin()
   }, [])
-  
+    
   
 
   useEffect(() => {
