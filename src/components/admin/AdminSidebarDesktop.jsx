@@ -84,15 +84,27 @@ function SidebarAdminDesktop() {
                     Agenda
                   </Button>
 
+                  <Button
+                      color="white"
+                      variant="ghost"
+                      justifyContent="start"
+                      onClick={() => navigate('/admin/ordens-agendadas')}
+                      _hover={{ bg: 'blue.600', color: 'white' }}
+                    >
+                      Ordens Agendadas
+                    </Button>
+
                     <Button
                       color="white"
                       variant="ghost"
                       justifyContent="start"
-                      onClick={() => navigate('/admin/ordens-abertas')}
+                      onClick={() => navigate('/admin/todas-ordens')}
                       _hover={{ bg: 'blue.600', color: 'white' }}
                     >
-                      Em Aberto
+                      Todas as Ordens
                     </Button>
+
+
                     <Button
                       color="white"
                       variant="ghost"

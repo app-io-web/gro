@@ -82,16 +82,19 @@ function AgendaTecnico() {
           const isAgendada = statusOS === 'agendada';
   
           let dataReferencia = '';
-  
-          if (isFinalizada) {
+
+          if (statusOS === 'finalizado') {
             dataReferencia = ordem?.Data_Entrega_OS?.slice(0, 10);
-          } else if (isAgendada) {
-            dataReferencia = ordem?.Horario_Agendamento_OS?.slice(0, 10);
-          } else if (ordem.Status_OS === 'Reagendada') {
+          } else if (statusOS === 'agendada') {
+            dataReferencia = ordem?.Data_Agendamento_OS?.slice(0, 10) || ordem?.Horario_Agendamento_OS?.slice(0, 10);
+          } else if (statusOS === 'execução') {
+            dataReferencia = ordem?.Data_Agendamento_OS?.slice(0, 10) || ordem?.Data_Envio_OS?.slice(0, 10);
+          } else if (statusOS === 'reagendada') {
             dataReferencia = ordem?.Reagendamento?.slice(0, 10);
           } else {
             dataReferencia = ordem?.Data_Envio_OS?.slice(0, 10);
           }
+          
   
           if (dataReferencia === hoje) {
             lista.push({ ...ordem, empresa: emp.empresa });
@@ -130,7 +133,12 @@ function AgendaTecnico() {
   });
   
   
-  const ordensAgendadas = ordens.filter(o => o.Status_OS?.toLowerCase() === 'agendada');
+  
+  const ordensAgendadas = ordens.filter(o => {
+    const status = o.Status_OS?.toLowerCase();
+    return status === 'agendada' || status === 'execução';
+  });
+
   const ordensFinalizadas = ordens.filter(o => o.Status_OS?.toLowerCase() === 'finalizado');
 
   return (
@@ -160,6 +168,8 @@ function AgendaTecnico() {
           colorScheme="blue"
         />
       </Flex>
+
+
 
       {/* Ordens abertas */}
       {ordensAbertas.length > 0 && (

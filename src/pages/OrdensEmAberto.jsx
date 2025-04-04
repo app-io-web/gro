@@ -46,32 +46,29 @@ function OrdensEmAberto() {
   const { isOpen: isOpenObservacao, onOpen: onOpenObservacao, onClose: onCloseObservacao } = useDisclosure()
   const [novaObservacao, setNovaObservacao] = useState('')
 
+  const [dataInicial, setDataInicial] = useState('')
+  const [dataFinal, setDataFinal] = useState('')
+
+
   useEffect(() => {
     const fetchOrdens = async () => {
       try {
         const res = await apiGet('/api/v2/tables/mtnh21kq153to8h/records')
-
+  
         const ordens = res.list.flatMap(item => {
-            const rawJson = item['Ordem de Serviços']
-          
-            if (!rawJson) return []
-          
-            const json = typeof rawJson === 'string'
-              ? JSON.parse(rawJson)
-              : rawJson
-          
-            if (!json?.empresas) return []
-          
-            return json.empresas.flatMap(empresa =>
-              empresa.Ordens_de_Servico.map(os => ({
-                ...os,
-                empresa: empresa.empresa,
-                UnicID_Empresa: empresa.UnicID_Empresa
-              }))
-            )
-          })
-          
-
+          const rawJson = item['Ordem de Serviços']
+          if (!rawJson) return []
+          const json = typeof rawJson === 'string' ? JSON.parse(rawJson) : rawJson
+          if (!json?.empresas) return []
+          return json.empresas.flatMap(empresa =>
+            empresa.Ordens_de_Servico.map(os => ({
+              ...os,
+              empresa: empresa.empresa,
+              UnicID_Empresa: empresa.UnicID_Empresa
+            }))
+          )
+        })
+  
         setOrdens(ordens)
       } catch (err) {
         console.error('Erro ao buscar ordens:', err)
@@ -84,9 +81,17 @@ function OrdensEmAberto() {
         setLoading(false)
       }
     }
-
+  
+    // Carrega inicialmente
     fetchOrdens()
+  
+    // Atualiza automaticamente a cada 10 segundos
+    const interval = setInterval(fetchOrdens, 10000)
+  
+    // Limpa o intervalo se sair da tela
+    return () => clearInterval(interval)
   }, [])
+  
 
   const salvarAlteracaoNoBanco = async () => {
     try {
@@ -203,6 +208,11 @@ function OrdensEmAberto() {
       toast({ title: 'Observação adicionada!', status: 'success', duration: 3000 })
       onCloseObservacao()
       setNovaObservacao('')
+      onClose()  // fecha modal
+      setTimeout(() => {
+        window.location.reload() // 🔥 força recarregar toda tela
+      }, 1000) // espera 1 segundo para reload depois do toast
+
     } catch (err) {
       console.error(err)
       toast({ title: 'Erro ao adicionar observação', status: 'error', duration: 3000 })
@@ -225,81 +235,150 @@ function OrdensEmAberto() {
       >
         {isMobile && <AdminBottomNav />}
 
-        <Heading size="lg" mb={4}>Ordens em Aberto</Heading>
+        <Heading size="lg" mb={4}>Todas as Ordens</Heading>
+
+        <Flex mb={4} gap={4} align="center" flexWrap="wrap">
+              <Box>
+                <Text fontSize="sm" mb={1}>Data Inicial</Text>
+                <input
+                  type="date"
+                  value={dataInicial}
+                  onChange={(e) => setDataInicial(e.target.value)}
+                  style={{ padding: '8px', borderRadius: '8px', border: '1px solid #ccc' }}
+                />
+              </Box>
+
+              <Box>
+                <Text fontSize="sm" mb={1}>Data Final</Text>
+                <input
+                  type="date"
+                  value={dataFinal}
+                  onChange={(e) => setDataFinal(e.target.value)}
+                  style={{ padding: '8px', borderRadius: '8px', border: '1px solid #ccc' }}
+                />
+              </Box>
+            </Flex>
 
         {loading ? (
           <Spinner size="xl" />
         ) : (
           <VStack align="stretch" spacing={4}>
-            {ordens.map((os) => (
+            {ordens
+              .filter((os) => {
+                if (!dataInicial && !dataFinal) return true
+
+                const dataEnvio = new Date(os.Data_Envio_OS)
+                const inicio = dataInicial ? new Date(dataInicial + 'T00:00:00') : null
+                const fim = dataFinal ? new Date(dataFinal + 'T23:59:59') : null
+
+                if (inicio && fim) {
+                  return dataEnvio >= inicio && dataEnvio <= fim
+                } else if (inicio) {
+                  return dataEnvio >= inicio
+                } else if (fim) {
+                  return dataEnvio <= fim
+                }
+                return true
+              })
+              .map((os) => {
+              const dataEnvio = new Date(os.Data_Envio_OS)
+              const agora = new Date()
+              const diferencaMinutos = (agora - dataEnvio) / (1000 * 60)
+              const ordemNova = diferencaMinutos <= 5 // ⚡ Nova se criada nos últimos 5 min
+
+              return (
                 <Box
-                    key={os.UnicID_OS}
-                    p={4}
-                    borderWidth="1px"
-                    borderRadius="md"
-                    bg="white"
-                    boxShadow="sm"
-                    position="relative" // IMPORTANTE para o botão seguir esse box
-                    transition="all 0.2s"
-                    _hover={{ boxShadow: 'md', cursor: 'pointer', bg: 'gray.50' }}
-                    onClick={() => {
-                        setOrdemSelecionada(os)
-                        setMensagemAndamento(os.Observacao_Administrador || '')
-                        setNovoStatus(os.Status_OS)
-                        onOpen()
-                    }}
+                  key={os.UnicID_OS}
+                  p={4}
+                  borderWidth="1px"
+                  borderRadius="md"
+                  bg={ordemNova ? "purple.50" : "white"} // muda fundo se for nova
+                  boxShadow={ordemNova ? "md" : "sm"} // sombra maior se nova
+                  borderColor={ordemNova ? "purple.300" : "gray.200"}
+                  position="relative"
+                  transition="all 0.2s"
+                  _hover={{
+                    boxShadow: 'md',
+                    cursor: 'pointer',
+                    bg: ordemNova ? "purple.100" : "gray.50"
+                  }}
+                  onClick={() => {
+                    setOrdemSelecionada(os)
+                    setMensagemAndamento(os.Observacao_Administrador || '')
+                    setNovoStatus(os.Status_OS)
+                    onOpen()
+                  }}
+                >
+
+                  {/* Badge indicando que é nova */}
+                  {ordemNova && (
+                    <Badge
+                      colorScheme="purple"
+                      position="absolute"
+                      top={2}
+                      left={2}
+                      borderRadius="full"
+                      px={2}
+                      py={1}
+                      fontSize="xs"
+                      animation="pulse 2s infinite"
                     >
-                    {/* Botão no canto superior (só desktop) */}
-                    {!isMobile && (
+                      NOVA ORDEM
+                    </Badge>
+                  )}
+
+                  {/* Botão no canto superior (só desktop) */}
+                  {!isMobile && (
                     <Box position="absolute" top={2} right={2} zIndex={1}>
-                        <Button
+                      <Button
                         size="sm"
                         colorScheme="purple"
                         onClick={(e) => {
-                            e.stopPropagation()
-                            setOrdemSelecionada(os)
-                            onOpenObservacao()
+                          e.stopPropagation()
+                          setOrdemSelecionada(os)
+                          onOpenObservacao()
                         }}
-                        >
+                      >
                         Adicionar Observação
-                        </Button>
+                      </Button>
                     </Box>
-                    )}
-                    
+                  )}
 
+                  {/* Conteúdo da O.S */}
+                  <VStack align="start" spacing={2}>
+                    <Text fontWeight="bold">Empresa: {os.empresa}</Text>
+                    <Text>Tipo: {os.Tipo_OS}</Text>
+                    <Text>Cliente: {os.Nome_Cliente}</Text>
+                    <Text>Endereço: {os.Endereco_Cliente}</Text>
+                    <Text>
+                      {os.Status_OS === 'Finalizado'
+                        ? `Data de Finalização: ${new Date(os.Data_Entrega_OS).toLocaleString('pt-BR')}`
+                        : `Data de Envio: ${new Date(os.Data_Envio_OS).toLocaleString('pt-BR')}`}
+                    </Text>
 
-                    {/* Conteúdo da O.S */}
-                    <VStack align="start" spacing={2}>
-                        <Text fontWeight="bold">Empresa: {os.empresa}</Text>
-                        <Text>Tipo: {os.Tipo_OS}</Text>
-                        <Text>Cliente: {os.Nome_Cliente}</Text>
-                        <Text>Endereço: {os.Endereco_Cliente}</Text>
-                        <Text>Data de Entrega: {new Date(os.Data_Entrega_OS).toLocaleString('pt-BR')}</Text>
-                        <Badge
-                          colorScheme={
-                            os.Status_OS === 'Pendente'
-                              ? 'yellow'
-                              : os.Status_OS === 'Finalizado'
-                              ? 'green'
-                              : os.Status_OS === 'Execução'
-                              ? 'blue'
-                              : os.Status_OS === 'Atribuido'
-                              ? 'purple'
-                              : os.Status_OS === 'Improdutivo'
-                              ? 'red'
-                              : 'gray'
-                          }
-
-                        >
-                        {os.Status_OS}
-                        </Badge>
-                    </VStack>
-                    </Box>
-
-
-            ))}
+                    <Badge
+                      colorScheme={
+                        os.Status_OS === 'Pendente' ? 'yellow'
+                        : os.Status_OS === 'Finalizado' ? 'green'
+                        : os.Status_OS === 'Execução' ? 'blue'
+                        : os.Status_OS === 'Atribuido' ? 'purple'
+                        : os.Status_OS === 'Improdutivo' ? 'red'
+                        : os.Status_OS === 'Agendada' ? 'pink'
+                        : os.Status_OS === 'Cancelado' ? 'pink'
+                        : 'gray'
+                      }
+                    >
+                      {os.Status_OS}
+                    </Badge>
+                  </VStack>
+                </Box>
+              )
+            })}
           </VStack>
+
         )}
+
+        
 
 
 
@@ -458,17 +537,18 @@ function OrdensEmAberto() {
                 borderColor="gray.300"
                 borderRadius="lg"
                 >
+                <option value="Em Aberto">Em Aberto</option>
                 <option value="Atribuido">Atribuído</option>
                 <option value="Enviado">Enviado</option>
                 <option value="Execução">Execução</option>
                 <option value="Pendente">Pendente</option>
-                <option value="Improdutiva">Improdutiva</option>
+                <option value="Improdutivo">Improdutivo</option>
                 <option value="Cancelado">Cancelado</option>
                 <option value="Finalizado">Finalizado</option>
                 </Select>
             </Box>
 
-            {['Cancelado', 'Improdutiva'].includes(novoStatus) && (
+            {['Cancelado', 'Improdutivo'].includes(novoStatus) && (
               <Box mt={4}>
                 <Text fontSize="sm" color="gray.600" mb={1}>Justificativa:</Text>
                 <Textarea

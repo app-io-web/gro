@@ -34,6 +34,11 @@ import TecnicoDashboard from './pages/tecnico/TecnicoDashboard.jsx'
 import OrdensAtribuidasTecnico from './pages/tecnico/OrdensAtribuidasTecnico'
 import DetalheOrdemTecnico from './pages/tecnico/DetalheOrdemTecnico'
 import FinalizarOS from './pages/tecnico/FinalizarOS.jsx'
+
+
+import OrdensAgendadas from './pages/OrdensAgendadas'
+
+
 import { useSyncReagendamentos } from './hooks/useSyncReagendamentos'
 
 import AdminAgenda from './pages/admin/AdminAgenda'
@@ -207,6 +212,8 @@ function App() {
         />
 
         <Route path="/admin/agenda" element={<AdminAgenda />} />
+        <Route path="/admin/ordens-agendadas" element={<OrdensAgendadas />} />
+
 
         <Route path="/ordem/:id" element={auth ? <OrdemServico /> : <Navigate to="/login" />} />
         <Route
@@ -241,7 +248,7 @@ function App() {
             }
           />
           <Route
-            path="/admin/ordens-abertas"
+            path="/admin/todas-ordens"
             element={
               auth && tipo === 'admin' ? (
                 <OrdensEmAberto />
