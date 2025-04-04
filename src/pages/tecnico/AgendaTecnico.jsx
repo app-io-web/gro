@@ -3,7 +3,7 @@ import {
 } from '@chakra-ui/react'
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { apiGet } from '../../services/api'
@@ -50,6 +50,7 @@ function AgendaTecnico() {
       case 'Finalizada': return 'green';
       case 'Cancelado': return 'red';
       case 'Reagendada': return 'purple';
+      case 'Agendada': return 'cyan'; // 💙 nova cor para agendada
       case 'Improdutiva': return 'gray';
       default: return 'gray';
     }
@@ -62,44 +63,75 @@ function AgendaTecnico() {
   }
   
 
-  useEffect(() => {
-    if (!registros) return
+  const atualizarOrdens = useCallback(() => {
+    if (!registros) return;
   
-    const hoje = dataSelecionada.toISOString().slice(0, 10)
-    const lista = []
+    const hoje = dataSelecionada.toISOString().slice(0, 10);
+    const lista = [];
   
     registros.list.forEach(registro => {
-      const raw = registro['Ordem de Serviços']
-      const json = typeof raw === 'string' ? JSON.parse(raw) : raw
+      const raw = registro['Ordem de Serviços'];
+      const json = typeof raw === 'string' ? JSON.parse(raw) : raw;
   
       json.empresas.forEach(emp => {
         emp.Ordens_de_Servico?.forEach(ordem => {
-          if (ordem.ID_Tecnico_Responsavel !== tecnicoID) return
+          if (ordem.ID_Tecnico_Responsavel !== tecnicoID) return;
   
-          const isFinalizada = ordem.Status_OS?.toLowerCase() === 'finalizado'
-          
-          const dataReferencia = isFinalizada
-            ? ordem?.Data_Entrega_OS?.slice(0, 10) // 👉 usa a Data_Entrega_OS se for Finalizada
-            : (ordem.Status_OS === 'Reagendada'
-                ? ordem?.Reagendamento?.slice(0, 10)
-                : ordem?.Data_Envio_OS?.slice(0, 10))
+          const statusOS = ordem.Status_OS?.toLowerCase();
+          const isFinalizada = statusOS === 'finalizado';
+          const isAgendada = statusOS === 'agendada';
+  
+          let dataReferencia = '';
+  
+          if (isFinalizada) {
+            dataReferencia = ordem?.Data_Entrega_OS?.slice(0, 10);
+          } else if (isAgendada) {
+            dataReferencia = ordem?.Horario_Agendamento_OS?.slice(0, 10);
+          } else if (ordem.Status_OS === 'Reagendada') {
+            dataReferencia = ordem?.Reagendamento?.slice(0, 10);
+          } else {
+            dataReferencia = ordem?.Data_Envio_OS?.slice(0, 10);
+          }
   
           if (dataReferencia === hoje) {
-            lista.push({ ...ordem, empresa: emp.empresa })
+            lista.push({ ...ordem, empresa: emp.empresa });
           }
-        })
-      })
-    })
+        });
+      });
+    });
   
-    setOrdens(lista)
-  }, [registros, dataSelecionada])
+    setOrdens(lista);
+  }, [registros, tecnicoID, dataSelecionada]);
+
+  // 👉 Atualiza uma vez ao carregar ou quando mudar a data
+  useEffect(() => {
+    atualizarOrdens()
+  }, [atualizarOrdens]);
+
+  // 👉 Atualiza de 30 em 30 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      atualizarOrdens()
+    }, 30000)
+
+    return () => clearInterval(interval)
+  }, [atualizarOrdens])
+  
+
+  
+  
   
 
   if (loading) return <Spinner mt={10} />
 
-  const ordensAbertas = ordens.filter(o => o.Status_OS?.toLowerCase() !== 'finalizado')
-  const ordensFinalizadas = ordens.filter(o => o.Status_OS?.toLowerCase() === 'finalizado')
+  const ordensAbertas = ordens.filter(o => {
+    const status = o.Status_OS?.toLowerCase();
+    return status !== 'finalizado' && status !== 'cancelado' && status !== 'improdutivas' && status !== 'agendada';
+  });
   
+  
+  const ordensAgendadas = ordens.filter(o => o.Status_OS?.toLowerCase() === 'agendada');
+  const ordensFinalizadas = ordens.filter(o => o.Status_OS?.toLowerCase() === 'finalizado');
 
   return (
     <Box pb="70px">
@@ -152,6 +184,31 @@ function AgendaTecnico() {
           </Stack>
         </Box>
       )}
+
+      {/* Ordens agendadas */}
+        {ordensAgendadas.length > 0 && (
+          <Box mt={4} px={4}>
+            <Text fontSize="sm" color="gray.600" mb={2}>Ordens Agendadas</Text>
+            <Stack spacing={4}>
+              {ordensAgendadas.map((ordem, idx) => (
+                <Box
+                  key={idx}
+                  p={4}
+                  shadow="md"
+                  borderWidth="1px"
+                  borderRadius="lg"
+                  cursor="pointer"
+                  onClick={() => irParaDetalhes(ordem)}
+                >
+                  <Text><strong>Cliente:</strong> {ordem.Nome_Cliente}</Text>
+                  <Text><strong>Endereço:</strong> {ordem.Endereco_Cliente}</Text>
+                  <Badge colorScheme="purple">Agendada</Badge>
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+        )}
+
 
       {/* Ordens finalizadas em acordeon */}
       <Box mt={4} px={4}>

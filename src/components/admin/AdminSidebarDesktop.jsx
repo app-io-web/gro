@@ -73,6 +73,17 @@ function SidebarAdminDesktop() {
 
                 <Collapse in={openOrdens} animateOpacity>
                   <VStack align="stretch" pl={6} spacing={2}>
+
+                  <Button
+                    color="white"
+                    variant="ghost"
+                    justifyContent="start"
+                    onClick={() => navigate('/admin/agenda')}
+                    _hover={{ bg: 'blue.600', color: 'white' }}
+                  >
+                    Agenda
+                  </Button>
+
                     <Button
                       color="white"
                       variant="ghost"

@@ -36,6 +36,8 @@ import DetalheOrdemTecnico from './pages/tecnico/DetalheOrdemTecnico'
 import FinalizarOS from './pages/tecnico/FinalizarOS.jsx'
 import { useSyncReagendamentos } from './hooks/useSyncReagendamentos'
 
+import AdminAgenda from './pages/admin/AdminAgenda'
+
 
 
 function App() {
@@ -204,6 +206,7 @@ function App() {
           }
         />
 
+        <Route path="/admin/agenda" element={<AdminAgenda />} />
 
         <Route path="/ordem/:id" element={auth ? <OrdemServico /> : <Navigate to="/login" />} />
         <Route
