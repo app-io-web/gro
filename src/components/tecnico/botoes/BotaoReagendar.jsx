@@ -1,7 +1,4 @@
-
 import { useNavigate } from 'react-router-dom'
-
-
 import {
   Button,
   Modal,
@@ -38,45 +35,70 @@ function BotaoReagendar({ ordem, ...props }) {
       })
       return
     }
-
+  
+    if (!navigator.onLine) {
+      const reagendamentosPendentes = JSON.parse(localStorage.getItem('reagendamentos_pendentes')) || []
+    
+      reagendamentosPendentes.push({
+        ordem,
+        motivo,
+        novaData
+      })
+    
+      localStorage.setItem('reagendamentos_pendentes', JSON.stringify(reagendamentosPendentes))
+    
+      toast({
+        title: 'Sem conexão',
+        description: 'Reagendamento salvo offline. Será enviado quando voltar à internet.',
+        status: 'info',
+        duration: 5000,
+        isClosable: true
+      })
+    
+      onClose()
+      navigate('/tecnico') // já navega de volta
+      return
+    }
+    
+  
     try {
       const res = await apiGet('/api/v2/tables/mtnh21kq153to8h/records')
       let registroEncontrado = null
       let recordId = null
       let novaListaEmpresas = []
-
+  
       for (const registro of res.list) {
         const raw = registro['Ordem de Serviços']
         const json = typeof raw === 'string' ? JSON.parse(raw) : raw
-
+  
         const empresasAtualizadas = json.empresas.map(emp => {
           const ordensAtualizadas = emp.Ordens_de_Servico?.map(os => {
             if (os.UnicID_OS === ordem.UnicID_OS && os.Numero_OS === ordem.Numero_OS) {
               recordId = registro.id || registro.Id
               registroEncontrado = registro
-
+  
               return {
                 ...os,
-                Status_OS: 'Reagendada', // Atualiza o status também
+                Status_OS: 'Reagendada',
                 Reagendamento: novaData,
                 Motivo_Reagendamento: motivo
               }
             }
             return os
           })
-
+  
           return {
             ...emp,
             Ordens_de_Servico: ordensAtualizadas
           }
         })
-
+  
         if (recordId) {
           novaListaEmpresas = empresasAtualizadas
           break
         }
       }
-
+  
       if (!recordId || !registroEncontrado) {
         toast({
           title: 'Erro',
@@ -87,29 +109,31 @@ function BotaoReagendar({ ordem, ...props }) {
         })
         return
       }
-
+  
       const payload = [
         {
           Id: registroEncontrado.Id,
           'Ordem de Serviços': JSON.stringify({ empresas: novaListaEmpresas })
         }
       ]
-
+  
       console.log('📤 Enviando PATCH Reagendar:', payload)
-
+  
       await apiPatch(`/api/v2/tables/mtnh21kq153to8h/records`, payload)
-
+  
       toast({
         title: '✅ Ordem reagendada!',
         description: `Reagendada para ${new Date(novaData).toLocaleString('pt-BR')}`,
         status: 'success',
-        duration: 4000,
-        isClosable: true
+        duration: 2500,
+        isClosable: true,
+        onCloseComplete: () => {
+          navigate('/tecnico')
+        }
       })
-
+  
       onClose()
-      navigate('/tecnico')
-
+  
     } catch (error) {
       console.error('❌ Erro ao reagendar:', error)
       toast({
@@ -121,6 +145,7 @@ function BotaoReagendar({ ordem, ...props }) {
       })
     }
   }
+  
 
   return (
     <>

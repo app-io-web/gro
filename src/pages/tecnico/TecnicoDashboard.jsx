@@ -1,35 +1,31 @@
-import { useEffect, useState } from 'react'
-import { apiGet } from '../../services/api'
-import {
-  Box, Heading, Text, Flex, Spinner
-} from '@chakra-ui/react'
+import { Box, Text, Flex, Spinner } from '@chakra-ui/react'
 import AdminSidebarDesktop from '../../components/admin/AdminSidebarDesktop'
-import AgendaTecnico from './AgendaTecnico' // 👈 aqui importa a agenda
+import AgendaTecnico from './AgendaTecnico'
+import { useOfflineData } from '../../hooks/useOfflineData'
 
 function TecnicoDashboard() {
-  const [tecnico, setTecnico] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const tecnicoId = localStorage.getItem('tecnico_id')
 
-  useEffect(() => {
-    const fetchTecnico = async () => {
-      const tecnicoId = localStorage.getItem('tecnico_id')
-      if (!tecnicoId) return setLoading(false)
-
-      try {
-        const res = await apiGet(`/api/v2/tables/mpyestriqe5a1kc/records/${tecnicoId}`)
-        setTecnico(res)
-      } catch (err) {
-        console.error('Erro ao buscar dados do técnico:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchTecnico()
-  }, [])
+  const { data: tecnico, loading, offline } = useOfflineData({
+    url: `/api/v2/tables/mpyestriqe5a1kc/records/${tecnicoId}`,
+    localKey: `tecnico_${tecnicoId}` // 🔥 salvando separado para cada técnico
+  })
 
   if (loading) return <Spinner mt={10} />
-  if (!tecnico) return <Text>Técnico não encontrado</Text>
+
+  if (!tecnico) {
+    if (offline) {
+      return (
+        <Box p={4} textAlign="center">
+          <Text fontSize="lg" color="gray.600">
+            Você está offline. Conecte-se à internet para atualizar as informações.
+          </Text>
+        </Box>
+      )
+    } else {
+      return <Text p={4}>Técnico não encontrado.</Text>
+    }
+  }
 
   return (
     <Flex minH="100vh">
@@ -40,7 +36,7 @@ function TecnicoDashboard() {
 
       {/* Conteúdo principal com agenda */}
       <Box flex="1" p={0} ml={{ base: 0, md: '250px' }}>
-        <AgendaTecnico /> {/* Aqui vem a tela de agenda direto */}
+        <AgendaTecnico /> {/* Agenda carregando normalmente */}
       </Box>
     </Flex>
   )

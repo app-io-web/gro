@@ -1,20 +1,26 @@
 import {
-  Box, Heading, Text, Flex, Button, Stack, Badge, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon
+  Box, Heading, Text, Flex, Button, Stack, Badge, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Spinner, IconButton
 } from '@chakra-ui/react'
 
-import { ChevronLeft, ChevronRight } from 'lucide-react' // 🆕 Import dos ícones
-import { IconButton } from '@chakra-ui/react' // 🆕 Vamos usar IconButton em vez de Button normal
-
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { apiGet } from '../../services/api'
 import TecnicoBottomNav from '../../components/tecnico/TecnicoBottomNav'
+import { useOfflineData } from '../../hooks/useOfflineData'
 
 function AgendaTecnico() {
   const [ordens, setOrdens] = useState([])
   const [dataSelecionada, setDataSelecionada] = useState(new Date())
   const navigate = useNavigate()
+
+  const tecnicoID = localStorage.getItem('ID_Tecnico_Responsavel')
+
+  const { data: registros, loading, offline } = useOfflineData({
+    url: '/api/v2/tables/mtnh21kq153to8h/records',
+    localKey: `ordens_tecnico_${tecnicoID}`
+  })
 
   const formatarDataCabecalho = (data) => {
     return data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).replace('.', '')
@@ -51,43 +57,49 @@ function AgendaTecnico() {
 
   const irParaDetalhes = (ordem) => {
     if (ordem.UnicID_OS) {
-      navigate(`/tecnico/ordem/${ordem.UnicID_OS}`)
+      navigate(`/tecnico/ordem/${ordem.UnicID_OS}`, { state: { ordem } }) // 👈🔥 aqui passa a ordem inteira
     }
   }
+  
 
   useEffect(() => {
-    const fetchOrdens = async () => {
-      const tecnicoID = localStorage.getItem('ID_Tecnico_Responsavel')
-      const hoje = dataSelecionada.toISOString().slice(0, 10)
-
-      const res = await apiGet('/api/v2/tables/mtnh21kq153to8h/records')
-      const lista = []
-
-      res.list.forEach(registro => {
-        const raw = registro['Ordem de Serviços']
-        const json = typeof raw === 'string' ? JSON.parse(raw) : raw
-
-        json.empresas.forEach(emp => {
-          emp.Ordens_de_Servico?.forEach(ordem => {
-            const dataAgendamento = ordem.Status_OS === 'Reagendada'
-            ? ordem?.Reagendamento?.slice(0, 10)
-            : ordem?.Data_Envio_OS?.slice(0, 10)
+    if (!registros) return
+  
+    const hoje = dataSelecionada.toISOString().slice(0, 10)
+    const lista = []
+  
+    registros.list.forEach(registro => {
+      const raw = registro['Ordem de Serviços']
+      const json = typeof raw === 'string' ? JSON.parse(raw) : raw
+  
+      json.empresas.forEach(emp => {
+        emp.Ordens_de_Servico?.forEach(ordem => {
+          if (ordem.ID_Tecnico_Responsavel !== tecnicoID) return
+  
+          const isFinalizada = ordem.Status_OS?.toLowerCase() === 'finalizado'
           
-          if (ordem.ID_Tecnico_Responsavel === tecnicoID && dataAgendamento === hoje) {
+          const dataReferencia = isFinalizada
+            ? ordem?.Data_Entrega_OS?.slice(0, 10) // 👉 usa a Data_Entrega_OS se for Finalizada
+            : (ordem.Status_OS === 'Reagendada'
+                ? ordem?.Reagendamento?.slice(0, 10)
+                : ordem?.Data_Envio_OS?.slice(0, 10))
+  
+          if (dataReferencia === hoje) {
             lista.push({ ...ordem, empresa: emp.empresa })
-          }          
-          })
+          }
         })
       })
+    })
+  
+    setOrdens(lista)
+  }, [registros, dataSelecionada])
+  
 
-      setOrdens(lista)
-    }
+  if (loading) return <Spinner mt={10} />
 
-    fetchOrdens()
-  }, [dataSelecionada])
-
-  const ordensAbertas = ordens.filter(o => o.Status_OS !== 'Finalizada')
-  const ordensFinalizadas = ordens.filter(o => o.Status_OS === 'Finalizada')
+  const ordensAbertas = ordens.filter(o => o.Status_OS?.toLowerCase() !== 'finalizado')
+  const ordensFinalizadas = ordens.filter(o => o.Status_OS?.toLowerCase() === 'finalizado')
+  
 
   return (
     <Box pb="70px">
@@ -95,30 +107,28 @@ function AgendaTecnico() {
       <Flex align="center" justify="center" p={4} bg="green.600" color="white">
         <Heading size="md">Minha agenda</Heading>
       </Flex>
-  
-        {/* Navegação de datas */}
-        <Flex justify="center" align="center" gap={4} mt={4}>
-          <IconButton
-            icon={<ChevronLeft size={20} />}
-            aria-label="Dia anterior"
-            size="sm"
-            onClick={irParaAnterior}
-            variant="ghost"
-            colorScheme="blue"
-          />
-          
-          <Text fontWeight="bold">{formatarDataCabecalho(dataSelecionada)}</Text>
-          
-          <IconButton
-            icon={<ChevronRight size={20} />}
-            aria-label="Próximo dia"
-            size="sm"
-            onClick={irParaProximo}
-            variant="ghost"
-            colorScheme="blue"
-          />
-        </Flex>
-  
+
+      {/* Navegação de datas */}
+      <Flex justify="center" align="center" gap={4} mt={4}>
+        <IconButton
+          icon={<ChevronLeft size={20} />}
+          aria-label="Dia anterior"
+          size="sm"
+          onClick={irParaAnterior}
+          variant="ghost"
+          colorScheme="blue"
+        />
+        <Text fontWeight="bold">{formatarDataCabecalho(dataSelecionada)}</Text>
+        <IconButton
+          icon={<ChevronRight size={20} />}
+          aria-label="Próximo dia"
+          size="sm"
+          onClick={irParaProximo}
+          variant="ghost"
+          colorScheme="blue"
+        />
+      </Flex>
+
       {/* Ordens abertas */}
       {ordensAbertas.length > 0 && (
         <Box mt={4} px={4}>
@@ -142,7 +152,7 @@ function AgendaTecnico() {
           </Stack>
         </Box>
       )}
-  
+
       {/* Ordens finalizadas em acordeon */}
       <Box mt={4} px={4}>
         <Accordion allowToggle>
@@ -179,7 +189,7 @@ function AgendaTecnico() {
           </AccordionItem>
         </Accordion>
       </Box>
-  
+
       <TecnicoBottomNav />
     </Box>
   )

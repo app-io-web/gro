@@ -33,10 +33,12 @@ import TecnicoDashboard from './pages/tecnico/TecnicoDashboard.jsx'
 import OrdensAtribuidasTecnico from './pages/tecnico/OrdensAtribuidasTecnico'
 import DetalheOrdemTecnico from './pages/tecnico/DetalheOrdemTecnico'
 import FinalizarOS from './pages/tecnico/FinalizarOS.jsx'
+import { useSyncReagendamentos } from './hooks/useSyncReagendamentos'
 
 
 
 function App() {
+  useSyncReagendamentos()
   const [auth, setAuth] = useState(false)
   const [tipo, setTipo] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -80,8 +82,15 @@ function App() {
   
             localStorage.setItem('token', 'empresa-logada')
             localStorage.setItem('empresa_id', user.Id)
+            localStorage.setItem('empresa_nome', user.empresa_nome || '')
             localStorage.setItem('email', user.Email)
             localStorage.setItem('tipo', tipoUsuario)
+            localStorage.setItem('nome', user.nome || '')
+            localStorage.setItem('foto_perfil', user.picture_perfil || '')
+            localStorage.setItem('telefone', user.telefone || '')
+            localStorage.setItem('UnicID', user.UnicID || '')
+            localStorage.setItem('Limite_de_Ordem', user.Limite_de_Ordem || '')
+  
             setAuth(true)
             setTipo(tipoUsuario)
             return
@@ -96,7 +105,11 @@ function App() {
             localStorage.setItem('token', 'tecnico-logado')
             localStorage.setItem('tecnico_id', tecnico.Id)
             localStorage.setItem('email', tecnico.email_tecnico)
+            localStorage.setItem('nome', tecnico.Tecnico_Responsavel || '')
+            localStorage.setItem('telefone', tecnico.telefone || '')
+            localStorage.setItem('ID_Tecnico_Responsavel', tecnico.ID_Tecnico_Responsavel || '')
             localStorage.setItem('tipo', 'tecnico')
+  
             setAuth(true)
             setTipo('tecnico')
           }
@@ -108,6 +121,7 @@ function App() {
   
     autoLogin()
   }, [])
+  
   
 
   useEffect(() => {

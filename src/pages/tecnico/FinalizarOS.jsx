@@ -74,7 +74,8 @@ function FinalizarOS() {
                 },
                 Observacao_Tecnico: observacao,
                 Evidencias: evidencias,
-                Materiais_Utilizados: materiais
+                Materiais_Utilizados: materiais,
+                Data_Entrega_OS: new Date().toISOString() // 🆕 Aqui atualiza a Data de Entrega
               }
             }
             return os

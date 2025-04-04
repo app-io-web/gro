@@ -6,6 +6,7 @@ import {
 
   
   import { useParams } from 'react-router-dom'
+  import { useLocation } from 'react-router-dom'
   import { useEffect, useState } from 'react'
   import { apiGet, apiPatch } from '../../services/api'
   import BotaoLocalizacao from '../../components/tecnico/botoes/BotaoLocalizacao'
@@ -23,47 +24,64 @@ import {
     const toast = useToast()
     const navigate = useNavigate()
 
+    const location = useLocation()
+    const ordemNavegacao = location.state?.ordem
+
+
   
     useEffect(() => {
-        const fetchOrdem = async () => {
-          try {
-            const res = await apiGet('/api/v2/tables/mtnh21kq153to8h/records')
-            let encontrada = null
-      
-            res.list.forEach(registro => {
-              const raw = registro['Ordem de Serviços']
-              const json = typeof raw === 'string' ? JSON.parse(raw) : raw
-      
-              json.empresas.forEach(emp => {
-                emp.Ordens_de_Servico?.forEach(os => {
-                  if (os.UnicID_OS?.toString() === id) {
-                    encontrada = { ...os, empresa: emp.empresa }
-      
-                    // 👇 Verifica andamento técnico e define os estados
-                    if (os?.Andamento_técnico?.Msg0) {
-                      setDeslocamentoIniciado(true)
-                    }
-                    if (os?.Andamento_técnico?.Msg2 === 'chegou ao Local') {
-                      setChegueiLocal(true)
-                    }
+      const fetchOrdem = async () => {
+        // 🔥 Primeiro tenta pegar a ordem passada na navegação
+        if (ordemNavegacao) {
+          setOrdem(ordemNavegacao)
+  
+          if (ordemNavegacao?.Andamento_técnico?.Msg0) {
+            setDeslocamentoIniciado(true)
+          }
+          if (ordemNavegacao?.Andamento_técnico?.Msg2 === 'chegou ao Local') {
+            setChegueiLocal(true)
+          }
+  
+          setLoading(false)
+          return
+        }
+  
+        // Só tenta buscar da internet se não veio pela navegação
+        try {
+          const res = await apiGet('/api/v2/tables/mtnh21kq153to8h/records')
+          let encontrada = null
+  
+          res.list.forEach(registro => {
+            const raw = registro['Ordem de Serviços']
+            const json = typeof raw === 'string' ? JSON.parse(raw) : raw
+  
+            json.empresas.forEach(emp => {
+              emp.Ordens_de_Servico?.forEach(os => {
+                if (os.UnicID_OS?.toString() === id) {
+                  encontrada = { ...os, empresa: emp.empresa }
+                  if (os?.Andamento_técnico?.Msg0) {
+                    setDeslocamentoIniciado(true)
                   }
-                })
+                  if (os?.Andamento_técnico?.Msg2 === 'chegou ao Local') {
+                    setChegueiLocal(true)
+                  }
+                }
               })
             })
-      
-
-            
-            setOrdem(encontrada)
-      
-          } catch (err) {
-            console.error('Erro ao buscar ordem:', err)
-          } finally {
-            setLoading(false)
-          }
+          })
+  
+          setOrdem(encontrada)
+  
+        } catch (err) {
+          console.error('Erro ao buscar ordem:', err)
+        } finally {
+          setLoading(false)
         }
-      
-        fetchOrdem()
-      }, [id])
+      }
+  
+      fetchOrdem()
+    }, [id, ordemNavegacao])
+    
       
 
       
@@ -414,15 +432,17 @@ import {
   
         <Flex direction="column" gap={2} mt={6}>
             <Flex gap={2}>
-            <BotaoLocalizacao
+              <BotaoLocalizacao
                 endereco={ordem.Endereco_Cliente}
                 latitude={ordem.Geolocalizacao?.latitude}
                 longitude={ordem.Geolocalizacao?.longitude}
               />
-
-                <BotaoChamarCliente telefone1={ordem.Telefone1_Cliente} telefone2={ordem.Telefone2_Cliente}  flex="1" />
+              <BotaoChamarCliente telefone1={ordem.Telefone1_Cliente} telefone2={ordem.Telefone2_Cliente} flex="1" />
             </Flex>
-            <Flex gap={2}>
+
+            {/* Só mostra Reagendar e Pendenciar se NÃO for finalizada */}
+            {ordem.Status_OS?.toLowerCase() !== 'finalizado' && (
+              <Flex gap={2} mt={2}>
                 <BotaoReagendar ordem={ordem} flex="1" />
                 {chegueiLocal && (
                   <BotaoPendenciar
@@ -431,10 +451,12 @@ import {
                   />
                 )}
               </Flex>
-            </Flex>
+            )}
+          </Flex>
+
 
   
-            {!['improdutivas', 'cancelado', 'pendenciada'].includes(ordem.Status_OS?.toLowerCase()) && (
+            {!['improdutivas', 'cancelado', 'pendenciada','finalizado'].includes(ordem.Status_OS?.toLowerCase()) && (
             <Box mt={8}>
               {/* Se ainda não iniciou o deslocamento */}
               {!deslocamentoIniciado && (
