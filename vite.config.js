@@ -34,8 +34,23 @@ export default defineConfig({
             purpose: 'any maskable'
           }
         ]
-        
-        
+      },
+      workbox: {
+        // Aumenta o limite do tamanho de arquivos para serem armazenados no cache do Workbox
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // Limite de 5MB (ajuste conforme necessário)
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.origin === window.location.origin,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'example-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 24 * 60 * 60 // 1 dia
+              }
+            }
+          }
+        ]
       }
     })
   ]

@@ -18,6 +18,16 @@ import PerfilAdmin from './pages/admin/PerfilAdmin'
 import PerfilEmpresaPage from './pages/empresa/PerfilEmpresaPage'
 import PerfilTecnico from './pages/tecnico/PerfilTecnico.jsx'
 import OrdensEmAbertoEmpresa from './pages/empresa/OrdensEmAbertoEmpresa'
+
+import OrdensFinalizadas from './pages/admin/OrdensFinalizadas.jsx'
+import DetalheOrdemFinalizadaAdmin from './pages/admin/DetalheOrdemFinalizadaAdmin.jsx'
+import OrdensImprodutivas from './pages/admin/OrdensImprodutivas'
+import DetalheOrdemImprodutivaAdmin from './pages/admin/DetalheOrdemImprodutivaAdmin'
+import RelatoriosDashboardAdmin from './pages/admin/relatorios/RelatoriosDashboardAdmin.jsx'
+import RelatorioEmpresaAdmin from './pages/admin/relatorios/RelatorioEmpresaAdmin.jsx'
+import RelatorioEmpresaAnalise from './pages/admin/relatorios/RelatorioEmpresaAnalise.jsx'
+
+
 import OrdensFinalizadasEmpresa from './pages/empresa/OrdensFinalizadasEmpresa.jsx'
 import DetalheOrdemFinalizadaEmpresa from './pages/empresa/DetalheOrdemFinalizadaEmpresa'
 import AbrirOrdemEmpresa from './pages/empresa/AbrirOrdemEmpresa'
@@ -25,15 +35,18 @@ import MetricasEmpresa from './pages/empresa/MetricasEmpresa'
 import OrdensExecucaoEmpresa from './pages/empresa/OrdensExecucaoEmpresa'
 import DetalheOrdemExecucaoEmpresa from './pages/empresa/DetalheOrdemExecucaoEmpresa' // depois vamos criar
 import OrdensCanceladasEmpresa from './pages/empresa/OrdensCanceladasEmpresa'
-
 import DetalheOrdemCanceladaEmpresa from './pages/empresa/DetalheOrdemCanceladaEmpresa.jsx'
 import OrdensPendenciadasEmpresa from './pages/empresa/OrdensPendenciadasEmpresa.jsx'
 import DetalheOrdemPendenciadaEmpresa from './pages/empresa/DetalheOrdemPendenciadaEmpresa.jsx'
+import OrdensAgendadasEmpresa from './pages/empresa/OrdensAgendadasEmpresa.jsx'
+import OrdensImprodutivasEmpresa from './pages/empresa/OrdensImprodutivasEmpresa.jsx'
 
 import TecnicoDashboard from './pages/tecnico/TecnicoDashboard.jsx'
 import OrdensAtribuidasTecnico from './pages/tecnico/OrdensAtribuidasTecnico'
 import DetalheOrdemTecnico from './pages/tecnico/DetalheOrdemTecnico'
 import FinalizarOS from './pages/tecnico/FinalizarOS.jsx'
+
+
 
 
 import OrdensAgendadas from './pages/OrdensAgendadas'
@@ -262,6 +275,15 @@ function App() {
           <Route path="/admin/tecnico/:id" element={<PaginaMetricaTecnico />} />
           <Route path="/admin/ordens-andamento" element={<OrdensEmExecucao />} />
           <Route path="/admin/ordem-execucao/:id" element={<DetalheOrdemExecucao />} />
+          <Route path="/admin/ordens-finalizadas" element={<OrdensFinalizadas />} />
+          <Route path="/admin/ordens-finalizadas/:id" element={<DetalheOrdemFinalizadaAdmin />} />
+
+          <Route path="/admin/ordens-improdutivas" element={<OrdensImprodutivas />} />
+          <Route path="/admin/ordens-improdutivas/:id" element={<DetalheOrdemImprodutivaAdmin />} />
+
+          <Route path="/admin/relatorio-dasboard" element={<RelatoriosDashboardAdmin />} />
+          <Route path="/admin/relatorios/:nomeEmpresa" element={<RelatorioEmpresaAdmin />} />
+          <Route path="/admin/relatorios/empresa/:nomeEmpresa/analise" element={<RelatorioEmpresaAnalise />} />
 
           <Route path="/admin/perfil" element={<PerfilAdmin />} />
           <Route path="/empresa/perfil" element={<PerfilEmpresaPage />} />
@@ -279,9 +301,11 @@ function App() {
           <Route path="/empresa/ordens-andamento/:id" element={<DetalheOrdemExecucaoEmpresa />} />
           <Route path="/empresa/ordens-canceladas" element={<OrdensCanceladasEmpresa />} />
           <Route path="/empresa/ordens-canceladas/:id" element={<DetalheOrdemCanceladaEmpresa />} />
-
           <Route path="/empresa/ordens-pendenciadas" element={<OrdensPendenciadasEmpresa />} />
           <Route path="/empresa/ordens-pendenciadas/:id" element={<DetalheOrdemPendenciadaEmpresa />} />
+          <Route path="/empresa/ordens-agendadas" element={<OrdensAgendadasEmpresa />} />
+          <Route path="/empresa/ordens-improdutivas" element={<OrdensImprodutivasEmpresa />} />
+
 
 
           <Route

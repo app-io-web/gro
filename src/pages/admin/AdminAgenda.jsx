@@ -58,12 +58,16 @@ function AdminAgenda() {
     try {
       const res = await apiGet('/api/v2/tables/mpyestriqe5a1kc/records')
       const lista = res.list || []
-      const tecnicosAtivos = lista.map(t => t.Tecnico_Responsavel).filter(Boolean)
+      const tecnicosAtivos = lista.map(t => ({
+        nome: t.Tecnico_Responsavel,
+        id: t.ID_Tecnico_Responsavel
+      })).filter(t => t.nome && t.id)
       setTecnicos(tecnicosAtivos)
     } catch (err) {
       console.error('Erro ao buscar técnicos:', err)
     }
   }, [])
+  
 
   useEffect(() => {
     fetchOrdens()
@@ -92,11 +96,16 @@ function AdminAgenda() {
   
       const hoje = new Date().toISOString().split('T')[0]  // Data atual no formato YYYY-MM-DD
   
-      const ordensBalanceadas = ordens.map((ordem, index) => ({
-        ...ordem,
-        Tecnico_Responsavel: tecnicos[index % tecnicos.length],
-        Data_Agendamento_OS: hoje
-      }))
+      const ordensBalanceadas = ordens.map((ordem, index) => {
+        const tecnico = tecnicos[index % tecnicos.length]
+        return {
+          ...ordem,
+          Tecnico_Responsavel: tecnico.nome,
+          ID_Tecnico_Responsavel: tecnico.id,
+          Data_Agendamento_OS: hoje
+        }
+      })
+      
   
       for (const ordem of ordensBalanceadas) {
         const res = await apiGet(`/api/v2/tables/mtnh21kq153to8h/records`)
@@ -122,19 +131,22 @@ function AdminAgenda() {
                   ? { 
                       ...os, 
                       Tecnico_Responsavel: ordem.Tecnico_Responsavel, 
+                      ID_Tecnico_Responsavel: ordem.ID_Tecnico_Responsavel,
                       Data_Agendamento_OS: ordem.Data_Agendamento_OS,
-                      Status_OS: "Agendada" // <<< AQUI!!! Mudando o status também
+                      Status_OS: "Agendada" 
                     }
                   : os
               )
+              
             }
           })
         }
   
         await apiPatch('/api/v2/tables/mtnh21kq153to8h/records', {
           Id: registro.Id,
-          'Ordem de Serviços': novaEstrutura
+          'Ordem de Serviços': JSON.stringify(novaEstrutura) // Apenas stringificando este campo
         })
+        
       }
   
       toast({

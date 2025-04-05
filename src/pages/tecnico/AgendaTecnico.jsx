@@ -17,10 +17,26 @@ function AgendaTecnico() {
 
   const tecnicoID = localStorage.getItem('ID_Tecnico_Responsavel')
 
-  const { data: registros, loading, offline } = useOfflineData({
+  const [novosRegistros, setNovosRegistros] = useState(null)
+  const { data: registrosCache, loading, offline } = useOfflineData({
     url: '/api/v2/tables/mtnh21kq153to8h/records',
     localKey: `ordens_tecnico_${tecnicoID}`
   })
+  
+  const registros = novosRegistros ? { list: novosRegistros } : registrosCache
+  
+
+
+  const fetchNovosRegistros = useCallback(async () => {
+    try {
+      const res = await apiGet('/api/v2/tables/mtnh21kq153to8h/records')
+      if (res?.list) {
+        setNovosRegistros(res.list)
+      }
+    } catch (error) {
+      console.error('Erro ao buscar novos registros:', error)
+    }
+  }, [])
 
   const formatarDataCabecalho = (data) => {
     return data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).replace('.', '')
@@ -111,14 +127,27 @@ function AgendaTecnico() {
     atualizarOrdens()
   }, [atualizarOrdens]);
 
-  // 👉 Atualiza de 30 em 30 segundos
-  useEffect(() => {
-    const interval = setInterval(() => {
-      atualizarOrdens()
-    }, 30000)
+// Antes do seu return (depois do useEffects)
 
-    return () => clearInterval(interval)
-  }, [atualizarOrdens])
+const handleAtualizarOrdens = async () => {
+  await fetchNovosRegistros()
+  atualizarOrdens()
+}
+
+// Modifica o useEffect também:
+useEffect(() => {
+  const interval = setInterval(() => {
+    fetchNovosRegistros()
+  }, 10000) // busca novos registros a cada 10 segundos
+  
+  return () => clearInterval(interval)
+}, [fetchNovosRegistros])
+
+useEffect(() => {
+  atualizarOrdens()
+}, [novosRegistros, dataSelecionada])
+
+
   
 
   
@@ -143,10 +172,14 @@ function AgendaTecnico() {
 
   return (
     <Box pb="70px">
-      {/* Topo agenda */}
-      <Flex align="center" justify="center" p={4} bg="green.600" color="white">
+            {/* Topo agenda */}
+      <Flex align="center" justify="space-between" p={4} bg="green.600" color="white">
         <Heading size="md">Minha agenda</Heading>
+        <Button size="sm" colorScheme="whiteAlpha" onClick={handleAtualizarOrdens}>
+          Atualizar
+        </Button>
       </Flex>
+
 
       {/* Navegação de datas */}
       <Flex justify="center" align="center" gap={4} mt={4}>

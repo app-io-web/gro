@@ -1,9 +1,12 @@
 import { Box, VStack, Text, Button, Collapse, Divider } from '@chakra-ui/react'
 import {
   FiHome, FiSettings, FiLogOut, FiChevronDown, FiChevronUp,
-  FiUsers, FiClipboard, FiUser
+  FiUsers, FiClipboard, FiUser, FiPlusSquare, FiCalendar,
+  FiRefreshCw, FiCheckCircle, FiAlertCircle, FiXCircle, FiBarChart2
 } from 'react-icons/fi'
-import { useNavigate } from 'react-router-dom'
+
+import { useNavigate, useLocation } from 'react-router-dom'
+
 import { useState } from 'react'
 
 import { usarVerificacaoLimiteOS } from '../utils/verificarLimiteOS'
@@ -14,9 +17,12 @@ import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBod
 function SidebarAdminDesktop() {
   const navigate = useNavigate()
   const [openCadastro, setOpenCadastro] = useState(false)
+  const [openRelatorios, setOpenRelatorios] = useState(false)
   const [openOrdens, setOpenOrdens] = useState(false)
   const tipoUsuario = localStorage.getItem('tipo')
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const location = useLocation();
+
 
   const handleAbrirOS = usarVerificacaoLimiteOS(navigate, onOpen)
 
@@ -127,10 +133,10 @@ function SidebarAdminDesktop() {
                       color="white"
                       variant="ghost"
                       justifyContent="start"
-                      onClick={() => navigate('/admin/evidencias')}
+                      onClick={() => navigate('/admin/ordens-improdutivas')}
                       _hover={{ bg: 'blue.600', color: 'white' }}
                     >
-                      Evidências
+                      Improdutivas
                     </Button>
                   </VStack>
                 </Collapse>
@@ -144,71 +150,97 @@ function SidebarAdminDesktop() {
                 <Text fontSize="sm" color="gray.400" px={2}>Empresa</Text>
 
                 <Button
+                  leftIcon={<FiPlusSquare color="white" />}
                   color="white"
-                  variant="ghost"
+                  variant={location.pathname === '/empresa/abrir-ordem' ? 'solid' : 'ghost'}
+                  bg={location.pathname === '/empresa/abrir-ordem' ? 'blue.600' : 'transparent'}
                   justifyContent="start"
-                  onClick={handleAbrirOS}
                   _hover={{ bg: 'blue.600', color: 'white' }}
+                  onClick={handleAbrirOS}
                 >
                   Abrir O.S
                 </Button>
 
                 <Button
+                  leftIcon={<FiClipboard color="white" />}
                   color="white"
-                  variant="ghost"
+                  variant={location.pathname === '/empresa/ordens-abertas' ? 'solid' : 'ghost'}
+                  bg={location.pathname === '/empresa/ordens-abertas' ? 'blue.600' : 'transparent'}
                   justifyContent="start"
-                  onClick={() => navigate('/empresa/ordens-abertas')}
                   _hover={{ bg: 'blue.600', color: 'white' }}
+                  onClick={() => navigate('/empresa/ordens-abertas')}
                 >
                   Em Aberto
                 </Button>
 
                 <Button
+                  leftIcon={<FiCalendar color="white" />}
                   color="white"
-                  variant="ghost"
+                  variant={location.pathname === '/empresa/ordens-agendadas' ? 'solid' : 'ghost'}
+                  bg={location.pathname === '/empresa/ordens-agendadas' ? 'blue.600' : 'transparent'}
                   justifyContent="start"
-                  onClick={() => navigate('/empresa/ordens-andamento')}
                   _hover={{ bg: 'blue.600', color: 'white' }}
+                  onClick={() => navigate('/empresa/ordens-agendadas')}
+                >
+                  Agendadas
+                </Button>
+
+                <Button
+                  leftIcon={<FiRefreshCw color="white" />}
+                  color="white"
+                  variant={location.pathname === '/empresa/ordens-andamento' ? 'solid' : 'ghost'}
+                  bg={location.pathname === '/empresa/ordens-andamento' ? 'blue.600' : 'transparent'}
+                  justifyContent="start"
+                  _hover={{ bg: 'blue.600', color: 'white' }}
+                  onClick={() => navigate('/empresa/ordens-andamento')}
                 >
                   Em Andamento
                 </Button>
 
                 <Button
+                  leftIcon={<FiCheckCircle color="white" />}
                   color="white"
-                  variant="ghost"
+                  variant={location.pathname === '/empresa/ordens-finalizadas' ? 'solid' : 'ghost'}
+                  bg={location.pathname === '/empresa/ordens-finalizadas' ? 'blue.600' : 'transparent'}
                   justifyContent="start"
-                  onClick={() => navigate('/empresa/ordens-finalizadas')}
                   _hover={{ bg: 'blue.600', color: 'white' }}
+                  onClick={() => navigate('/empresa/ordens-finalizadas')}
                 >
                   Finalizadas
                 </Button>
 
                 <Button
+                  leftIcon={<FiAlertCircle color="white" />}
                   color="white"
-                  variant="ghost"
+                  variant={location.pathname === '/empresa/ordens-pendenciadas' ? 'solid' : 'ghost'}
+                  bg={location.pathname === '/empresa/ordens-pendenciadas' ? 'blue.600' : 'transparent'}
                   justifyContent="start"
-                  onClick={() => navigate('/empresa/ordens-pendenciadas')}
                   _hover={{ bg: 'blue.600', color: 'white' }}
+                  onClick={() => navigate('/empresa/ordens-pendenciadas')}
                 >
                   Pendenciadas
                 </Button>
 
                 <Button
+                  leftIcon={<FiXCircle color="white" />}
                   color="white"
-                  variant="ghost"
+                  variant={location.pathname === '/empresa/ordens-canceladas' ? 'solid' : 'ghost'}
+                  bg={location.pathname === '/empresa/ordens-canceladas' ? 'blue.600' : 'transparent'}
                   justifyContent="start"
-                  onClick={() => navigate('/empresa/ordens-canceladas')}
                   _hover={{ bg: 'blue.600', color: 'white' }}
+                  onClick={() => navigate('/empresa/ordens-canceladas')}
                 >
                   Canceladas
                 </Button>
 
                 <Button
+                  leftIcon={<FiBarChart2 color="white" />}
                   color="white"
-                  variant="ghost"
+                  variant={location.pathname === '/empresa/metricas' ? 'solid' : 'ghost'}
+                  bg={location.pathname === '/empresa/metricas' ? 'blue.600' : 'transparent'}
                   justifyContent="start"
-                  onClick={() => navigate('/empresa/metricas')}
                   _hover={{ bg: 'blue.600', color: 'white' }}
+                  onClick={() => navigate('/empresa/metricas')}
                 >
                   Métricas
                 </Button>
@@ -216,8 +248,10 @@ function SidebarAdminDesktop() {
             )}
 
 
-                    {/* =================== ÁREA DE ADMINISTRADOR =================== */}
-                    {tipoUsuario === 'admin' && (
+
+
+            {/* =================== ÁREA DE ADMINISTRADOR =================== */}
+                  {tipoUsuario === 'admin' && (
                       <>
                         <Divider borderColor="gray.600" mt={6} />
                         <Text fontSize="sm" color="gray.400" px={2}>Administração</Text>
@@ -233,6 +267,7 @@ function SidebarAdminDesktop() {
                           Cadastros
                         </Button>
 
+
                         <Collapse in={openCadastro} animateOpacity>
                           <VStack align="stretch" pl={6} spacing={2}>
                             <Button
@@ -243,6 +278,41 @@ function SidebarAdminDesktop() {
                               _hover={{ bg: 'blue.600', color: 'white' }}
                             >
                               Cadastrar Empresa
+                            </Button>
+                            <Button
+                              color="white"
+                              variant="ghost"
+                              justifyContent="start"
+                              onClick={() => navigate('/admin/cadastrar-tecnico')}
+                              _hover={{ bg: 'blue.600', color: 'white' }}
+                            >
+                              Cadastrar Técnico
+                            </Button>
+                          </VStack>
+                        </Collapse>
+
+                        
+                        <Button
+                          leftIcon={openRelatorios ? <FiChevronUp color="white" /> : <FiChevronDown color="white" />}
+                          color="white"
+                          justifyContent="start"
+                          variant="ghost"
+                          _hover={{ bg: 'blue.600' }}
+                          onClick={() => setOpenRelatorios(!openRelatorios)}
+                        >
+                          Relatórios
+                        </Button>
+
+                        <Collapse in={openRelatorios} animateOpacity>
+                          <VStack align="stretch" pl={6} spacing={2}>
+                            <Button
+                              color="white"
+                              variant="ghost"
+                              justifyContent="start"
+                              onClick={() => navigate('/admin/relatorio-dasboard')}
+                              _hover={{ bg: 'blue.600', color: 'white' }}
+                            >
+                              Relatórios Dashboard
                             </Button>
                             <Button
                               color="white"

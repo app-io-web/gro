@@ -84,7 +84,12 @@ function OrdensEmExecucao() {
       {isMobile && <AdminMobileMenu />}
       {isMobile && <AdminBottomNav />}
 
-      <Box w="full" p={6} ml={!isMobile ? '250px' : 0}>
+      <Box
+            ml={!isMobile ? '250px' : 0}
+            p={6}
+            minH="100vh"
+            pb={isMobile ? '100px' : '0'} // 👈 adiciona paddingBottom no mobile
+          >
         <Heading size="lg" mb={4}>📋 Ordens em Execução</Heading>
 
         <Select placeholder="Filtrar por Técnico" mb={4} onChange={e => setTecnicoSelecionado(e.target.value)}>

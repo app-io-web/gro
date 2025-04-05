@@ -1,4 +1,5 @@
-// src/pages/empresa/DetalheOrdemExecucaoEmpresa.jsx
+// src/pages/admin/DetalheOrdemImprodutivaAdmin.jsx
+
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
@@ -7,21 +8,14 @@ import {
   useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody
 } from '@chakra-ui/react'
 
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon
-} from '@chakra-ui/react'
-
+import { Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from '@chakra-ui/react'
 import { ArrowBackIcon } from '@chakra-ui/icons'
 import { FaUserAlt, FaPhone, FaMapMarkerAlt, FaBuilding } from 'react-icons/fa'
 import { apiGet } from '../../services/api'
 import AdminSidebarDesktop from '../../components/admin/AdminSidebarDesktop'
 import AdminBottomNav from '../../components/admin/AdminBottomNav'
 import AdminMobileMenu from '../../components/admin/AdminMobileMenu'
-import StepperOrdemServico from '../admin/StepperOrdemServico'
+import StepperOrdemServico from './StepperOrdemServico'
 
 const steps = [
   { label: 'Atribuído', key: 'Msg0' },
@@ -31,38 +25,7 @@ const steps = [
   { label: 'Finalizado', key: 'Msg4' }
 ]
 
-function renderMensagensRecursivamente(obj, level = 0, parentKey = '', renderedSet = new Set()) {
-  return Object.entries(obj).flatMap(([key, value], index) => {
-    const currentKey = `${parentKey}.${key}`
-    if (typeof value === 'object' && value !== null) {
-      return renderMensagensRecursivamente(value, level + 1, currentKey, renderedSet)
-    }
-    if (typeof value === 'string') {
-      const trimmed = value.trim()
-      if (trimmed === '' || renderedSet.has(trimmed)) {
-        return []
-      }
-      renderedSet.add(trimmed)
-      return (
-        <Box
-          key={`${currentKey}-${index}`}
-          p={2}
-          bg="gray.50"
-          borderRadius="md"
-          border="1px solid #eee"
-          ml={level * 2}
-        >
-          <Text fontSize="sm" color="gray.700">
-            <strong>Administrador:</strong> {trimmed}
-          </Text>
-        </Box>
-      )
-    }
-    return []
-  })
-}
-
-export default function DetalheOrdemExecucaoEmpresa() {
+export default function DetalheOrdemImprodutivaAdmin() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [ordem, setOrdem] = useState(null)
@@ -72,7 +35,7 @@ export default function DetalheOrdemExecucaoEmpresa() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [imagemSelecionada, setImagemSelecionada] = useState(null)
   const bgCard = useColorModeValue('gray.50', 'gray.700')
-  const borderColor = useColorModeValue('blue.500', 'blue.300')
+  const borderColor = useColorModeValue('red.500', 'red.300')
 
   useEffect(() => {
     async function fetchData() {
@@ -122,14 +85,14 @@ export default function DetalheOrdemExecucaoEmpresa() {
           pb={isMobile ? '100px' : '0'} // 👈 adiciona paddingBottom no mobile
         >
 
-        <Heading size="lg" textAlign="center" color="blue.600" mb={6}>🔍 Detalhes da Ordem em Execução</Heading>
+        <Heading size="lg" textAlign="center" color="red.600" mb={6}>🔍 Detalhes da Ordem Improdutiva</Heading>
 
         <Button
           leftIcon={<ArrowBackIcon />}
-          colorScheme="blue"
+          colorScheme="red"
           variant="ghost"
           mb={4}
-          onClick={() => navigate('/empresa/ordens-andamento')}
+          onClick={() => navigate('/admin/ordens-improdutivas')}
         >
           Voltar
         </Button>
@@ -142,74 +105,13 @@ export default function DetalheOrdemExecucaoEmpresa() {
               <Text><Icon as={FaPhone} mr={2} /> <strong>Telefone:</strong> {ordem.Telefone1_Cliente}</Text>
               <Text><Icon as={FaMapMarkerAlt} mr={2} /> <strong>Endereço:</strong> {ordem.Endereco_Cliente}</Text>
               <Text><strong>Tipo:</strong> {ordem.Tipo_OS}</Text>
-              <Text><strong>Status:</strong> <Badge colorScheme="blue">{ordem.Status_OS}</Badge></Text>
+              <Text><strong>Status:</strong> <Badge colorScheme="red">{ordem.Status_OS}</Badge></Text>
               <Text><Icon as={FaBuilding} mr={2} /> <strong>Empresa:</strong> {ordem.empresa}</Text>
             </Stack>
           </CardBody>
         </Card>
 
-        {/* Justificativas */}
-        {(ordem?.Motivo_Cancelamento || ordem?.Observacao_Administrador) && (
-          isMobile ? (
-            <Box mt={4}>
-              <Accordion allowToggle>
-                <AccordionItem border="none">
-                  <h2>
-                    <AccordionButton bg="blue.50" border="1px solid" borderColor="blue.300" borderRadius="lg">
-                      <Box flex="1" textAlign="left" fontWeight="bold" color="blue.600">
-                        💬 Justificativas
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel p={4} bg="white" border="1px solid #eee" borderTop="none" borderBottomRadius="lg">
-                  <Stack spacing={2}>
-                      {ordem.Motivo_Cancelamento && (
-                        <Box p={2} bg="gray.50" borderRadius="md" border="1px solid #eee">
-                          <Text fontSize="sm" color="gray.700">
-                            <strong>{ordem.empresa}:</strong> {ordem.Motivo_Cancelamento}
-                          </Text>
-                        </Box>
-                      )}
-
-                      {ordem.Observacao_Administrador &&
-                        renderMensagensRecursivamente(ordem.Observacao_Administrador)}
-                    </Stack>
-
-                  </AccordionPanel>
-                </AccordionItem>
-              </Accordion>
-            </Box>
-          ) : (
-            <Accordion allowToggle position="absolute" top="30px" right="30px" zIndex="2" maxW="300px">
-              <AccordionItem border="none">
-                <h2>
-                  <AccordionButton bg="blue.50" _hover={{ bg: "blue.100" }} border="1px solid" borderColor="blue.300" borderRadius="lg">
-                    <Box flex="1" textAlign="left" fontWeight="bold" color="blue.600">
-                      💬 Justificativas
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel p={4} bg="white" border="1px solid #eee" borderTop="none" borderBottomRadius="lg">
-                  <Stack spacing={2}>
-                    {ordem.Motivo_Cancelamento && (
-                      <Box p={2} bg="gray.50" borderRadius="md" border="1px solid #eee">
-                        <Text fontSize="sm" color="gray.700">
-                          <strong>{ordem.empresa}:</strong> {ordem.Motivo_Cancelamento}
-                        </Text>
-                      </Box>
-                    )}
-                    {ordem.Observacao_Administrador &&
-                      renderMensagensRecursivamente(ordem.Observacao_Administrador)}
-                  </Stack>
-                </AccordionPanel>
-              </AccordionItem>
-            </Accordion>
-          )
-        )}
-
-        <Heading size="md" mb={4} color="blue.600" mt={10}>📌 Andamento da Ordem</Heading>
+        <Heading size="md" mb={4} color="red.600">📌 Andamento da Ordem</Heading>
 
         <StepperOrdemServico
           steps={steps}
@@ -235,6 +137,107 @@ export default function DetalheOrdemExecucaoEmpresa() {
             </Collapse>
           ))}
         </Stack>
+
+        {/* Observações do Administrador */}
+        {ordem.Observacao_Administrador && (
+          <Box mt={10}>
+            <Heading size="md" mb={4} color="purple.600">🗒️ Observações do Administrador</Heading>
+            <Accordion allowMultiple>
+              {Object.entries(ordem.Observacao_Administrador).map(([key, value], index) => {
+                
+                // Função para desenterrar mensagem caso esteja aninhada errado
+                const extrairMensagem = (msg) => {
+                  while (typeof msg === 'object' && msg !== null) {
+                    const keys = Object.keys(msg)
+                    if (keys.length > 0) {
+                      msg = msg[keys[0]]
+                    } else {
+                      break
+                    }
+                  }
+                  return msg
+                }
+
+                const mensagemFinal = extrairMensagem(value)
+
+                if (!mensagemFinal) return null // se não tem mensagem, ignora
+
+                return (
+                  <AccordionItem key={index} border="none">
+                    <h2>
+                      <AccordionButton
+                        _expanded={{ bg: 'purple.100', color: 'purple.600' }}
+                        borderRadius="md"
+                        boxShadow="md"
+                      >
+                        <Box as="span" flex="1" textAlign="left">
+                          {key.toUpperCase()}
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4}>
+                      <Text fontSize="sm" color="gray.600">
+                        {mensagemFinal}
+                      </Text>
+                    </AccordionPanel>
+                  </AccordionItem>
+                )
+              })}
+            </Accordion>
+          </Box>
+        )}
+
+
+        {/* Materiais utilizados */}
+        {ordem.Materiais_Utilizados && (
+          <Box mt={10}>
+            <Heading size="md" mb={4} color="orange.500">🛠️ Materiais Utilizados</Heading>
+            <Accordion allowToggle defaultIndex={[0]}>
+              {Object.entries(ordem.Observacao_Administrador).map(([key, value], index) => {
+                
+                const extrairMensagem = (msg) => {
+                  while (typeof msg === 'object' && msg !== null) {
+                    const keys = Object.keys(msg)
+                    if (keys.length > 0) {
+                      msg = msg[keys[0]]
+                    } else {
+                      break
+                    }
+                  }
+                  return msg
+                }
+
+                const mensagemFinal = extrairMensagem(value)
+
+                if (!mensagemFinal) return null
+
+                return (
+                  <AccordionItem key={index} border="none">
+                    <h2>
+                      <AccordionButton
+                        _expanded={{ bg: 'purple.100', color: 'purple.600' }}
+                        borderRadius="md"
+                        boxShadow="md"
+                      >
+                        <Box as="span" flex="1" textAlign="left">
+                          {key.toUpperCase()}
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4}>
+                      <Text fontSize="sm" color="gray.600">
+                        {mensagemFinal}
+                      </Text>
+                    </AccordionPanel>
+                  </AccordionItem>
+                )
+              })}
+            </Accordion>
+
+          </Box>
+        )}
 
         {/* Evidências */}
         {ordem.Evidencias && (

@@ -74,7 +74,13 @@ export default function DetalheOrdemFinalizadaEmpresa() {
       {isMobile && <AdminMobileMenu />}
       {isMobile && <AdminBottomNav />}
 
-      <Box ml={!isMobile ? '250px' : 0} p={6} minH="100vh">
+      <Box
+          ml={!isMobile ? '250px' : 0}
+          p={6}
+          minH="100vh"
+          pb={isMobile ? '100px' : '0'} // 👈 adiciona paddingBottom no mobile
+        >
+
         <Heading size="lg" textAlign="center" color="blue.600" mb={6}>🔍 Detalhes da Ordem Finalizada</Heading>
 
         <Button

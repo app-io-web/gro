@@ -1,10 +1,11 @@
-import { Box, Text, Flex, Spinner } from '@chakra-ui/react'
+import { Box, Text, Flex, Spinner, useBreakpointValue } from '@chakra-ui/react'
 import AdminSidebarDesktop from '../../components/admin/AdminSidebarDesktop'
 import AgendaTecnico from './AgendaTecnico'
 import { useOfflineData } from '../../hooks/useOfflineData'
 
 function TecnicoDashboard() {
   const tecnicoId = localStorage.getItem('tecnico_id')
+  const isMobile = useBreakpointValue({ base: true, md: false })
 
   const { data: tecnico, loading, offline } = useOfflineData({
     url: `/api/v2/tables/mpyestriqe5a1kc/records/${tecnicoId}`,
@@ -35,8 +36,13 @@ function TecnicoDashboard() {
       </Box>
 
       {/* Conteúdo principal com agenda */}
-      <Box flex="1" p={0} ml={{ base: 0, md: '250px' }}>
-        <AgendaTecnico /> {/* Agenda carregando normalmente */}
+      <Box
+        flex="1"
+        p={0}
+        pb={isMobile ? 'calc(80px + env(safe-area-inset-bottom))' : '0'} // ✅ usa safe-area
+        ml={{ base: 0, md: '250px' }}
+      >
+        <AgendaTecnico />
       </Box>
     </Flex>
   )

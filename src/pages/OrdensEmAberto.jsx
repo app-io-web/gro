@@ -48,6 +48,8 @@ function OrdensEmAberto() {
 
   const [dataInicial, setDataInicial] = useState('')
   const [dataFinal, setDataFinal] = useState('')
+  const [statusSelecionado, setStatusSelecionado] = useState('') // <-- 👈 filtro novo aqui!
+
 
 
   useEffect(() => {
@@ -90,6 +92,17 @@ function OrdensEmAberto() {
   
     // Limpa o intervalo se sair da tela
     return () => clearInterval(interval)
+  }, [])
+
+
+  useEffect(() => {
+    const hoje = new Date()
+    const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1)
+    const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0)
+  
+    setDataInicial(primeiroDia.toISOString().slice(0, 10))
+    setDataFinal(ultimoDia.toISOString().slice(0, 10))
+    setStatusSelecionado('Em Aberto')
   }, [])
   
 
@@ -257,7 +270,32 @@ function OrdensEmAberto() {
                   style={{ padding: '8px', borderRadius: '8px', border: '1px solid #ccc' }}
                 />
               </Box>
-            </Flex>
+
+
+
+          <Box>
+            <Text fontSize="sm" mb={1}>Filtrar por Status</Text>
+            <Select
+              placeholder="Todos os Status"
+              value={statusSelecionado}
+              onChange={(e) => setStatusSelecionado(e.target.value)}
+              w="200px"
+            >
+              <option value="Em Aberto">Em Aberto</option>
+              <option value="Atribuido">Atribuído</option>
+              <option value="Enviado">Enviado</option>
+              <option value="Execução">Execução</option>
+              <option value="Pendente">Pendente</option>
+              <option value="Improdutivo">Improdutivo</option>
+              <option value="Cancelado">Cancelado</option>
+              <option value="Agendada">Agendada</option>
+              <option value="Finalizado">Finalizado</option>
+            </Select>
+          </Box>
+        </Flex>
+
+
+            
 
         {loading ? (
           <Spinner size="xl" />
@@ -265,20 +303,23 @@ function OrdensEmAberto() {
           <VStack align="stretch" spacing={4}>
             {ordens
               .filter((os) => {
-                if (!dataInicial && !dataFinal) return true
-
                 const dataEnvio = new Date(os.Data_Envio_OS)
                 const inicio = dataInicial ? new Date(dataInicial + 'T00:00:00') : null
                 const fim = dataFinal ? new Date(dataFinal + 'T23:59:59') : null
 
+                let dentroDoPeriodo = true
+
                 if (inicio && fim) {
-                  return dataEnvio >= inicio && dataEnvio <= fim
+                  dentroDoPeriodo = dataEnvio >= inicio && dataEnvio <= fim
                 } else if (inicio) {
-                  return dataEnvio >= inicio
+                  dentroDoPeriodo = dataEnvio >= inicio
                 } else if (fim) {
-                  return dataEnvio <= fim
+                  dentroDoPeriodo = dataEnvio <= fim
                 }
-                return true
+
+                const statusCorreto = !statusSelecionado || os.Status_OS === statusSelecionado
+
+                return dentroDoPeriodo && statusCorreto
               })
               .map((os) => {
               const dataEnvio = new Date(os.Data_Envio_OS)

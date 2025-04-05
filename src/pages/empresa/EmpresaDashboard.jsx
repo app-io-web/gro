@@ -20,6 +20,7 @@ import {
 } from '@chakra-ui/react'
 
 import { useDisclosure } from '@chakra-ui/react'
+import { useMemo } from 'react'
 
 
 
@@ -36,7 +37,7 @@ function EmpresaDashboard() {
   const [metricasOS, setMetricasOS] = useState({
     abertas: 0,
     execucao: 0,
-    atribuida: 0,
+    agendadas: 0,
     canceladas: 0,
     pendenciadas: 0,
     finalizadas: 0,
@@ -130,16 +131,19 @@ function EmpresaDashboard() {
         setEmpresa({ ...empresaRes, usadasOSMes: usadas, restanteOSMes: restante })
   
         const metricas = {
-          abertas: minhasOrdens.filter(o => o.Status_OS === 'Em Aberto').length,
-          atribuida: minhasOrdens.filter(o => o.Status_OS === 'Atribuído').length,
+          abertas: minhasOrdens.filter(o =>
+            ['Em Aberto', 'Agendada', 'Reagendada', 'Pendente', 'Atribuído', 'Enviado'].includes(o.Status_OS)
+          ).length,
+          agendadas: minhasOrdens.filter(o => o.Status_OS === 'Agendada').length,
           execucao: minhasOrdens.filter(o => o.Status_OS === 'Execução').length,
           canceladas: minhasOrdens.filter(o => o.Status_OS === 'Cancelado').length,
           pendenciadas: minhasOrdens.filter(o => o.Status_OS === 'Pendente').length,
           finalizadas: minhasOrdens.filter(o => o.Status_OS === 'Finalizado').length,
           improdutivas: minhasOrdens.filter(o =>
-            ['improdutiva', 'improdutivas'].includes(o.Status_OS?.toLowerCase())
+            ['improdutivo', 'improdutivos'].includes(o.Status_OS?.toLowerCase())
           ).length,
         }
+        
   
         setMetricasOS(metricas)
   
@@ -162,10 +166,36 @@ function EmpresaDashboard() {
   useEffect(() => {
     const interval = setInterval(() => {
       setMostrarImprodutivas(prev => !prev)
-    }, 10000) // 10 segundos
+    }, 8000) // 10 segundos
   
     return () => clearInterval(interval)
   }, [])
+  
+  const ultimoCard = useMemo(() => {
+    return (mostrarImprodutivas && metricasOS.improdutivas > 0)
+      ? {
+          bg: "gray.200",
+          label: "Improdutivas",
+          valor: metricasOS.improdutivas,
+          rota: "/empresa/ordens-improdutivas"
+        }
+      : {
+          bg: "red.50",
+          label: "Canceladas",
+          valor: metricasOS.canceladas,
+          rota: "/empresa/ordens-canceladas"
+        }
+  }, [mostrarImprodutivas, metricasOS])
+  
+  const cardsOS = useMemo(() => [
+    { bg: "blue.50", label: "Em Aberto", valor: metricasOS.abertas, rota: "/empresa/ordens-abertas" },
+    { bg: "cyan.50", label: "Agendadas", valor: metricasOS.agendadas, rota: "/empresa/ordens-agendadas" },
+    { bg: "orange.50", label: "Em Execução", valor: metricasOS.execucao, rota: "/empresa/ordens-andamento" },
+    { bg: "green.50", label: "Finalizadas", valor: metricasOS.finalizadas, rota: "/empresa/ordens-finalizadas" },
+    { bg: "purple.50", label: "Pendenciadas", valor: metricasOS.pendenciadas, rota: "/empresa/ordens-pendenciadas" },
+    ultimoCard
+  ], [ultimoCard, metricasOS])
+  
   
 
   if (loading) return <Spinner size="xl" mt={20} />
@@ -173,24 +203,7 @@ function EmpresaDashboard() {
 
 
 
-    // 👇 Define o último card fora do array
-  const ultimoCard = (mostrarImprodutivas && metricasOS.improdutivas > 0)
-  ? {
-      bg: "gray.200", label: "Improdutivas", valor: metricasOS.improdutivas
-    }
-  : {
-      bg: "red.50", label: "Canceladas", valor: metricasOS.canceladas, rota: "/empresa/ordens-canceladas"
-    }
-  
-    // 👇 Array de cards
-    const cardsOS = [
-      { bg: "blue.50", label: "Em Aberto", valor: metricasOS.abertas, rota: "/empresa/ordens-abertas" },
-      { bg: "yellow.50", label: "Atribuídas", valor: metricasOS.atribuida, rota: "/empresa/ordens-andamento" },
-      { bg: "orange.50", label: "Em Execução", valor: metricasOS.execucao, rota: "/empresa/ordens-andamento" },
-      { bg: "green.50", label: "Finalizadas", valor: metricasOS.finalizadas, rota: "/empresa/ordens-finalizadas" },
-      { bg: "purple.50", label: "Pendenciadas", valor: metricasOS.pendenciadas, rota: "/empresa/ordens-pendenciadas" },
-      ultimoCard // 👈 sempre exatamente 1 card aqui
-    ]
+
 
   return (
     <Box display="flex">
@@ -198,8 +211,13 @@ function EmpresaDashboard() {
       {isMobile && <AdminMobileMenu />}
       {isMobile && <AdminBottomNav />}
 
-      <Box w="full" p={6} ml={!isMobile ? '250px' : 0}>
-      <Heading size="lg" mb={4}>Bem-vindo, {empresa?.Email}</Heading>
+      <Box
+          ml={!isMobile ? '250px' : 0}
+          p={6}
+          minH="100vh"
+          pb={isMobile ? '100px' : '0'} // 👈 adiciona paddingBottom no mobile
+        >
+      <Heading size="lg" mb={4}>Bem-vindo, {empresa?.empresa_nome}</Heading>
 
       <Flex justify="space-between" align="center" mb={6} wrap="wrap" gap={4}>
         <Text fontSize="xl">Suas Ordens de Serviço</Text>
