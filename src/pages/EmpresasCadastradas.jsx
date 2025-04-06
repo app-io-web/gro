@@ -77,57 +77,82 @@ function EmpresasCadastradas() {
   }, [])
   console.log('✅ recordId encontrado:', empresaSelecionada?.recordId)
   const abrirModalEditar = (empresa) => {
-    console.log('🟢 Empresa selecionada:', empresa)
-    setEmpresaSelecionada(empresa) // ✅ já vem com recordId
+    console.log('🟢 Empresa selecionada:', empresa);
+    console.log('🟢 Limite de Ordem:', empresa.Limite_de_Ordem); // Verifique aqui
+    setEmpresaSelecionada(empresa);
     setFormEdit({
-        empresa_nome: empresa.empresa_nome || '',
-        nome: empresa.nome || '',
-        Email: empresa.Email || '',
-        telefone: empresa.telefone || '',
-        UnicID: empresa.UnicID || '',
-        password: empresa.password || ''
-      })
-      
-    onOpen()
-  }
+      empresa_nome: empresa.empresa_nome || '',
+      nome: empresa.nome || '',
+      Email: empresa.Email || '',
+      telefone: empresa.telefone || '',
+      UnicID: empresa.UnicID || '',
+      password: empresa.password || '',
+      Limite_de_Ordem: empresa.Limite_de_Ordem || '' // Garantindo que o valor está correto
+    });
+    onOpen();
+  };
+  
 
 
   const handleChangeEdit = (e) => {
-    const { name, value } = e.target
-    setFormEdit((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    if (name === 'Limite_de_Ordem' && !/^\d*$/.test(value)) return; // Evita caracteres não numéricos
+    setFormEdit((prev) => ({ ...prev, [name]: value }));
+  };
+  
   
   const salvarEdicao = async () => {
     const payload = {
-      Id: empresaSelecionada.Id, // ou recordId, se estiver vindo de lá
+      id: empresaSelecionada.recordId, // Garantir que o id está dentro do payload
       empresa_nome: formEdit.empresa_nome,
       nome: formEdit.nome,
       Email: formEdit.Email,
       password: formEdit.password,
       telefone: formEdit.telefone,
-      UnicID: formEdit.UnicID
-    }
+      UnicID: formEdit.UnicID,
+      Limite_de_Ordem: formEdit.Limite_de_Ordem,
+    };
   
-    console.log('✅ recordId encontrado:', empresaSelecionada.Id)
-    console.log('🔄 Enviando PATCH com payload:', payload)
+    console.log('✅ recordId encontrado:', empresaSelecionada.recordId);
+    console.log('🔄 Enviando PATCH com payload:', payload);
   
     try {
-      await apiPatch(`/api/v2/tables/mga2sghx95o3ssp/records`, payload)
+      // Enviar PATCH para a URL com o payload
+      const response = await apiPatch(`/api/v2/tables/mga2sghx95o3ssp/records`, payload);
   
-      // Atualiza localmente
-      setEmpresas((prev) =>
-        prev.map((emp) =>
-          emp.Id === empresaSelecionada.Id ? { ...emp, ...payload } : emp
-        )
-      )
+      // Adicionando log da resposta para investigar o erro
+      console.log("Resposta do PATCH:", response);
   
-      toast({ title: 'Empresa atualizada!', status: 'success', duration: 3000 })
-      onClose()
+      // Verificando se a resposta contém o campo 'Id' (indicando sucesso)
+      if (response && response.Id === empresaSelecionada.recordId) {
+        // Se a resposta for bem-sucedida, atualiza a interface local
+        setEmpresas((prev) =>
+          prev.map((emp) =>
+            emp.recordId === empresaSelecionada.recordId ? { ...emp, ...payload } : emp
+          )
+        );
+  
+        toast({ title: 'Empresa atualizada com sucesso!', status: 'success', duration: 3000 });
+        onClose(); // Fecha o modal de edição
+      } else {
+        // Se o 'Id' não estiver presente na resposta, mostra um erro
+        throw new Error('Erro ao atualizar dados da empresa. Resposta inesperada.');
+      }
     } catch (err) {
-      console.error('❌ Erro ao salvar empresa:', err)
-      toast({ title: 'Erro ao salvar.', status: 'error', duration: 3000 })
+      console.error('❌ Erro ao salvar empresa:', err);
+  
+      // Se houver erro, mostre a mensagem detalhada
+      toast({
+        title: `Erro ao salvar. ${err.message}`,
+        status: 'error',
+        duration: 3000,
+      });
     }
-  }
+  };
+  
+  
+  
+  
   
   
   
@@ -138,10 +163,63 @@ function EmpresasCadastradas() {
   } = useDisclosure()
   const [novoStatus, setNovoStatus] = useState('')
   
-  const confirmarAlteracaoStatus = (statusDesejado) => {
-    setNovoStatus(statusDesejado)
-    onConfirmOpen()
-  }
+  const confirmarAlteracaoStatus = async (statusDesejado) => {
+    setNovoStatus(statusDesejado);
+    onConfirmOpen(); // Abre a janela de confirmação
+  
+    try {
+      // Verifica se o recordId existe
+      if (!empresaSelecionada?.recordId) {
+        throw new Error("Record ID não encontrado");
+      }
+  
+      // Monta o payload com o ID e o novo status
+      const payload = {
+        id: empresaSelecionada.recordId, // ID tem que ir aqui dentro
+        status: statusDesejado,           // Novo status
+      };
+  
+      console.log('Enviando payload:', payload);
+  
+      // Fazendo o PATCH correto
+      await apiPatch(`/api/v2/tables/mga2sghx95o3ssp/records`, payload);
+  
+      // Se chegou aqui, é porque deu certo (não precisa validar response.status)
+  
+      // Atualiza o status na interface local
+      setEmpresas((prev) =>
+        prev.map((emp) =>
+          emp.recordId === empresaSelecionada.recordId
+            ? { ...emp, status: statusDesejado }
+            : emp
+        )
+      );
+  
+      toast({
+        title: `Empresa ${statusDesejado === 'ativo' ? 'ativada' : 'desativada'}!`,
+        status: 'success', // Corrigi aqui para sucesso também
+        duration: 3000,
+      });
+  
+      onConfirmClose();
+      onClose(); // Fecha o modal de edição
+  
+    } catch (err) {
+      console.error('Erro ao atualizar empresa:', err);
+      toast({
+        title: 'Erro ao atualizar status.',
+        status: 'error',
+        duration: 3000,
+      });
+    }
+  };
+  
+
+  
+  
+  
+  
+  
   
   
   
@@ -188,6 +266,7 @@ function EmpresasCadastradas() {
                     <Th>Responsável</Th>
                     <Th>Email</Th>
                     <Th>telefone</Th>
+                    <Th>Limite de O.S</Th>
                     <Th>Status</Th>
                     <Th>Ações</Th>
                 </Tr>
@@ -199,6 +278,7 @@ function EmpresasCadastradas() {
                     <Td>{empresa.nome}</Td>
                     <Td>{empresa.Email}</Td>
                     <Td>{empresa.telefone}</Td>
+                    <Td>{empresa.Limite_de_Ordem}</Td>
                     <Td>
                         {empresa.status === 'ativo' ? (
                         <Icon as={CheckCircleIcon} color="green.400" />
@@ -269,6 +349,15 @@ https://maxfibra.com.br/login
                   <FormLabel>Telefone</FormLabel>
                   <Input name="telefone" value={formEdit.telefone} onChange={handleChangeEdit} />
                 </FormControl>
+                <FormControl>
+                  <FormLabel>Limite de Ordem</FormLabel>
+                  <Input
+                    name="Limite_de_Ordem"
+                    value={formEdit.Limite_de_Ordem || ''}  // Adicionando valor default vazio
+                    onChange={handleChangeEdit}
+                  />
+                </FormControl>
+
                 <FormControl>
                   <FormLabel>Email</FormLabel>
                   <Input name="Email" value={formEdit.Email} onChange={handleChangeEdit} />

@@ -94,42 +94,52 @@ function EmpresaDashboard() {
       }
   
       try {
-        const agora = new Date() // ✅ Declarado aqui corretamente
-  
-        const empresaRes = await apiGet(`/api/v2/tables/mga2sghx95o3ssp/records/${empresaId}`)
-        const ordensRes = await apiGet('/api/v2/tables/mtnh21kq153to8h/records')
-  
+        const agora = new Date(); // ✅ Declarado aqui corretamente
+      
+        // Buscando informações da empresa
+        const empresaRes = await apiGet(`/api/v2/tables/mga2sghx95o3ssp/records/${empresaId}`);
+        if (!empresaRes) {
+          throw new Error('Não foi possível recuperar dados da empresa.');
+        }
+      
+        // Buscando ordens de serviço
+        const ordensRes = await apiGet('/api/v2/tables/mtnh21kq153to8h/records');
+        if (!ordensRes || !ordensRes.list) {
+          throw new Error('Não foi possível recuperar as ordens de serviço.');
+        }
+      
         const todasOrdens = ordensRes.list.flatMap(item => {
           const json = typeof item['Ordem de Serviços'] === 'string'
             ? JSON.parse(item['Ordem de Serviços'])
-            : item['Ordem de Serviços']
-  
+            : item['Ordem de Serviços'];
+      
           return json.empresas.flatMap(emp =>
             emp.Ordens_de_Servico.map(os => ({
               ...os,
               empresa: emp.empresa,
               UnicID_Empresa: emp.UnicID_Empresa
             }))
-          )
-        })
-  
-        const minhasOrdens = todasOrdens.filter(os => os.UnicID_Empresa === unicID)
-  
-
-        
-        const mesAtual = agora.toISOString().slice(0, 7) // "2025-04"
-
+          );
+        });
+      
+        const minhasOrdens = todasOrdens.filter(os => os.UnicID_Empresa === unicID);
+        const mesAtual = agora.toISOString().slice(0, 7); // "2025-04"
+      
         const ordensDoMes = minhasOrdens.filter(o => {
-          const dataEnvio = new Date(o.Data_Envio_OS)
-          return dataEnvio.toISOString().slice(0, 7) === mesAtual
-        })
-
-        const usadas = ordensDoMes.length
-        const limite = empresaRes.Limite_de_Ordem || 0
-        const restante = Math.max(limite - usadas, 0)
-  
-        setEmpresa({ ...empresaRes, usadasOSMes: usadas, restanteOSMes: restante })
-  
+          const dataEnvio = new Date(o.Data_Envio_OS);
+          return dataEnvio.toISOString().slice(0, 7) === mesAtual;
+        });
+      
+        const usadas = ordensDoMes.length;
+        const limite = empresaRes.Limite_de_Ordem || 0;
+        const restante = Math.max(limite - usadas, 0);
+      
+        console.log('[DEBUG] Limite:', limite);
+        console.log('[DEBUG] Ordens no mês:', usadas);
+        console.log('[DEBUG] Restante de ordens:', restante);
+      
+        setEmpresa({ ...empresaRes, usadasOSMes: usadas, restanteOSMes: restante });
+      
         const metricas = {
           abertas: minhasOrdens.filter(o =>
             ['Em Aberto', 'Agendada', 'Reagendada', 'Pendente', 'Atribuído', 'Enviado'].includes(o.Status_OS)
@@ -142,15 +152,14 @@ function EmpresaDashboard() {
           improdutivas: minhasOrdens.filter(o =>
             ['improdutivo', 'improdutivos'].includes(o.Status_OS?.toLowerCase())
           ).length,
-        }
-        
-  
-        setMetricasOS(metricas)
-  
-        const horaAtual = agora.toLocaleTimeString()
-        setTimelinePendenciadas(prev => [...prev.slice(-9), { hora: horaAtual, valor: metricas.pendenciadas }])
-        setTimelineFinalizadas(prev => [...prev.slice(-9), { hora: horaAtual, valor: metricas.finalizadas }])
-        setTimelineCanceladas(prev => [...prev.slice(-9), { hora: horaAtual, valor: metricas.canceladas }])
+        };
+      
+        setMetricasOS(metricas);
+      
+        const horaAtual = agora.toLocaleTimeString();
+        setTimelinePendenciadas(prev => [...prev.slice(-9), { hora: horaAtual, valor: metricas.pendenciadas }]);
+        setTimelineFinalizadas(prev => [...prev.slice(-9), { hora: horaAtual, valor: metricas.finalizadas }]);
+        setTimelineCanceladas(prev => [...prev.slice(-9), { hora: horaAtual, valor: metricas.canceladas }]);
       } catch (err) {
         console.error('Erro ao buscar empresa ou ordens:', err)
       } finally {

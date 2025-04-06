@@ -25,7 +25,8 @@ function CadastroEmpresa() {
     email: '',
     senha: '',
     nome: '',
-    empresa: ''
+    empresa: '',
+    limite_OS: ''
   })
 
   const toast = useToast()
@@ -115,8 +116,8 @@ function CadastroEmpresa() {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    const { email, senha, nome, empresa } = form;
-    if (!email || !senha || !nome || !empresa) {
+    const { email, senha, nome, empresa, limite_OS } = form;
+    if (!email || !senha || !nome || !empresa || !limite_OS) {
       toast({ title: 'Preencha todos os campos.', status: 'error', duration: 3000 });
       return;
     }
@@ -131,6 +132,7 @@ function CadastroEmpresa() {
       empresa_nome: empresa.trim(),
       tipo: 'empresa',
       UnicID: UnicID_Empresa, // Incluindo a UnicID gerada no payload
+      Limite_de_Ordem: limite_OS,
     };
   
     try {
@@ -182,6 +184,21 @@ function CadastroEmpresa() {
                 <FormLabel>Senha</FormLabel>
                 <Input name="senha" type="password" value={form.senha} onChange={handleChange} />
               </FormControl>
+              <FormControl>
+                  <FormLabel>Limite de O.S</FormLabel>
+                  <Input
+                    name="limite_OS"
+                    type="text"
+                    value={form.limite_OS}
+                    onChange={(e) => {
+                      // Validando apenas números
+                      const value = e.target.value;
+                      if (/^\d*$/.test(value)) {  // Verifica se o valor contém apenas números
+                        handleChange(e);
+                      }
+                    }}
+                  />
+                </FormControl>
               <Button type="submit" colorScheme="blue" width="full">Cadastrar</Button>
             </VStack>
           </form>

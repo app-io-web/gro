@@ -22,6 +22,7 @@ function TecnicoBottomNav() {
       );
 
       setNotificacoesCount(novasNotificacoes.length); // Atualizar o contador
+      console.log('Contagem de notificações:', novasNotificacoes.length); // Adicionando log para depuração
     } catch (error) {
       console.error('Erro ao buscar notificações:', error);
     }

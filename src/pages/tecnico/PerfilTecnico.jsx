@@ -6,6 +6,8 @@ import {
     FiClipboard, FiBarChart2
   } from 'react-icons/fi'
   import { useNavigate } from 'react-router-dom'
+
+  import TecnicoBottomNav from '../../components/tecnico/TecnicoBottomNav';
   
   export default function PerfilTecnico() {
     const navigate = useNavigate()
@@ -60,6 +62,7 @@ import {
             Sair da conta
           </Button>
         </VStack>
+        <TecnicoBottomNav />
       </Box>
     )
   }
