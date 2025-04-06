@@ -45,7 +45,7 @@ import TecnicoDashboard from './pages/tecnico/TecnicoDashboard.jsx'
 import OrdensAtribuidasTecnico from './pages/tecnico/OrdensAtribuidasTecnico'
 import DetalheOrdemTecnico from './pages/tecnico/DetalheOrdemTecnico'
 import FinalizarOS from './pages/tecnico/FinalizarOS.jsx'
-
+import NotificacoesTecnico from './pages/tecnico/NotificacoesTecnico.jsx'
 
 
 
@@ -307,7 +307,7 @@ function App() {
           <Route path="/empresa/ordens-improdutivas" element={<OrdensImprodutivasEmpresa />} />
 
 
-
+          <Route path="/tecnico/notificacoes" element={<NotificacoesTecnico />} />
           <Route
             path="/tecnico"
             element={

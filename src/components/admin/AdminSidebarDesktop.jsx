@@ -25,6 +25,10 @@ function SidebarAdminDesktop() {
 
 
   const handleAbrirOS = usarVerificacaoLimiteOS(navigate, onOpen)
+  
+  
+  
+
 
 
   const handleLogout = () => {
@@ -150,16 +154,16 @@ function SidebarAdminDesktop() {
                 <Text fontSize="sm" color="gray.400" px={2}>Empresa</Text>
 
                 <Button
-                  leftIcon={<FiPlusSquare color="white" />}
-                  color="white"
-                  variant={location.pathname === '/empresa/abrir-ordem' ? 'solid' : 'ghost'}
-                  bg={location.pathname === '/empresa/abrir-ordem' ? 'blue.600' : 'transparent'}
-                  justifyContent="start"
-                  _hover={{ bg: 'blue.600', color: 'white' }}
-                  onClick={handleAbrirOS}
-                >
-                  Abrir O.S
-                </Button>
+                    leftIcon={<FiPlusSquare color="white" />}
+                    color="white"
+                    variant={location.pathname === '/empresa/abrir-ordem' ? 'solid' : 'ghost'}
+                    bg={location.pathname === '/empresa/abrir-ordem' ? 'blue.600' : 'transparent'}
+                    justifyContent="start"
+                    _hover={{ bg: 'blue.600', color: 'white' }}
+                    onClick={handleAbrirOS}  // Chama a função de verificação de limite
+                  >
+                    Abrir O.S
+                  </Button>
 
                 <Button
                   leftIcon={<FiClipboard color="white" />}

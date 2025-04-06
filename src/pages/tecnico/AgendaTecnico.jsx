@@ -82,7 +82,9 @@ function AgendaTecnico() {
   const atualizarOrdens = useCallback(() => {
     if (!registros) return;
   
-    const hoje = dataSelecionada.toISOString().slice(0, 10);
+    const hoje = new Date(dataSelecionada);
+    hoje.setHours(0, 0, 0, 0); // Ajusta para meia-noite (apenas a data)
+  
     const lista = [];
   
     registros.list.forEach(registro => {
@@ -94,25 +96,20 @@ function AgendaTecnico() {
           if (ordem.ID_Tecnico_Responsavel !== tecnicoID) return;
   
           const statusOS = ordem.Status_OS?.toLowerCase();
-          const isFinalizada = statusOS === 'finalizado';
-          const isAgendada = statusOS === 'agendada';
-  
           let dataReferencia = '';
-
+  
+          // Ajustando para garantir que comparamos corretamente as datas
           if (statusOS === 'finalizado') {
             dataReferencia = ordem?.Data_Entrega_OS?.slice(0, 10);
-          } else if (statusOS === 'agendada') {
-            dataReferencia = ordem?.Data_Agendamento_OS?.slice(0, 10) || ordem?.Horario_Agendamento_OS?.slice(0, 10);
-          } else if (statusOS === 'execução') {
-            dataReferencia = ordem?.Data_Agendamento_OS?.slice(0, 10) || ordem?.Data_Envio_OS?.slice(0, 10);
-          } else if (statusOS === 'reagendada') {
-            dataReferencia = ordem?.Reagendamento?.slice(0, 10);
+          } else if (statusOS === 'agendada' || statusOS === 'execução' || statusOS === 'reagendada') {
+            dataReferencia = ordem?.Data_Agendamento_OS?.slice(0, 10);
           } else {
             dataReferencia = ordem?.Data_Envio_OS?.slice(0, 10);
           }
-          
   
-          if (dataReferencia === hoje) {
+          const dataSelecionadaFormatada = hoje.toISOString().slice(0, 10); // Formato AAAA-MM-DD
+  
+          if (dataReferencia === dataSelecionadaFormatada) {
             lista.push({ ...ordem, empresa: emp.empresa });
           }
         });
@@ -121,6 +118,15 @@ function AgendaTecnico() {
   
     setOrdens(lista);
   }, [registros, tecnicoID, dataSelecionada]);
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   // 👉 Atualiza uma vez ao carregar ou quando mudar a data
   useEffect(() => {
