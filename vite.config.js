@@ -114,7 +114,7 @@ export default defineConfig({
       },
       workbox: {
         // Aumenta o limite do tamanho de arquivos para serem armazenados no cache do Workbox
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,  // Limite de 5MB (ajuste conforme necessário)
+        maximumFileSizeToCacheInBytes: 400 * 1024 * 1024,  // Limite de 100MB
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.origin === window.location.origin,
