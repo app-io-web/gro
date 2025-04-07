@@ -125,19 +125,39 @@ function EmpresaDashboard() {
           <Heading size="lg" mb={4}>Bem-vindo, {empresa?.empresa_nome}</Heading>
 
           <Flex justify="space-between" align="center" mb={6} wrap="wrap" gap={4}>
-            <Text fontSize="xl">Suas Ordens de Serviço</Text>
-            <Flex direction={{ base: 'column', md: 'row' }} align={{ base: 'stretch', md: 'center' }} gap={3}>
-              <Box bg="gray.100" px={4} py={2} borderRadius="lg" textAlign="center">
+          <Text fontSize="xl">Suas Ordens de Serviço</Text>
+
+          <Flex
+            direction={{ base: 'column', md: 'row' }}
+            align={{ base: 'stretch', md: 'center' }}
+            justify={{ base: 'center', md: 'flex-end' }}
+            gap={3}
+            w={{ base: '100%', md: 'auto' }}
+          >
+            <Flex gap={3} w="100%" justify="center">
+              <Box bg="gray.100" px={4} py={2} borderRadius="lg" textAlign="center" flex="1">
                 <Text fontSize="sm" fontWeight="bold" color="gray.600">Limite de O.S.</Text>
                 <Text fontSize="lg" fontWeight="bold" color="blue.600">{empresa?.Limite_de_Ordem ?? 0}</Text>
               </Box>
-              <Box className={pulseClass} bg={restanteColor} px={4} py={2} borderRadius="lg" textAlign="center">
+
+              <Box className={pulseClass} bg={restanteColor} px={4} py={2} borderRadius="lg" textAlign="center" flex="1">
                 <Text fontSize="sm" fontWeight="bold" color={restanteTextColor}>Restantes</Text>
                 <Text fontSize="lg" fontWeight="bold" color={restanteTextColor}>{empresa?.restanteOSMes ?? 0}</Text>
               </Box>
-              <Button colorScheme="blue" onClick={handleClick}>Criar nova O.S.</Button>
             </Flex>
+
+            <Button
+                colorScheme="blue"
+                onClick={handleClick}
+                w={{ base: '100%', md: 'auto' }}
+                px={6} // padding horizontal
+                py={3} // padding vertical
+              >
+                Criar nova O.S.
+              </Button>
           </Flex>
+        </Flex>
+
 
           <Flex gap={4} wrap="wrap" mb={8}>
             {cardsOS.map((card, i) => (
