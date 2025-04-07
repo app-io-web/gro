@@ -115,7 +115,7 @@ function NotificacoesTecnico() {
   return (
     <Box pb="70px">
       {/* Topo notificações */}
-      <Flex align="center" justify="space-between" p={4} bg="green.600" color="white">
+      <Flex align="center" justify="space-between" p={4} bg="#3182ce" color="white">
         <Heading size="md">Notificações</Heading>
       </Flex>
 

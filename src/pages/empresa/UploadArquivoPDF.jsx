@@ -83,7 +83,7 @@ function UploadArquivoPDF({ onUpload }) {
       />
 
       {fileName && (
-        <Text mt={2} fontSize="sm" color="green.600">
+        <Text mt={2} fontSize="sm" color="#3182ce">
           📄 {fileName}
         </Text>
       )}

@@ -46,7 +46,9 @@ import OrdensAtribuidasTecnico from './pages/tecnico/OrdensAtribuidasTecnico'
 import DetalheOrdemTecnico from './pages/tecnico/DetalheOrdemTecnico'
 import FinalizarOS from './pages/tecnico/FinalizarOS.jsx'
 import NotificacoesTecnico from './pages/tecnico/NotificacoesTecnico.jsx'
+import TarefasPage from './pages/tecnico/TarefasPage.jsx'
 
+import ConfiguracaoIntegracoes from './pages/tecnico/ConfiguracaoIntegracoes.jsx'
 
 
 import OrdensAgendadas from './pages/OrdensAgendadas'
@@ -288,6 +290,7 @@ function App() {
           <Route path="/admin/perfil" element={<PerfilAdmin />} />
           <Route path="/empresa/perfil" element={<PerfilEmpresaPage />} />
           <Route path="/tecnico/perfil" element={<PerfilTecnico />} />
+          <Route path="/tecnico/tarefas" element={<TarefasPage />} />
 
           <Route
             path="/empresa/ordens-abertas"
@@ -308,6 +311,7 @@ function App() {
 
 
           <Route path="/tecnico/notificacoes" element={<NotificacoesTecnico />} />
+          <Route path="/tecnico/config/integracao" element={<ConfiguracaoIntegracoes />} />
           <Route
             path="/tecnico"
             element={

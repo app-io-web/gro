@@ -55,12 +55,6 @@ function TecnicoBottomNav() {
           onClick={() => navigate('/tecnico')}
           aria-label="Agenda"
         />
-        <IconButton
-          icon={<FiTool />}
-          variant="ghost"
-          onClick={() => navigate('/tecnico/materiais')}
-          aria-label="Materiais"
-        />
 
         {/* Ícone de notificações com contagem */}
         <IconButton

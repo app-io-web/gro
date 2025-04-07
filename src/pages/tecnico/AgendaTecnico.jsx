@@ -165,7 +165,7 @@ function AgendaTecnico() {
   return (
     <Box pb="70px">
       {/* Topo agenda */}
-      <Flex align="center" justify="space-between" p={4} bg="green.600" color="white">
+      <Flex align="center" justify="space-between" p={4} bg="#3182ce" color="white">
         <Heading size="md">Minha agenda</Heading>
         <Button size="sm" colorScheme="whiteAlpha" onClick={handleAtualizarOrdens}>
           Atualizar

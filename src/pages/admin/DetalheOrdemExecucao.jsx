@@ -113,7 +113,7 @@ export default function DetalheOrdemExecucaoNova() {
           </CardBody>
         </Card>
 
-        <Heading size="md" mb={4} color="green.600">📌 Andamento da Ordem</Heading>
+        <Heading size="md" mb={4} color="#3182ce">📌 Andamento da Ordem</Heading>
 
         <StepperOrdemServico
           steps={steps}

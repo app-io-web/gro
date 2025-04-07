@@ -46,9 +46,9 @@ import {
             leftIcon={<FiSettings />} rightIcon={<FiChevronRight />}
             justifyContent="space-between"
             variant="ghost"
-            onClick={() => navigate('/tecnico/config')}
+            onClick={() => navigate('/tecnico/config/integracao')}
           >
-            Configurações
+            Configurações de Integração
           </Button>
   
           <Divider my={4} />
