@@ -413,7 +413,7 @@ import {
         <Stack spacing={3}>
           <Text><strong>Cliente:</strong> {ordem.Nome_Cliente}</Text>
           <Text><strong>Tipo:</strong> {ordem.Tipo_OS}</Text>
-          <Text><strong>Horário:</strong> {ordem.Horario_OS || 'Não informado'}</Text>
+          <Text><strong>Horário:</strong> {ordem.Horario_Agendamento_OS ? new Date(ordem.Horario_Agendamento_OS).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Não informado'}</Text>
   
           <Divider />
   
@@ -427,8 +427,8 @@ import {
           {ordem.Complemento && <Text><strong>Complemento:</strong> {ordem.Complemento}</Text>}
   
           <Divider />
-          <Text><strong>Descrição:</strong> {ordem.Descricao_OS || 'Não informada'}</Text>
-        </Stack>
+          <Text><strong>Descrição:</strong> {ordem.Observacao_Empresa || 'Não informada'}</Text>
+          </Stack>
   
         <Flex direction="column" gap={2} mt={6}>
             <Flex gap={2}>
