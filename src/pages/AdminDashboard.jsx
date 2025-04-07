@@ -17,6 +17,10 @@ import BotaoCriarOrdem from '../components/admin/BotaoCriarOrdem'
 import AdminSidebarDesktop from '../components/admin/AdminSidebarDesktop'
 import AdminBottomNav from '../components/admin/AdminBottomNav'
 import AdminMobileMenu from '../components/admin/AdminMobileMenu'
+import ResumoEstatisticas from '../components/admin/ResumoEstatisticas'
+import ListaOrdensExecucao from '../components/admin/ListaOrdensExecucao'
+import UltimasOrdens from '../components/admin/UltimasOrdens'
+
 
 
 // ✅ recebe setAuth como prop
@@ -59,21 +63,6 @@ function AdminDashboard({ setAuth }) {
         {/* Bottom nav só no mobile */}
         {isMobile && <AdminBottomNav />}
 
-        {/* Botão de sair no topo direito - apenas mobile */}
-        {isMobile && (
-          <Button
-            size="sm"
-            colorScheme="red"
-            position="absolute"
-            top="10px"
-            right="10px"
-            zIndex="10"
-            onClick={handleLogout}
-          >
-            Sair
-          </Button>
-        )}
-
         {/* Header só no desktop */}
         {!isMobile && (
             <Box mb={6}>
@@ -86,9 +75,9 @@ function AdminDashboard({ setAuth }) {
 
 
         <VStack spacing={6}>
-          <EstatisticasResumo />
-          <BotaoCriarOrdem />
-          <ListaOrdensServico />
+        <ResumoEstatisticas />
+        <ListaOrdensExecucao />
+        <UltimasOrdens />
         </VStack>
       </Box>
     </Flex>

@@ -10,6 +10,8 @@ import AdminBottomNav from '../../../components/admin/AdminBottomNav'
 import AdminMobileMenu from '../../../components/admin/AdminMobileMenu'
 import { apiGet } from '../../../services/api'
 
+
+
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7f50', '#00c49f', '#ffbb28', '#8dd1e1', '#a4de6c']
 
 function RelatoriosDashboardAdmin() {
@@ -122,7 +124,7 @@ function RelatoriosDashboardAdmin() {
           {/* Gráficos */}
           <Flex direction={{ base: 'column', md: 'row' }} gap={8}>
             <Box flex="1" h="300px">
-              <Heading size="md" mb={4}>📈 Gráfico de Barras</Heading>
+              <Heading size="md" mb={4}>Gráfico de Barras</Heading>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={dados}>
                   <XAxis dataKey="empresa" hide={false} angle={-45} textAnchor="end" interval={0} height={80} />
@@ -134,7 +136,7 @@ function RelatoriosDashboardAdmin() {
             </Box>
 
             <Box flex="1" h="300px">
-              <Heading size="md" mb={4}>🥧 Gráfico de Pizza</Heading>
+              <Heading size="md" mb={4}>Gráfico de Pizza</Heading>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
