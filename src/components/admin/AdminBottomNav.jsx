@@ -93,8 +93,8 @@ function AdminBottomNav() {
         {tipoUsuario === 'admin' && (
           <>
             <IconButton icon={<FiHome />} variant="ghost" onClick={() => navigate('/admin')} aria-label="Dashboard" />
-            <IconButton icon={<FiFolder />} variant="ghost" onClick={() => navigate('/admin/ordens')} aria-label="Ordens" />
-            <IconButton icon={<FiBarChart2 />} variant="ghost" onClick={() => navigate('/admin/metricas')} aria-label="Métricas" />
+            <IconButton icon={<FiFolder />} variant="ghost" onClick={() => navigate('/admin/todas-ordens')} aria-label="Ordens" />
+            <IconButton icon={<FiBarChart2 />} variant="ghost" onClick={() => navigate('/admin/relatorio-dasboard')} aria-label="Métricas" />
             <IconButton icon={<FiUser />} variant="ghost" onClick={() => navigate('/admin/perfil')} aria-label="Perfil" />
           </>
         )}
