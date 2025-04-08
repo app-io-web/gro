@@ -25,12 +25,6 @@ export default defineConfig({
         status_bar_style: 'black-translucent',
         icons: [
           {
-            src: 'icons/icon-144x144.png',
-            sizes: '144x144',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
             src: 'icons/icon-192x192.png',
             sizes: '192x192',
             type: 'image/png',
