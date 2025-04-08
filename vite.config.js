@@ -43,68 +43,6 @@ export default defineConfig({
             purpose: 'any maskable'
           }
         ],
-        splash_pages: [
-          {
-            src: '/gro/splash/splash-screen-1125x2436.png',
-            sizes: '1125x2436',
-            type: 'image/png'
-          },
-          {
-            src: '/gro/splash/splash-screen-750x1334.png',
-            sizes: '750x1334',
-            type: 'image/png'
-          },
-          {
-            src: '/gro/splash/splash-screen-1242x2208.png',
-            sizes: '1242x2208',
-            type: 'image/png'
-          },
-          {
-            src: '/gro/splash/splash-screen-1668x2224.png',
-            sizes: '1668x2224',
-            type: 'image/png'
-          },
-          {
-            src: '/gro/splash/splash-screen-2048x2732.png',
-            sizes: '2048x2732',
-            type: 'image/png'
-          },
-          {
-            src: '/gro/splash/splash-screen-1536x2048.png',
-            sizes: '1536x2048',
-            type: 'image/png'
-          },
-          {
-            src: '/gro/splash/splash-screen-320x426.png',
-            sizes: '320x426',
-            type: 'image/png'
-          },
-          {
-            src: '/gro/splash/splash-screen-320x470.png',
-            sizes: '320x470',
-            type: 'image/png'
-          },
-          {
-            src: '/gro/splash/splash-screen-480x640.png',
-            sizes: '480x640',
-            type: 'image/png'
-          },
-          {
-            src: '/gro/splash/splash-screen-720x960.png',
-            sizes: '720x960',
-            type: 'image/png'
-          },
-          {
-            src: '/gro/splash/splash-screen-960x1280.png',
-            sizes: '960x1280',
-            type: 'image/png'
-          },
-          {
-            src: '/gro/splash/splash-screen-1280x1920.png',
-            sizes: '1280x1920',
-            type: 'image/png'
-          }
-        ],
         orientation: 'portrait', // Definindo a orientação para retrato
         scope: '/gro/', // Definindo o escopo do app (aplicativo não sairá dessa URL)
         dir: 'ltr', // Direção da leitura (esquerda para direita)
@@ -114,7 +52,7 @@ export default defineConfig({
       },
       workbox: {
         // Aumenta o limite do tamanho de arquivos para serem armazenados no cache do Workbox
-        maximumFileSizeToCacheInBytes: 400 * 1024 * 1024,  // Limite de 100MB
+        maximumFileSizeToCacheInBytes: 400 * 1024 * 1024,  // Limite de 400MB
         runtimeCaching: [
           {
             urlPattern: ({ url }) => self.location.origin === url.origin,
