@@ -117,7 +117,7 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 400 * 1024 * 1024,  // Limite de 100MB
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.origin === window.location.origin,
+            urlPattern: ({ url }) => self.location.origin === url.origin,
             handler: 'CacheFirst',
             options: {
               cacheName: 'example-cache',
