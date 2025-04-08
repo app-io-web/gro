@@ -1,9 +1,9 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import { VitePWA } from 'vite-plugin-pwa';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  base: '/',
+  base: '/gro/',
   plugins: [
     react(),
     VitePWA({
@@ -13,10 +13,16 @@ export default defineConfig({
         name: 'Ordens de Serviço App',
         short_name: 'OS App',
         description: 'Gerenciador de Ordens de Serviço',
-        theme_color: '#3182ce',  // Cor da barra de navegação
-        background_color: '#ffffff',  // Cor de fundo da tela inicial
-        display: 'standalone',  // Remove a barra de navegação
-        start_url: '/gro/',  // Caminho correto para subpastas
+        theme_color: '#3182ce',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/gro/',
+        scope: '/gro/',
+        orientation: 'portrait',
+        dir: 'ltr',
+        lang: 'pt-BR',
+        prefer_related_applications: false,
+        status_bar_style: 'black-translucent',
         icons: [
           {
             src: 'icons/icon-144x144.png',
@@ -40,28 +46,22 @@ export default defineConfig({
             src: 'icons/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable'
+            purpose: 'maskable'
           }
-        ],        
-        orientation: 'portrait', // Definindo a orientação para retrato
-        scope: '/gro/', // Definindo o escopo do app (aplicativo não sairá dessa URL)
-        dir: 'ltr', // Direção da leitura (esquerda para direita)
-        lang: 'pt-BR', // Idioma configurado como português
-        prefer_related_applications: false, // Não obrigar a instalação de aplicativo nativo
-        status_bar_style: 'black-translucent' // Estilo da barra de status para o iOS
+        ]
       },
       workbox: {
-        // Aumenta o limite do tamanho de arquivos para serem armazenados no cache do Workbox
-        maximumFileSizeToCacheInBytes: 400 * 1024 * 1024,  // Limite de 400MB
+        maximumFileSizeToCacheInBytes: 400 * 1024 * 1024,
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
             urlPattern: ({ url }) => self.location.origin === url.origin,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'example-cache',
+              cacheName: 'os-cache',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 24 * 60 * 60 // 1 dia
+                maxAgeSeconds: 24 * 60 * 60
               }
             }
           }
@@ -69,4 +69,4 @@ export default defineConfig({
       }
     })
   ]
-});
+})
