@@ -456,7 +456,7 @@ import {
 
 
   
-            {!['improdutivas', 'cancelado', 'pendenciada','finalizado'].includes(ordem.Status_OS?.toLowerCase()) && (
+            {!['improdutivas', 'cancelado', 'pendente','finalizado'].includes(ordem.Status_OS?.toLowerCase()) && (
             <Box mt={8}>
               {/* Se ainda não iniciou o deslocamento */}
               {!deslocamentoIniciado && (

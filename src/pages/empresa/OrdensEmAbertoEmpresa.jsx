@@ -61,7 +61,7 @@ function OrdensEmAbertoEmpresa() {
         const json = typeof rawJson === 'string' ? JSON.parse(rawJson) : rawJson
         if (!json?.empresas) return []
   
-        const statusPermitidos = ['Em Aberto', 'Agendada', 'Reagendada', 'Pendente', 'Atribuido', 'Enviado']
+        const statusPermitidos = ['Em Aberto', 'Agendada', 'Reagendada', 'Pendente', 'Pendenciada', 'Atribuido', 'Enviado']
   
         return json.empresas
           .filter(emp => emp.UnicID_Empresa === UnicID_Empresa_Logada)

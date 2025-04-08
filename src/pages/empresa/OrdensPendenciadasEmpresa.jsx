@@ -31,7 +31,7 @@ import {
   
           return (json.empresas || []).flatMap(emp =>
             emp.Ordens_de_Servico?.filter(os =>
-              emp.UnicID_Empresa === UnicID_Empresa && os.Status_OS === 'Pendente'
+              emp.UnicID_Empresa === UnicID_Empresa && (os.Status_OS === 'Pendenciada' || os.Status_OS === 'Pendente')
             ).map(os => ({
               ...os,
               empresa: emp.empresa,
