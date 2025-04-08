@@ -165,20 +165,24 @@
 
   <!-- Redirecionamento inteligente para SPA com hash -->
   <script>
-    (function () {
-      const currentPath = window.location.pathname;
-      const isRoot = currentPath === "/" || currentPath === "";
+        (function () {
+          const currentPath = window.location.pathname;
+          const isRoot = currentPath === "/" || currentPath === "";
 
-      if (!isRoot && !currentPath.startsWith("/#/")) {
-        const hashPath = "/#" + currentPath;
-        const newUrl =
-          window.location.origin +
-          hashPath +
-          window.location.search +
-          window.location.hash;
-        window.location.replace(newUrl);
-      }
-    })();
+          // Se for arquivo estático (imagem, css, js, etc) NÃO REDIRECIONA
+          const isStaticAsset = currentPath.match(/\.(png|jpg|jpeg|gif|webp|svg|ico|css|js|json|webmanifest)$/);
+
+          if (!isRoot && !currentPath.startsWith("/#/") && !isStaticAsset) {
+            const hashPath = "/#" + currentPath;
+            const newUrl =
+              window.location.origin +
+              hashPath +
+              window.location.search +
+              window.location.hash;
+            window.location.replace(newUrl);
+          }
+        })();
+
   </script>
 
   <!-- Fix iOS Keyboard Bug em PWAs -->
