@@ -19,30 +19,30 @@ export default defineConfig({
         start_url: '/gro/',  // Caminho correto para subpastas
         icons: [
           {
-            src: '/gro/icons/icon-144x144.png',
+            src: 'icons/icon-144x144.png',
             sizes: '144x144',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: '/gro/icons/icon-192x192.png',
+            src: 'icons/icon-192x192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: '/gro/icons/icon-512x512.png',
+            src: 'icons/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: '/gro/icons/icon-512x512.png',
+            src: 'icons/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
           }
-        ],
+        ],        
         orientation: 'portrait', // Definindo a orientação para retrato
         scope: '/gro/', // Definindo o escopo do app (aplicativo não sairá dessa URL)
         dir: 'ltr', // Direção da leitura (esquerda para direita)
