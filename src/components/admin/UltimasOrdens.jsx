@@ -58,6 +58,26 @@ function UltimasOrdens() {
     return () => clearInterval(interval)
   }, [])
 
+  function irParaDetalhe(ordem) {
+    if (!ordem || !ordem.Status_OS) return;
+  
+    const status = ordem.Status_OS.toLowerCase();
+  
+    if (status.includes('execução')) {
+      navigate(`/admin/ordem-execucao/${ordem.UnicID_OS}`);
+    } else if (status.includes('pendente') || status.includes('pendenciada')) {
+      navigate(`/admin/ordens-pendenciadas/${ordem.UnicID_OS}`);
+    } else if (status.includes('finalizado')) {
+      navigate(`/admin/ordens-finalizadas/${ordem.UnicID_OS}`);
+    } else if (status.includes('improdutiva')) {
+      navigate(`/admin/ordens-improdutivas/${ordem.UnicID_OS}`);
+    } else {
+      console.warn('Status desconhecido:', ordem.Status_OS);
+    }
+  }
+  
+
+
   if (loading) {
     return (
       <Flex justify="center" align="center" minH="100px">
@@ -80,18 +100,31 @@ function UltimasOrdens() {
               borderWidth="1px"
               borderRadius="lg"
               bg="white"
-              onClick={() => navigate(`/admin/ordem-execucao/${ordem.UnicID_OS}`)}
+              onClick={() => irParaDetalhe(ordem)}
               _hover={{ bg: 'gray.100', cursor: 'pointer' }}
             >
+
               <Text fontWeight="bold">N° O.S.: {ordem.Numero_OS || '---'}</Text>
               <Text><strong>Cliente:</strong> {ordem.Nome_Cliente || '---'}</Text>
               <Text><strong>Empresa:</strong> {ordem.empresa_nome || '---'}</Text>
-              <Flex justify="space-between" align="center" mt={2}>
-                <Badge colorScheme={getStatusColor(ordem.Status_OS)}>
-                  {ordem.Status_OS || '---'}
-                </Badge>
-                <Text fontSize="xs">{ordem.Data_Envio_OS ? new Date(ordem.Data_Envio_OS).toLocaleString() : '---'}</Text>
-              </Flex>
+              <Flex gap={2} align="center" flexWrap="wrap" mt={2}>
+              <Badge
+                colorScheme={
+                  ordem.TipoCliente === 'Empresarial' ? 'blue'
+                  : ordem.TipoCliente === 'Residencial' ? 'green'
+                  : 'gray'
+                }
+                fontSize="0.7em"
+                p={1}
+                rounded="md"
+              >
+                {ordem.TipoCliente || 'Tipo não informado'}
+              </Badge>
+
+              <Badge colorScheme={getStatusColor(ordem.Status_OS)}>
+                {ordem.Status_OS || '---'}
+              </Badge>
+            </Flex>
             </Box>
           ))}
         </VStack>
@@ -101,6 +134,7 @@ function UltimasOrdens() {
             <Tr>
               <Th>N° O.S.</Th>
               <Th>Cliente</Th>
+              <Th>Tipo Cliente</Th> 
               <Th>Empresa</Th>
               <Th>Status</Th>
               <Th>Data de Envio</Th>
@@ -108,12 +142,40 @@ function UltimasOrdens() {
           </Thead>
           <Tbody>
             {ordens.map((ordem, index) => (
-              <Tr key={index} _hover={{ bg: 'gray.100', cursor: 'pointer' }} onClick={() => navigate(`/admin/ordem-execucao/${ordem.UnicID_OS}`)}>
+              <Tr
+                  key={index}
+                  _hover={{ bg: 'gray.100', cursor: 'pointer' }}
+                  onClick={() => irParaDetalhe(ordem)}
+                >
+
                 <Td>{ordem.Numero_OS || '---'}</Td>
                 <Td>{ordem.Nome_Cliente || '---'}</Td>
+
+                <Td>
+                  <Badge
+                    colorScheme={
+                      ordem.TipoCliente === 'Empresarial' ? 'blue'
+                      : ordem.TipoCliente === 'Residencial' ? 'green'
+                      : 'gray'
+                    }
+                    fontSize="0.7em"
+                    p={1}
+                    rounded="md"
+                  >
+                    {ordem.TipoCliente || 'Tipo não informado'}
+                  </Badge>
+                </Td>
+
                 <Td>{ordem.empresa_nome || '---'}</Td>
-                <Td><Badge colorScheme={getStatusColor(ordem.Status_OS)}>{ordem.Status_OS || '---'}</Badge></Td>
-                <Td>{ordem.Data_Envio_OS ? new Date(ordem.Data_Envio_OS).toLocaleString() : '---'}</Td>
+
+                <Td>
+                  <Badge colorScheme={getStatusColor(ordem.Status_OS)}>
+                    {ordem.Status_OS || '---'}
+                  </Badge>
+                </Td>
+
+                <Td>{ordem.Data_Envio_OS ? new Date(ordem.Data_Envio_OS).toLocaleString('pt-BR') : '---'}</Td>
+
               </Tr>
             ))}
           </Tbody>

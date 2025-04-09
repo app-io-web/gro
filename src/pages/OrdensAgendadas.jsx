@@ -231,10 +231,13 @@ function OrdensAgendadas() {
                     _hover={{ boxShadow: 'md', cursor: 'pointer', bg: 'gray.50' }}
                     onClick={() => navigate(`/admin/ordem-execucao/${os.UnicID_OS}`)}
                   >
-                    <VStack align="stretch" spacing={2}>
-                      <Flex justify="space-between" align="center">
-                        <Box>
-                          <Text fontWeight="bold">Empresa: {os.empresa}</Text>
+                  <VStack align="stretch" spacing={2}>
+                    <Flex justify="space-between" align="center">
+                      <Box>
+                        <Text fontWeight="bold">Empresa: {os.empresa}</Text>
+
+                        {/* NOVO FLEX para agrupar os badges */}
+                        <Flex align="center" gap={2} mt={2} flexWrap="wrap">
                           <Badge
                             colorScheme="pink"
                             borderRadius="full"
@@ -244,29 +247,44 @@ function OrdensAgendadas() {
                           >
                             AGENDADA
                           </Badge>
-                        </Box>
-  
-                        {/* Botão mudar técnico na direita */}
-                        <ButtonChakra
-                          size="sm"
-                          colorScheme="blue"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            abrirModalTrocarTecnico(os)
-                          }}
-                        >
-                          Mudar de Técnico
-                        </ButtonChakra>
-                      </Flex>
-  
-                      <Text>Tipo: {os.Tipo_OS}</Text>
-                      <Text>Cliente: {os.Nome_Cliente}</Text>
-                      <Text><strong>Técnico:</strong> {os.Tecnico_Responsavel || 'Sem Técnico'}</Text>
-                      <Text>Endereço: {os.Endereco_Cliente}</Text>
-                      <Text>
-                        {`Data de Envio: ${new Date(os.Data_Envio_OS).toLocaleString('pt-BR')}`}
-                      </Text>
-                    </VStack>
+
+                          <Badge
+                            colorScheme={
+                              os.TipoCliente === 'Empresarial' ? 'blue'
+                              : os.TipoCliente === 'Residencial' ? 'green'
+                              : 'gray'
+                            }
+                            fontSize="0.7em"
+                            p={1}
+                            rounded="md"
+                          >
+                            {os.TipoCliente || 'Tipo não informado'}
+                          </Badge>
+                        </Flex>
+                      </Box>
+
+                      {/* Botão mudar técnico */}
+                      <ButtonChakra
+                        size="sm"
+                        colorScheme="blue"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          abrirModalTrocarTecnico(os)
+                        }}
+                      >
+                        Mudar de Técnico
+                      </ButtonChakra>
+                    </Flex>
+
+                    <Text>Tipo: {os.Tipo_OS}</Text>
+                    <Text>Cliente: {os.Nome_Cliente}</Text>
+                    <Text><strong>Técnico:</strong> {os.Tecnico_Responsavel || 'Sem Técnico'}</Text>
+                    <Text>Endereço: {os.Endereco_Cliente}</Text>
+                    <Text>
+                      {`Data de Envio: ${new Date(os.Data_Envio_OS).toLocaleString('pt-BR')}`}
+                    </Text>
+                  </VStack>
+
                   </Box>
                 ))}
             </VStack>

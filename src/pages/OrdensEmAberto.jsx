@@ -397,20 +397,40 @@ function OrdensEmAberto() {
                         : `Data de Envio: ${new Date(os.Data_Envio_OS).toLocaleString('pt-BR')}`}
                     </Text>
 
-                    <Badge
-                      colorScheme={
-                        os.Status_OS === 'Pendente' ? 'yellow'
-                        : os.Status_OS === 'Finalizado' ? 'green'
-                        : os.Status_OS === 'Execução' ? 'blue'
-                        : os.Status_OS === 'Atribuido' ? 'purple'
-                        : os.Status_OS === 'Improdutivo' ? 'red'
-                        : os.Status_OS === 'Agendada' ? 'pink'
-                        : os.Status_OS === 'Cancelado' ? 'pink'
-                        : 'gray'
-                      }
-                    >
-                      {os.Status_OS}
-                    </Badge>
+                    {/* NOVO FLEX AGRUPANDO BADGES */}
+                    <Flex align="center" gap={2} mt={2} mb={1} flexWrap="wrap">
+                      <Badge
+                        colorScheme={
+                          os.Status_OS === 'Pendente' ? 'yellow'
+                          : os.Status_OS === 'Finalizado' ? 'green'
+                          : os.Status_OS === 'Execução' ? 'blue'
+                          : os.Status_OS === 'Atribuido' ? 'purple'
+                          : os.Status_OS === 'Improdutivo' ? 'red'
+                          : os.Status_OS === 'Agendada' ? 'pink'
+                          : os.Status_OS === 'Cancelado' ? 'pink'
+                          : 'gray'
+                        }
+                      >
+                        {os.Status_OS}
+                      </Badge>
+
+                      <Badge
+                        colorScheme={
+                          os.TipoCliente === 'Empresarial' ? 'blue'
+                          : os.TipoCliente === 'Residencial' ? 'green'
+                          : 'gray'
+                        }
+                        fontSize="0.7em"
+                        p={1}
+                        rounded="md"
+                      >
+                        {os.TipoCliente || 'Tipo não informado'}
+                      </Badge>
+                    </Flex>
+
+
+
+                    
                   </VStack>
                 </Box>
               )

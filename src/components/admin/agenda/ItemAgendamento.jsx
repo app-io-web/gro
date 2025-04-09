@@ -21,6 +21,23 @@ function ItemAgendamento({ ordem }) {
         <Badge colorScheme="blue">{ordemAtual.Tipo_OS?.toUpperCase()}</Badge>
       </Flex>
 
+      {/* NOVO: Tipo de Cliente */}
+      <Flex justify="flex-start" align="center" mb={2} gap={2}>
+        <Badge
+          colorScheme={
+            ordemAtual.TipoCliente === "Empresarial" ? "blue" :
+            ordemAtual.TipoCliente === "Residencial" ? "green" :
+            "gray"
+          }
+          fontSize="0.7em"
+          px={2}
+          py={1}
+          rounded="md"
+        >
+          {ordemAtual.TipoCliente || "Tipo não informado"}
+        </Badge>
+      </Flex>
+
       <Text fontSize="sm" mb={1}>
         📍 {ordemAtual.Endereco_Cliente}
       </Text>
@@ -34,7 +51,6 @@ function ItemAgendamento({ ordem }) {
           Enviado: {new Date(ordemAtual.Data_Envio_OS).toLocaleString()}
         </Text>
 
-        {/* BOTÃO DINÂMICO */}
         {ordemAtual.Status_OS === "Agendada" ? (
           <Button size="sm" colorScheme="green" onClick={onOpen}>
             Agendado
@@ -57,4 +73,3 @@ function ItemAgendamento({ ordem }) {
   )
 }
 export default ItemAgendamento
- 

@@ -26,7 +26,8 @@ import DetalheOrdemImprodutivaAdmin from './pages/admin/DetalheOrdemImprodutivaA
 import RelatoriosDashboardAdmin from './pages/admin/relatorios/RelatoriosDashboardAdmin.jsx'
 import RelatorioEmpresaAdmin from './pages/admin/relatorios/RelatorioEmpresaAdmin.jsx'
 import RelatorioEmpresaAnalise from './pages/admin/relatorios/RelatorioEmpresaAnalise.jsx'
-
+import OrdensPendenciadasAdmin from './pages/admin/OrdensPendenciadasAdmin.jsx'
+import DetalheOrdemPendenciadaAdmin from './pages/admin/DetalheOrdemPendenciadaAdmin.jsx'
 
 import OrdensFinalizadasEmpresa from './pages/empresa/OrdensFinalizadasEmpresa.jsx'
 import DetalheOrdemFinalizadaEmpresa from './pages/empresa/DetalheOrdemFinalizadaEmpresa'
@@ -274,9 +275,14 @@ function App() {
           />
           <Route path="/admin/cadastrar-tecnico" element={<CadastroTecnico />} />
           <Route path="/admin/tecnicos" element={<TecnicosList />} />
+          
           <Route path="/admin/tecnico/:id" element={<PaginaMetricaTecnico />} />
           <Route path="/admin/ordens-andamento" element={<OrdensEmExecucao />} />
           <Route path="/admin/ordem-execucao/:id" element={<DetalheOrdemExecucao />} />
+
+          <Route path="/admin/ordens-pendenciadas/:id" element={<DetalheOrdemPendenciadaAdmin />} />
+          <Route path="/admin/ordens-pendenciadas" element={<OrdensPendenciadasAdmin />} />
+
           <Route path="/admin/ordens-finalizadas" element={<OrdensFinalizadas />} />
           <Route path="/admin/ordens-finalizadas/:id" element={<DetalheOrdemFinalizadaAdmin />} />
 

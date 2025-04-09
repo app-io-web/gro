@@ -255,7 +255,7 @@ function SidebarAdminDesktop() {
 
 
             {/* =================== ÁREA DE ADMINISTRADOR =================== */}
-                  {tipoUsuario === 'admin' && (
+            {tipoUsuario === 'admin' && (
                       <>
                         <Divider borderColor="gray.600" mt={6} />
                         <Text fontSize="sm" color="gray.400" px={2}>Administração</Text>
@@ -317,15 +317,6 @@ function SidebarAdminDesktop() {
                               _hover={{ bg: 'blue.600', color: 'white' }}
                             >
                               Relatórios Dashboard
-                            </Button>
-                            <Button
-                              color="white"
-                              variant="ghost"
-                              justifyContent="start"
-                              onClick={() => navigate('/admin/cadastrar-tecnico')}
-                              _hover={{ bg: 'blue.600', color: 'white' }}
-                            >
-                              Cadastrar Técnico
                             </Button>
                           </VStack>
                         </Collapse>

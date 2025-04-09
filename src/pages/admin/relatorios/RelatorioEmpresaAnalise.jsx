@@ -546,6 +546,7 @@ function RelatorioEmpresaAnalise() {
                   <Box key={idx} bg="white" p={4} borderWidth="1px" borderRadius="md" boxShadow="md" mb={4}>
                     <Text><b>Cliente:</b> {ordem.Nome_Cliente || '-'}</Text>
                     <Text><b>Técnico Responsável:</b> {ordem.Tecnico_Responsavel || '-'}</Text>
+                    <Text><b>Tipo de Cliente:</b> {ordem.TipoCliente || 'Tipo não informado'}</Text> {/* <-- NOVO */}
                     <Text><b>Tipo de Ordem:</b> {ordem.Tipo_OS || '-'}</Text>
                     <Text><b>Status:</b> {ordem.Status_OS || '-'}</Text>
 
@@ -581,10 +582,12 @@ function RelatorioEmpresaAnalise() {
                             <AccordionPanel pb={4} bg="gray.50" borderRadius="md" p={4} mt={2}>
                             {ordensOrdenadas.filter(ordem => ordem.Status_OS === 'Improdutivo').map((ordem, idx) => (
                                 <Box key={idx} bg="white" p={4} borderWidth="1px" borderRadius="md" boxShadow="md" mb={4}>
-                                <Text><b>Cliente:</b> {ordem.Nome_Cliente || '-'}</Text>
-                                <Text><b>Técnico Responsável:</b> {ordem.Tecnico_Responsavel || '-'}</Text>
-                                <Text><b>Tipo de Ordem:</b> {ordem.Tipo_OS || '-'}</Text>
-                                <Text><b>Status:</b> {ordem.Status_OS || '-'}</Text>
+                                    <Text><b>Cliente:</b> {ordem.Nome_Cliente || '-'}</Text>
+                                    <Text><b>Técnico Responsável:</b> {ordem.Tecnico_Responsavel || '-'}</Text>
+                                    <Text><b>Tipo de Cliente:</b> {ordem.TipoCliente || 'Tipo não informado'}</Text> {/* <-- NOVO */}
+                                    <Text><b>Tipo de Ordem:</b> {ordem.Tipo_OS || '-'}</Text>
+                                    <Text><b>Status:</b> {ordem.Status_OS || '-'}</Text>
+
                                 </Box>
                             ))}
                             </AccordionPanel>
@@ -621,38 +624,41 @@ function RelatorioEmpresaAnalise() {
 
                         <Box overflowX="auto" borderRadius={isMobile ? "md" : "none"}>
                             <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                                <thead>
-                                    <tr style={{ backgroundColor: "#f7fafc" }}>
-                                        <th style={thStyleDesktop}>Cliente</th>
-                                        <th style={thStyleDesktop}>Técnico</th> {/* ADICIONADO */}
-                                        <th style={thStyleDesktop}>Tipo de Ordem</th>
-                                        <th style={thStyleDesktop} onClick={() => ordenarOrdens('Conectores')}>Conectores ⬍</th>
-                                        <th style={thStyleDesktop} onClick={() => ordenarOrdens('Drop_Metros')}>Drop ⬍</th>
-                                        <th style={thStyleDesktop} onClick={() => ordenarOrdens('Esticadores')}>Alçadores ⬍</th>
-                                        <th style={thStyleDesktop} onClick={() => ordenarOrdens('FixaFio')}>Fixa Fio ⬍</th>
-                                        <th style={thStyleDesktop}>Status</th>
-                                    </tr>
+                            <thead>
+                                <tr style={{ backgroundColor: "#f7fafc" }}>
+                                    <th style={thStyleDesktop}>Cliente</th>
+                                    <th style={thStyleDesktop}>Técnico</th>
+                                    <th style={thStyleDesktop}>Tipo Cliente</th> {/* <-- NOVO */}
+                                    <th style={thStyleDesktop}>Tipo de Ordem</th>
+                                    <th style={thStyleDesktop} onClick={() => ordenarOrdens('Conectores')}>Conectores ⬍</th>
+                                    <th style={thStyleDesktop} onClick={() => ordenarOrdens('Drop_Metros')}>Drop ⬍</th>
+                                    <th style={thStyleDesktop} onClick={() => ordenarOrdens('Esticadores')}>Alçadores ⬍</th>
+                                    <th style={thStyleDesktop} onClick={() => ordenarOrdens('FixaFio')}>Fixa Fio ⬍</th>
+                                    <th style={thStyleDesktop}>Status</th>
+                                </tr>
                                 </thead>
+
 
                                 <tbody>
                                     {ordensOrdenadas.map((ordem, idx) => (
                                         <tr
-                                            key={idx}
-                                            style={{
-                                                backgroundColor: ordensSelecionadas.includes(idx) ? '#FED7D7' : 'transparent'
-                                            }}
+                                        key={idx}
+                                        style={{
+                                            backgroundColor: ordensSelecionadas.includes(idx) ? '#FED7D7' : 'transparent'
+                                        }}
                                         >
-                                            <td style={tdStyleDesktop}>{ordem.Nome_Cliente || '-'}</td>
-                                            <td style={tdStyleDesktop}>{ordem.Tecnico_Responsavel || '-'}</td> {/* NOVO */}
-                                            <td style={tdStyleDesktop}>{ordem.Tipo_OS || '-'}</td>
-                                            <td style={tdStyleDesktop}>{ordem.Materiais_Utilizados?.Conectores || 0}</td>
-                                            <td style={tdStyleDesktop}>{ordem.Materiais_Utilizados?.Drop_Metros ? `${ordem.Materiais_Utilizados.Drop_Metros} metros` : '0 metros'}</td>
-                                            <td style={tdStyleDesktop}>{ordem.Materiais_Utilizados?.Esticadores || 0}</td>
-                                            <td style={tdStyleDesktop}>{ordem.Materiais_Utilizados?.FixaFio || 0}</td>
-                                            <td style={tdStyleDesktop}>{ordem.Status_OS || '-'}</td>
+                                        <td style={tdStyleDesktop}>{ordem.Nome_Cliente || '-'}</td>
+                                        <td style={tdStyleDesktop}>{ordem.Tecnico_Responsavel || '-'}</td>
+                                        <td style={tdStyleDesktop}>{ordem.TipoCliente || 'Tipo não informado'}</td> {/* <-- NOVO */}
+                                        <td style={tdStyleDesktop}>{ordem.Tipo_OS || '-'}</td>
+                                        <td style={tdStyleDesktop}>{ordem.Materiais_Utilizados?.Conectores || 0}</td>
+                                        <td style={tdStyleDesktop}>{ordem.Materiais_Utilizados?.Drop_Metros ? `${ordem.Materiais_Utilizados.Drop_Metros} metros` : '0 metros'}</td>
+                                        <td style={tdStyleDesktop}>{ordem.Materiais_Utilizados?.Esticadores || 0}</td>
+                                        <td style={tdStyleDesktop}>{ordem.Materiais_Utilizados?.FixaFio || 0}</td>
+                                        <td style={tdStyleDesktop}>{ordem.Status_OS || '-'}</td>
                                         </tr>
                                     ))}
-                                </tbody>
+                                    </tbody>
 
                             </table>
                         </Box>

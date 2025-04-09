@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Box, Heading, Select, Spinner, SimpleGrid, Text, useBreakpointValue
+  Box, Heading, Select, Spinner, SimpleGrid, Text, useBreakpointValue, Badge
 } from '@chakra-ui/react'
 import { Settings } from 'lucide-react'
 import { apiGet } from '../services/api'
@@ -119,11 +119,36 @@ function OrdensEmExecucao() {
                   <Settings size={20} style={spinning} color="green" />
                 </Box>
                 <Text><strong>Cliente:</strong> {os.Nome_Cliente}</Text>
-                <Text><strong>Telefone:</strong> {os.Telefone1_Cliente}</Text>
-                <Text><strong>Tipo:</strong> {os.Tipo_OS}</Text>
-                <Text><strong>Endereço:</strong> {os.Endereco_Cliente}</Text>
-                <Text><strong>Técnico:</strong> {os.Tecnico_Responsavel}</Text>
-                <Text><strong>Empresa:</strong> {os.empresa}</Text>
+                  <Text><strong>Telefone:</strong> {os.Telefone1_Cliente}</Text>
+
+                  {/* Agrupando tipo da OS + tipo de cliente */}
+                  <Box mt={2}>
+                    <Text fontWeight="bold" mb={1}>Informações</Text>
+
+                    <Box display="flex" alignItems="center" gap={2} flexWrap="wrap">
+                      <Badge colorScheme="blue" borderRadius="full" px={2} py={1} fontSize="xs">
+                        {os.Tipo_OS}
+                      </Badge>
+
+                      <Badge
+                        colorScheme={
+                          os.TipoCliente === 'Empresarial' ? 'blue'
+                          : os.TipoCliente === 'Residencial' ? 'green'
+                          : 'gray'
+                        }
+                        fontSize="0.7em"
+                        p={1}
+                        rounded="md"
+                      >
+                        {os.TipoCliente || 'Tipo não informado'}
+                      </Badge>
+                    </Box>
+                  </Box>
+
+                  <Text mt={2}><strong>Endereço:</strong> {os.Endereco_Cliente}</Text>
+                  <Text><strong>Técnico:</strong> {os.Tecnico_Responsavel}</Text>
+                  <Text><strong>Empresa:</strong> {os.empresa}</Text>
+
               </Box>
             ))}
           </SimpleGrid>

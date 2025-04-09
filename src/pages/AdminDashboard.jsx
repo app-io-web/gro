@@ -20,15 +20,13 @@ import AdminMobileMenu from '../components/admin/AdminMobileMenu'
 import ResumoEstatisticas from '../components/admin/ResumoEstatisticas'
 import ListaOrdensExecucao from '../components/admin/ListaOrdensExecucao'
 import UltimasOrdens from '../components/admin/UltimasOrdens'
+import AgenteIAFlutuante from '../components/admin/AgenteIAFlutuante' // 👈 importa certinho!
 
-
-
-// ✅ recebe setAuth como prop
 function AdminDashboard({ setAuth }) {
   const isMobile = useBreakpointValue({ base: true, md: false })
   const [admin, setAdmin] = useState(null)
-
-
+  const [dadosEmpresas, setDadosEmpresas] = useState(null) // 👈 cria o estado
+  
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -42,43 +40,56 @@ function AdminDashboard({ setAuth }) {
       }
     }
 
+    const fetchDadosEmpresas = async () => {
+      try {
+        const res = await apiGet(`/api/v2/tables/mtnh21kq153to8h/records?limit=1`)
+        const registro = res.list?.[0]
+        if (registro && registro['Ordem de Serviços']) {
+          const jsonOrdem = typeof registro['Ordem de Serviços'] === 'string'
+            ? JSON.parse(registro['Ordem de Serviços'])
+            : registro['Ordem de Serviços']
+          setDadosEmpresas(jsonOrdem)
+        }
+      } catch (err) {
+        console.error('Erro ao buscar dados das empresas:', err)
+      }
+    }
+
     fetchAdmin()
+    fetchDadosEmpresas() // 👈 busca o JSON das ordens
   }, [])
 
   const handleLogout = () => {
     localStorage.clear()
     sessionStorage.clear()
     setAuth(false)
-  
-    // 🔁 Redireciona sem deixar histórico
     window.location.replace('/ordens-servico-app/#/login')
   }
-  
 
   return (
     <Flex>
       {!isMobile && <AdminSidebarDesktop />}
 
       <Box p={6} ml={!isMobile ? '250px' : 0} w="full" pb={isMobile ? '60px' : 0} position="relative">
-        {/* Bottom nav só no mobile */}
         {isMobile && <AdminBottomNav />}
 
-        {/* Header só no desktop */}
         {!isMobile && (
-            <Box mb={6}>
-                <Heading size="lg">Painel Administrativo</Heading>
-                <Text>Olá, {admin?.Email}</Text>
-            </Box>
+          <Box mb={6}>
+            <Heading size="lg">Painel Administrativo</Heading>
+            <Text>Olá, {admin?.Email}</Text>
+          </Box>
         )}
-        {isMobile && <AdminMobileMenu />}
-
-
 
         <VStack spacing={6}>
-        <ResumoEstatisticas />
-        <ListaOrdensExecucao />
-        <UltimasOrdens />
+          <ResumoEstatisticas />
+          <ListaOrdensExecucao />
+          <UltimasOrdens />
         </VStack>
+
+        {/* Só renderiza o Agente se já carregou os dados */}
+        {dadosEmpresas && (
+          <AgenteIAFlutuante empresasData={dadosEmpresas} />
+        )}
       </Box>
     </Flex>
   )

@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Box, Flex, SimpleGrid, Stat, StatLabel, StatNumber, useBreakpointValue, Spinner } from '@chakra-ui/react'
+import {
+  Box, Flex, SimpleGrid, Stat, StatLabel, StatNumber,
+  useBreakpointValue, Spinner, useColorModeValue
+} from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { apiGet } from '../../services/api'
 import CountUp from 'react-countup'
@@ -20,7 +23,7 @@ function ResumoEstatisticas() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const buscarDados = async () => {
+    async function buscarDados() {
       try {
         const resOrdens = await apiGet('/api/v2/tables/mtnh21kq153to8h/records?limit=1')
         const registro = resOrdens.list?.[0]
@@ -40,12 +43,10 @@ function ResumoEstatisticas() {
           }
         }
 
-        // Pegar o mês e ano atual
         const agora = new Date()
-        const mesAtual = agora.getMonth() // Janeiro = 0
+        const mesAtual = agora.getMonth()
         const anoAtual = agora.getFullYear()
 
-        // Filtrar ordens do mês atual
         const ordensMesAtual = ordens.filter(os => {
           if (!os.Data_Envio_OS) return false
           const data = new Date(os.Data_Envio_OS)
@@ -54,7 +55,7 @@ function ResumoEstatisticas() {
 
         const totalOS = ordensMesAtual.length
         const osExecucao = ordensMesAtual.filter(os => os.Status_OS === 'Execução').length
-        const osPendentes = ordensMesAtual.filter(os => os.Status_OS === 'Pendente').length
+        const osPendentes = ordensMesAtual.filter(os => os.Status_OS === 'Pendente' || os.Status_OS === 'Pendenciada').length
         const osFinalizadas = ordensMesAtual.filter(os => os.Status_OS === 'Finalizado').length
 
         const todosRegistros = await apiGet('/api/v2/tables/mga2sghx95o3ssp/records?limit=1000')
@@ -78,10 +79,7 @@ function ResumoEstatisticas() {
 
     buscarDados()
 
-    const interval = setInterval(() => {
-      buscarDados()
-    }, 30000)
-
+    const interval = setInterval(() => buscarDados(), 30000)
     return () => clearInterval(interval)
   }, [])
 
@@ -97,7 +95,7 @@ function ResumoEstatisticas() {
     <SimpleGrid columns={isMobile ? 2 : 3} spacing={6} w="full">
       <StatCard label="Total O.S." value={dados.totalOS} total={dados.totalOS} onClick={() => navigate('/admin/todas-ordens')} color="#4299E1" />
       <StatCard label="Em Execução" value={dados.osExecucao} total={dados.totalOS} onClick={() => navigate('/admin/ordens-andamento')} color="#48BB78" />
-      <StatCard label="Pendentes" value={dados.osPendentes} total={dados.totalOS} onClick={() => navigate('/admin/ordens-andamento')} color="#ECC94B" />
+      <StatCard label="Pendentes" value={dados.osPendentes} total={dados.totalOS} onClick={() => navigate('/admin/ordens-pendenciadas')} color="#ECC94B" />
       <StatCard label="Finalizadas" value={dados.osFinalizadas} total={dados.totalOS} onClick={() => navigate('/admin/ordens-finalizadas')} color="#38B2AC" />
       <StatCard label="Empresas" value={dados.totalEmpresas} total={dados.totalEmpresas} onClick={() => navigate('/admin/empresas')} color="#9F7AEA" />
       <StatCard label="Admins" value={dados.totalAdmins} total={dados.totalAdmins} color="#ED64A6" />
@@ -106,6 +104,8 @@ function ResumoEstatisticas() {
 }
 
 function StatCard({ label, value, total, onClick, color = '#4FD1C5' }) {
+  const bgCard = useColorModeValue('white', 'gray.800')
+
   const percentage = total > 0 ? (value / total) * 100 : 0
 
   return (
@@ -114,18 +114,18 @@ function StatCard({ label, value, total, onClick, color = '#4FD1C5' }) {
       shadow="md"
       borderWidth="1px"
       borderRadius="2xl"
-      bg="white"
-      _hover={{ cursor: 'pointer', bg: 'gray.100' }}
+      bg={bgCard}
+      _hover={{ cursor: onClick ? 'pointer' : 'default', bg: 'gray.100' }}
       onClick={onClick}
     >
       <Stat>
         <StatLabel>{label}</StatLabel>
-        <Flex align="center" gap={2}>
-          <StatNumber>
+        <Flex align="center" justify="space-between" mt={2}>
+          <StatNumber fontSize="xl">
             <CountUp end={value} duration={1.5} separator="," />
           </StatNumber>
           {total > 0 && (
-            <Box w="40px" h="40px">
+            <Box w="50px" h="50px">
               <PieChart
                 data={[
                   { title: 'Preenchido', value: percentage, color: color },

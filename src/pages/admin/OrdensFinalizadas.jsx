@@ -35,6 +35,7 @@ export default function OrdensFinalizadas() {
               empresa: emp.empresa,
               UnicID_Empresa: emp.UnicID_Empresa,
               registroId: item.Id
+              
             }))
           )
         })
@@ -117,27 +118,46 @@ export default function OrdensFinalizadas() {
               ) : (
                 ordensFiltradas.map((os) => (
                   <Box
-                    key={os.UnicID_OS}
-                    p={4}
-                    borderWidth="1px"
-                    borderRadius="md"
-                    bg="white"
-                    boxShadow="sm"
-                    transition="all 0.2s"
-                    _hover={{ boxShadow: 'md', cursor: 'pointer', bg: 'gray.50' }}
-                    onClick={() => navigate(`/admin/ordens-finalizadas/${os.UnicID_OS}`)}
-                  >
-                    <Text fontWeight="bold">Empresa: {os.empresa}</Text>
-                    <Badge colorScheme="green" mt={1} mb={2}>
+                  key={os.UnicID_OS}
+                  p={4}
+                  borderWidth="1px"
+                  borderRadius="md"
+                  bg="white"
+                  boxShadow="sm"
+                  transition="all 0.2s"
+                  _hover={{ boxShadow: 'md', cursor: 'pointer', bg: 'gray.50' }}
+                  onClick={() => navigate(`/admin/ordens-finalizadas/${os.UnicID_OS}`)}
+                >
+                  <Text fontWeight="bold">Empresa: {os.empresa}</Text>
+              
+                  {/* NOVO CAMPO: Tipo de Cliente */}
+                  <Flex align="center" gap={2} mt={2} mb={2} flexWrap="wrap">
+                    <Badge colorScheme="green">
                       FINALIZADO
                     </Badge>
-                    <Text><strong>Cliente:</strong> {os.Nome_Cliente}</Text>
-                    <Text><strong>Técnico:</strong> {os.Tecnico_Responsavel || 'Sem Técnico'}</Text>
-                    <Text><strong>Endereço:</strong> {os.Endereco_Cliente}</Text>
-                    <Text fontSize="sm" color="gray.500" mt={2}>
-                      Data de Envio: {new Date(os.Data_Envio_OS).toLocaleString('pt-BR')}
-                    </Text>
-                  </Box>
+
+                    <Badge
+                      colorScheme={
+                        os.TipoCliente === 'Empresarial' ? 'blue' :
+                        os.TipoCliente === 'Residencial' ? 'green' :
+                        'gray'
+                      }
+                      fontSize="0.7em"
+                      p={1}
+                      rounded="md"
+                    >
+                      {os.TipoCliente || 'Tipo não informado'}
+                    </Badge>
+                  </Flex>
+
+              
+                  <Text><strong>Cliente:</strong> {os.Nome_Cliente}</Text>
+                  <Text><strong>Técnico:</strong> {os.Tecnico_Responsavel || 'Sem Técnico'}</Text>
+                  <Text><strong>Endereço:</strong> {os.Endereco_Cliente}</Text>
+                  <Text fontSize="sm" color="gray.500" mt={2}>
+                    Data de Envio: {new Date(os.Data_Envio_OS).toLocaleString('pt-BR')}
+                  </Text>
+                </Box>
                 ))
               )}
             </VStack>

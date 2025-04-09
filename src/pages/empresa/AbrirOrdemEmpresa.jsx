@@ -13,12 +13,10 @@ import AdminBottomNav from '../../components/admin/AdminBottomNav'
 import AdminMobileMenu from '../../components/admin/AdminMobileMenu'
 import UploadArquivoPDF from './UploadArquivoPDF'
 import { FiSend } from 'react-icons/fi'
-
 import {
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter,
   ModalCloseButton, useDisclosure
 } from '@chakra-ui/react'
-
 import { usarVerificacaoLimiteOS } from '../../components/utils/verificarLimiteOS'
 
 
@@ -27,7 +25,9 @@ function AbrirOrdemEmpresa() {
   const [form, setForm] = useState({
     Nome_Cliente: '', Telefone1_Cliente: '', Telefone2_Cliente: '',
     Rua: '', Numero: '', Bairro: '', Cidade: '', Estado: '',
-    Tipo_OS: '', Observacao_Empresa: ''
+    Tipo_OS: '', Observacao_Empresa: '',
+    TipoCliente: '', // Novo
+    Coordenadas: ''  // Novo
   })
   const [linkPdf, setLinkPdf] = useState('')
   const [limiteAtingido, setLimiteAtingido] = useState(false)
@@ -67,8 +67,9 @@ function AbrirOrdemEmpresa() {
   }
 
   const handleSubmit = async () => {
-    const { Nome_Cliente, Telefone1_Cliente, Rua, Numero, Bairro, Cidade, Estado, Tipo_OS } = form
-    if (!Nome_Cliente || !Telefone1_Cliente || !Rua || !Numero || !Bairro || !Cidade || !Estado || !Tipo_OS) {
+    const { Nome_Cliente, Telefone1_Cliente, Rua, Numero, Bairro, Cidade, Estado, Tipo_OS, TipoCliente, Coordenadas } = form
+
+    if (!Nome_Cliente || !Telefone1_Cliente || !Rua || !Numero || !Bairro || !Cidade || !Estado || !Tipo_OS || !TipoCliente || !Coordenadas) {
       toast({ title: 'Preencha todos os campos obrigatórios', status: 'warning' })
       return
     }
@@ -96,6 +97,8 @@ function AbrirOrdemEmpresa() {
         Endereco_Cliente: enderecoCompleto,
         Tipo_OS: form.Tipo_OS,
         Observacao_Empresa: form.Observacao_Empresa,
+        TipoCliente: form.TipoCliente,
+        Coordenadas: form.Coordenadas,
         UnicID_OS: uuidv4(),
         Status_OS: 'Em Aberto',
         Numero_OS: Date.now(),
@@ -123,7 +126,7 @@ function AbrirOrdemEmpresa() {
       setForm({
         Nome_Cliente: '', Telefone1_Cliente: '', Telefone2_Cliente: '',
         Rua: '', Numero: '', Bairro: '', Cidade: '', Estado: '',
-        Tipo_OS: '', Observacao_Empresa: ''
+        Tipo_OS: '', Observacao_Empresa: '', TipoCliente: '', Coordenadas: ''
       })
     } catch (err) {
       console.error(err)
@@ -161,136 +164,154 @@ function AbrirOrdemEmpresa() {
     <Heading size="lg" mb={6}>📬 Abrir Nova Ordem de Serviço</Heading>
 
     <VStack spacing={4} align="stretch" bg="white" p={6} borderRadius="lg" boxShadow="md">
-      <Text fontSize="sm" color="gray.500">
-        📅 Data e Hora atual: <strong>{dataAtual}</strong>
-      </Text>
+  <Text fontSize="sm" color="gray.500">
+    📅 Data e Hora atual: <strong>{dataAtual}</strong>
+  </Text>
 
-      <FormControl isRequired>
-        <FormLabel>Nome do Cliente</FormLabel>
-        <Input name="Nome_Cliente" value={form.Nome_Cliente} onChange={handleChange} />
-      </FormControl>
+  <FormControl isRequired>
+    <FormLabel>Nome do Cliente</FormLabel>
+    <Input name="Nome_Cliente" value={form.Nome_Cliente} onChange={handleChange} />
+  </FormControl>
 
-      <FormControl isRequired>
-        <FormLabel>Telefone 1</FormLabel>
-        <Input name="Telefone1_Cliente" value={form.Telefone1_Cliente} onChange={handleChange} />
-      </FormControl>
+  <FormControl isRequired>
+    <FormLabel>Telefone 1</FormLabel>
+    <Input name="Telefone1_Cliente" value={form.Telefone1_Cliente} onChange={handleChange} />
+  </FormControl>
 
-      <FormControl>
-        <FormLabel>Telefone 2</FormLabel>
-        <Input name="Telefone2_Cliente" value={form.Telefone2_Cliente} onChange={handleChange} />
-      </FormControl>
+  <FormControl>
+    <FormLabel>Telefone 2</FormLabel>
+    <Input name="Telefone2_Cliente" value={form.Telefone2_Cliente} onChange={handleChange} />
+  </FormControl>
 
-      {/* Endereço adaptado por device */}
-      {isMobile ? (
-        <Accordion allowToggle border="1px solid #E2E8F0" borderRadius="md" mb={2}>
-          <AccordionItem>
-            <h2>
-            <AccordionButton>
-              <Box flex="1" textAlign="left" display="flex" alignItems="center" gap={2}>
-                📍 Endereço do Cliente
-                {isMobile && (
-                  (!form.Rua || !form.Numero || !form.Bairro || !form.Cidade || !form.Estado) && (
-                    <Box
-                      w="10px"
-                      h="10px"
-                      bg="red.500"
-                      borderRadius="full"
-                      animation="pulse 1s infinite"
-                    />
-                  )
-                )}
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
+  {/* Endereço adaptado por device */}
+  {isMobile ? (
+    <Accordion allowToggle border="1px solid #E2E8F0" borderRadius="md" mb={2}>
+      <AccordionItem>
+        <h2>
+        <AccordionButton>
+          <Box flex="1" textAlign="left" display="flex" alignItems="center" gap={2}>
+            📍 Endereço do Cliente
+            {isMobile && (
+              (!form.Rua || !form.Numero || !form.Bairro || !form.Cidade || !form.Estado) && (
+                <Box
+                  w="10px"
+                  h="10px"
+                  bg="red.500"
+                  borderRadius="full"
+                  animation="pulse 1s infinite"
+                />
+              )
+            )}
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+        </h2>
+        <AccordionPanel pb={4}>
+          <FormControl isRequired>
+            <FormLabel>Rua</FormLabel>
+            <Input name="Rua" value={form.Rua} onChange={handleChange} />
+          </FormControl>
 
-            </h2>
-            <AccordionPanel pb={4}>
-              <FormControl isRequired>
-                <FormLabel>Rua</FormLabel>
-                <Input name="Rua" value={form.Rua} onChange={handleChange} />
-              </FormControl>
+          <FormControl isRequired mt={3}>
+            <FormLabel>Número</FormLabel>
+            <Input name="Numero" value={form.Numero} onChange={handleChange} />
+          </FormControl>
 
-              <FormControl isRequired mt={3}>
-                <FormLabel>Número</FormLabel>
-                <Input name="Numero" value={form.Numero} onChange={handleChange} />
-              </FormControl>
+          <FormControl isRequired mt={3}>
+            <FormLabel>Bairro</FormLabel>
+            <Input name="Bairro" value={form.Bairro} onChange={handleChange} />
+          </FormControl>
 
-              <FormControl isRequired mt={3}>
-                <FormLabel>Bairro</FormLabel>
-                <Input name="Bairro" value={form.Bairro} onChange={handleChange} />
-              </FormControl>
+          <FormControl isRequired mt={3}>
+            <FormLabel>Cidade</FormLabel>
+            <Input name="Cidade" value={form.Cidade} onChange={handleChange} />
+          </FormControl>
 
-              <FormControl isRequired mt={3}>
-                <FormLabel>Cidade</FormLabel>
-                <Input name="Cidade" value={form.Cidade} onChange={handleChange} />
-              </FormControl>
+          <FormControl isRequired mt={3}>
+            <FormLabel>Estado</FormLabel>
+            <Input name="Estado" value={form.Estado} onChange={handleChange} />
+          </FormControl>
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
+  ) : (
+    <>
+      <Flex gap={4}>
+        <FormControl isRequired flex="2">
+          <FormLabel>Rua</FormLabel>
+          <Input name="Rua" value={form.Rua} onChange={handleChange} />
+        </FormControl>
+        <FormControl isRequired flex="1">
+          <FormLabel>Número</FormLabel>
+          <Input name="Numero" value={form.Numero} onChange={handleChange} />
+        </FormControl>
+      </Flex>
 
-              <FormControl isRequired mt={3}>
-                <FormLabel>Estado</FormLabel>
-                <Input name="Estado" value={form.Estado} onChange={handleChange} />
-              </FormControl>
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
-      ) : (
-        <>
-          <Flex gap={4}>
-            <FormControl isRequired flex="2">
-              <FormLabel>Rua</FormLabel>
-              <Input name="Rua" value={form.Rua} onChange={handleChange} />
-            </FormControl>
-            <FormControl isRequired flex="1">
-              <FormLabel>Número</FormLabel>
-              <Input name="Numero" value={form.Numero} onChange={handleChange} />
-            </FormControl>
-          </Flex>
+      <Flex gap={4}>
+        <FormControl isRequired flex="1">
+          <FormLabel>Bairro</FormLabel>
+          <Input name="Bairro" value={form.Bairro} onChange={handleChange} />
+        </FormControl>
+        <FormControl isRequired flex="1">
+          <FormLabel>Cidade</FormLabel>
+          <Input name="Cidade" value={form.Cidade} onChange={handleChange} />
+        </FormControl>
+        <FormControl isRequired flex="1">
+          <FormLabel>Estado</FormLabel>
+          <Input name="Estado" value={form.Estado} onChange={handleChange} />
+        </FormControl>
+      </Flex>
+    </>
+  )}
 
-          <Flex gap={4}>
-            <FormControl isRequired flex="1">
-              <FormLabel>Bairro</FormLabel>
-              <Input name="Bairro" value={form.Bairro} onChange={handleChange} />
-            </FormControl>
-            <FormControl isRequired flex="1">
-              <FormLabel>Cidade</FormLabel>
-              <Input name="Cidade" value={form.Cidade} onChange={handleChange} />
-            </FormControl>
-            <FormControl isRequired flex="1">
-              <FormLabel>Estado</FormLabel>
-              <Input name="Estado" value={form.Estado} onChange={handleChange} />
-            </FormControl>
-          </Flex>
-        </>
-      )}
+  {/* NOVOS CAMPOS ADICIONADOS */}
+  <FormControl isRequired>
+    <FormLabel>Tipo da Ordem</FormLabel>
+    <Select name="TipoCliente" value={form.TipoCliente} onChange={handleChange} placeholder="Selecione">
+      <option value="Empresarial">Empresarial</option>
+      <option value="Residencial">Residencial</option>
+    </Select>
+  </FormControl>
 
-      <FormControl isRequired>
-        <FormLabel>Tipo de O.S.</FormLabel>
-        <Select name="Tipo_OS" value={form.Tipo_OS} onChange={handleChange}>
-          <option value="">Selecione</option>
-          <option value="Instalação">Instalação</option>
-          <option value="Manutenção">Manutenção</option>
-          <option value="Alteração de Endereço">Alteração de Endereço</option>
-          <option value="Rompimento">Rompimento</option>
-        </Select>
-      </FormControl>
+  <FormControl isRequired>
+    <FormLabel>Coordenadas (Latitude, Longitude)</FormLabel>
+    <Input
+      name="Coordenadas"
+      value={form.Coordenadas}
+      onChange={handleChange}
+      placeholder="Ex: -20.3155, -40.3128"
+    />
+  </FormControl>
 
-      <FormControl>
-        <FormLabel>Observações</FormLabel>
-        <Textarea name="Observacao_Empresa" value={form.Observacao_Empresa} onChange={handleChange} />
-      </FormControl>
+  <FormControl isRequired>
+    <FormLabel>Tipo de O.S.</FormLabel>
+    <Select name="Tipo_OS" value={form.Tipo_OS} onChange={handleChange}>
+      <option value="">Selecione</option>
+      <option value="Instalação">Instalação</option>
+      <option value="Manutenção">Manutenção</option>
+      <option value="Alteração de Endereço">Alteração de Endereço</option>
+      <option value="Rompimento">Rompimento</option>
+    </Select>
+  </FormControl>
 
-      <UploadArquivoPDF onUpload={setLinkPdf} />
+  <FormControl>
+    <FormLabel>Observações</FormLabel>
+    <Textarea name="Observacao_Empresa" value={form.Observacao_Empresa} onChange={handleChange} />
+  </FormControl>
 
-      <Button
-          colorScheme="blue"
-          leftIcon={<Icon as={FiSend} />}
-          size="lg"
-          onClick={handleSubmit}
-          isDisabled={limiteAtingido}
-        >
-          Abrir Ordem
-        </Button>
+  <UploadArquivoPDF onUpload={setLinkPdf} />
 
-    </VStack>
+  <Button
+    colorScheme="blue"
+    leftIcon={<Icon as={FiSend} />}
+    size="lg"
+    onClick={handleSubmit}
+    isDisabled={limiteAtingido}
+  >
+    Abrir Ordem
+  </Button>
+</VStack>
+
 
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
   <ModalOverlay />

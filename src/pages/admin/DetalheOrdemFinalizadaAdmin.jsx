@@ -106,6 +106,7 @@ export default function DetalheOrdemFinalizadaAdmin() {
               <Text><Icon as={FaPhone} mr={2} /> <strong>Telefone:</strong> {ordem.Telefone1_Cliente}</Text>
               <Text><Icon as={FaMapMarkerAlt} mr={2} /> <strong>Endereço:</strong> {ordem.Endereco_Cliente}</Text>
               <Text><strong>Tipo:</strong> {ordem.Tipo_OS}</Text>
+              <Text><strong>Tipo de Cliente:</strong> {ordem.TipoCliente || '---'}</Text>
               <Text><strong>Status:</strong> <Badge colorScheme="green">{ordem.Status_OS}</Badge></Text>
               <Text><Icon as={FaBuilding} mr={2} /> <strong>Empresa:</strong> {ordem.empresa}</Text>
             </Stack>
