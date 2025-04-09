@@ -10,7 +10,7 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { ChatIcon, CloseIcon } from '@chakra-ui/icons'
-import { FaPaperPlane } from 'react-icons/fa' // Ícone de aviãozinho
+import { FaPaperPlane } from 'react-icons/fa'
 
 export default function AgenteIAFlutuante({ empresasData }) {
   const [chatOpen, setChatOpen] = useState(false)
@@ -34,6 +34,34 @@ export default function AgenteIAFlutuante({ empresasData }) {
     }
   }, [mensagens, chatOpen])
 
+  const formatarResposta = (texto) => {
+    if (!texto) return '';
+  
+    // Transforma links em <a>
+    const textoComLinks = texto.replace(
+      /(https?:\/\/[^\s]+)/g,
+      (url) => `<a href="${url}" target="_blank" style="color:blue;text-decoration:underline;">[Abrir Link]</a>`
+    );
+  
+    // Negritar palavras-chave
+    const textoComNegrito = textoComLinks
+      .replace(/(Empresa:)/g, '<b>$1</b>')
+      .replace(/(Tipo de Ordem de Serviço:)/g, '<b>$1</b>')
+      .replace(/(Cliente:)/g, '<b>$1</b>')
+      .replace(/(Telefone[s]?:)/g, '<b>$1</b>')
+      .replace(/(Endereço do Cliente:)/g, '<b>$1</b>')
+      .replace(/(Observação da Empresa:)/g, '<b>$1</b>')
+      .replace(/(Técnico Responsável:)/g, '<b>$1</b>')
+      .replace(/(Data de Envio da Ordem de Serviço:)/g, '<b>$1</b>')
+      .replace(/(Número da Ordem de Serviço:)/g, '<b>$1</b>');
+  
+    // Corrige quebra de linha para o HTML
+    const textoFinal = textoComNegrito.replace(/\n/g, '<br />');
+  
+    return textoFinal;
+  };
+  
+
   const enviarPergunta = async () => {
     if (!perguntaAtual.trim()) return
 
@@ -53,10 +81,12 @@ export default function AgenteIAFlutuante({ empresasData }) {
       })
 
       const data = await res.json()
-      const respostaIA = { tipo: 'ia', texto: data.resposta || 'Não consegui entender 😕' }
+      const respostaIA = {
+        tipo: 'ia',
+        texto: formatarResposta(data.resposta || 'Não consegui entender 😕')
+      }
       setMensagens(prev => [...prev, respostaIA])
 
-      // 🔔 Animaçãozinha/toast ao receber resposta
       toast({
         title: 'Nova resposta recebida!',
         status: 'success',
@@ -81,37 +111,56 @@ export default function AgenteIAFlutuante({ empresasData }) {
           p={4}
           shadow="2xl"
           borderRadius="lg"
-          w="300px"
-          maxH="500px"
+          w="350px"
+          maxH="600px"
           overflow="hidden"
           display="flex"
           flexDirection="column"
         >
-          <VStack spacing={3} align="stretch" flex="1" overflowY="auto">
+          <VStack spacing={3} align="stretch" flex="1" overflowY="auto" pr={2}>
             {mensagens.map((msg, idx) => (
               <Flex
                 key={idx}
                 justify={msg.tipo === 'usuario' ? 'flex-end' : 'flex-start'}
                 px={1}
               >
-                <Box
-                  bg={msg.tipo === 'usuario' ? 'blue.100' : 'gray.100'}
-                  p={2}
-                  borderRadius="md"
-                  maxW="80%"
-                  fontSize="sm"
-                >
-                  {msg.texto}
-                </Box>
+                {msg.tipo === 'ia' ? (
+                  <Box
+                    bg="gray.100"
+                    p={3}
+                    borderRadius="20px 20px 20px 0px"
+                    maxW="90%"
+                    whiteSpace="pre-line"
+                    overflowWrap="break-word"
+                    wordBreak="break-word"
+                    fontSize="sm"
+                    textAlign="left"
+                    dangerouslySetInnerHTML={{ __html: msg.texto }}
+                  />
+
+                ) : (
+                  <Box
+                    bg="blue.100"
+                    p={3}
+                    borderRadius="20px 20px 0px 20px"
+                    maxW="90%"
+                    whiteSpace="pre-wrap"
+                    wordBreak="break-word"
+                    fontSize="sm"
+                    textAlign="left"
+                  >
+                    {msg.texto}
+                  </Box>
+                )}
               </Flex>
             ))}
-            {/* Âncora invisível para scroll automático */}
             <div ref={mensagensEndRef} />
           </VStack>
 
+
           <Flex mt={3} gap={2}>
             <Input
-              placeholder="Digite..."
+              placeholder="Digite sua pergunta..."
               value={perguntaAtual}
               onChange={e => setPerguntaAtual(e.target.value)}
               onKeyPress={(e) => { if (e.key === 'Enter') enviarPergunta() }}
