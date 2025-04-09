@@ -2,12 +2,12 @@ import { Box, VStack, Text, Button, Collapse, Divider } from '@chakra-ui/react'
 import {
   FiHome, FiSettings, FiLogOut, FiChevronDown, FiChevronUp,
   FiUsers, FiClipboard, FiUser, FiPlusSquare, FiCalendar,
-  FiRefreshCw, FiCheckCircle, FiAlertCircle, FiXCircle, FiBarChart2
+  FiRefreshCw, FiCheckCircle, FiAlertCircle, FiXCircle, FiBarChart2,FiTerminal
 } from 'react-icons/fi'
 
 import { useNavigate, useLocation } from 'react-router-dom'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { usarVerificacaoLimiteOS } from '../utils/verificarLimiteOS'
 
@@ -19,6 +19,8 @@ function SidebarAdminDesktop() {
   const [openCadastro, setOpenCadastro] = useState(false)
   const [openRelatorios, setOpenRelatorios] = useState(false)
   const [openOrdens, setOpenOrdens] = useState(false)
+  const [mostrarMenuSecreto, setMostrarMenuSecreto] = useState(false) // 👈 menu secreto
+
   const tipoUsuario = localStorage.getItem('tipo')
   const { isOpen, onOpen, onClose } = useDisclosure()
   const location = useLocation();
@@ -28,7 +30,30 @@ function SidebarAdminDesktop() {
   
   
   
+  // 👀 Detectar /desenvolvedor
+  useEffect(() => {
+    let buffer = ''
 
+    const handleKeyDown = (e) => {
+      if (!e.target.closest('input, textarea')) {
+        if (e.key.length === 1) {
+          buffer += e.key.toLowerCase()
+        } else if (e.key === 'Backspace') {
+          buffer = buffer.slice(0, -1)
+        }
+
+        if (buffer.includes('/desenvolvedor')) {
+          setMostrarMenuSecreto(true)
+          buffer = '' // limpa o buffer depois
+        }
+
+        if (buffer.length > 30) buffer = buffer.slice(-30) // nunca deixar muito longo
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
 
   const handleLogout = () => {
@@ -65,6 +90,25 @@ function SidebarAdminDesktop() {
       >
         Dashboard
       </Button>
+
+              {/* 🌟 MENU SECRETO */}
+          {mostrarMenuSecreto && (
+          <>
+            <Divider borderColor="gray.600" mt={6} />
+            <Text fontSize="sm" color="gray.400" px={2}>⚡ Área de Desenvolvedor</Text>
+
+            <Button
+              leftIcon={<FiTerminal color="white" />}
+              color="white"
+              justifyContent="start"
+              variant="ghost"
+              _hover={{ bg: 'purple.600' }}
+              onClick={() => navigate('/admin/historico-conversas')}
+            >
+              Histórico de IA
+            </Button>
+          </>
+        )}
 
 
             {/* =================== ORDENS DE SERVIÇO =================== */}

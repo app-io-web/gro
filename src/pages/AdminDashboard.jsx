@@ -22,6 +22,7 @@ import ListaOrdensExecucao from '../components/admin/ListaOrdensExecucao'
 import UltimasOrdens from '../components/admin/UltimasOrdens'
 import AgenteIAFlutuante from '../components/admin/AgenteIAFlutuante' // 👈 importa certinho!
 
+
 function AdminDashboard({ setAuth }) {
   const isMobile = useBreakpointValue({ base: true, md: false })
   const [admin, setAdmin] = useState(null)
