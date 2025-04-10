@@ -122,13 +122,13 @@ export default function AgenteIAFlutuante({ empresasData, forcarAbertura, onFech
   }
 
   const enviarPergunta = async () => {
-    if (!perguntaAtual.trim()) return
-
-    const novaMensagemUsuario = { tipo: 'usuario', texto: perguntaAtual }
-    setMensagens(prev => [...prev, novaMensagemUsuario])
-    setPerguntaAtual('')
-    setLoading(true)
-
+    if (!perguntaAtual.trim()) return;
+  
+    const novaMensagemUsuario = { tipo: 'usuario', texto: perguntaAtual };
+    setMensagens(prev => [...prev, novaMensagemUsuario]);
+    setPerguntaAtual('');
+    setLoading(true);
+  
     try {
       const res = await fetch('https://inte.groia.nexusnerds.com.br/assistente-ordens', {
         method: 'POST',
@@ -138,30 +138,44 @@ export default function AgenteIAFlutuante({ empresasData, forcarAbertura, onFech
           dados: empresasData,
           historico: mensagens
         })
-      })
+      });
+  
+      const data = await res.json();
+  
+      // ⚡️ Primeiro executa qualquer ação automática
+      if (data.acao && data.acao.acao === 'agendar') {
+        await realizarAgendamentoAutomatico(data.acao.dados);
+      }
 
-      const data = await res.json()
+      console.log('Resposta completa da IA:', data)
+
+
+
+  
+      // 👇 Depois exibe a resposta normal
       const respostaIA = {
         tipo: 'ia',
         texto: formatarResposta(data.resposta || 'Não consegui entender 😕')
-      }
-      setMensagens(prev => [...prev, respostaIA])
-
+      };
+      setMensagens(prev => [...prev, respostaIA]);
+  
       toast({
         title: 'Resposta recebida!',
         status: 'success',
         duration: 1500,
         isClosable: true,
         position: 'top-right',
-      })
+      });
     } catch (err) {
-      console.error('Erro ao consultar IA:', err)
-      const erroMensagem = { tipo: 'ia', texto: '⚠️ Erro ao tentar responder.' }
-      setMensagens(prev => [...prev, erroMensagem])
+      console.error('Erro ao consultar IA:', err);
+      const erroMensagem = { tipo: 'ia', texto: '⚠️ Erro ao tentar responder.' };
+      setMensagens(prev => [...prev, erroMensagem]);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
+  
+  
 
   const renderizarMensagens = () => (
     <VStack spacing={3} align="stretch" flex="1" overflowY="auto" pr={2}>
@@ -223,6 +237,55 @@ export default function AgenteIAFlutuante({ empresasData, forcarAbertura, onFech
       <div ref={mensagensEndRef} />
     </VStack>
   )
+
+
+
+  const realizarAgendamentoAutomatico = async (dados) => {
+    try {
+      const { unicIdOs, nomeTecnico, dataAgendamento } = dados;
+  
+      // Buscar o ID do técnico pelo nome
+      const idTecnico = await buscarIdTecnicoPorNome(nomeTecnico);
+  
+      if (!idTecnico) {
+        console.error('Técnico não encontrado para o nome:', nomeTecnico);
+        return;
+      }
+  
+      // Fazer o POST para o backend agendar
+      await fetch('https://inte.groia.nexusnerds.com.br/assistente-ordens/acao-agendar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idOrdem: unicIdOs, idTecnico, nomeTecnico, dataAgendamento })
+      });
+  
+      toast({
+        title: 'Agendamento realizado!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top-right',
+      });
+    } catch (err) {
+      console.error('Erro ao realizar agendamento automático:', err);
+    }
+  }
+  
+  const buscarIdTecnicoPorNome = async (nome) => {
+    try {
+      const res = await fetch('https://inte.groia.nexusnerds.com.br/tecnicos');
+      const tecnicos = await res.json();
+  
+      const tecnico = tecnicos.find(t => t.nome.toLowerCase().includes(nome.toLowerCase()));
+      return tecnico?.id || null;
+    } catch (err) {
+      console.error('Erro ao buscar ID do técnico:', err);
+      return null;
+    }
+  }
+  
+  
+  
   
   
 
