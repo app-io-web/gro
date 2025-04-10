@@ -5,23 +5,19 @@ import {
 import {
   FiHome, FiFolder, FiBarChart2, FiUser, FiPlus
 } from 'react-icons/fi'
+import { ChatIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
-import { useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { apiGet } from '../../services/api'
 import { usarVerificacaoLimiteOS } from '../../components/utils/verificarLimiteOS'
 
-function AdminBottomNav() {
+function AdminBottomNav({ abrirChat }) { 
   const navigate = useNavigate()
   const tipoUsuario = localStorage.getItem('tipo')
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-
-
   const [limite, setLimite] = useState(0)
   const [restante, setRestante] = useState(0)
-
-
 
   useEffect(() => {
     const carregarLimite = async () => {
@@ -73,9 +69,6 @@ function AdminBottomNav() {
   const handleAbrirOS = usarVerificacaoLimiteOS(navigate, onOpen)
 
 
-  const irParaPerfil = () => {
-    navigate(tipoUsuario === 'admin' ? '/admin/perfil' : '/empresa/perfil')
-  }
 
   return (
     <Box
@@ -89,11 +82,28 @@ function AdminBottomNav() {
       px={4}
       py={2}
     >
-      <Flex justify="space-between" align="center">
+      <Flex justify="space-around" align="center" position="relative">
         {tipoUsuario === 'admin' && (
           <>
             <IconButton icon={<FiHome />} variant="ghost" onClick={() => navigate('/admin')} aria-label="Dashboard" />
             <IconButton icon={<FiFolder />} variant="ghost" onClick={() => navigate('/admin/todas-ordens')} aria-label="Ordens" />
+
+            {/* Ícone Central (Apenas para Admin) */}
+            <IconButton
+              icon={<ChatIcon boxSize={7} />}
+              colorScheme="blue"
+              size="lg"
+              isRound
+              position="absolute"
+              top="-30px"
+              left="50%"
+              transform="translateX(-50%)"
+              shadow="md"
+              onClick={abrirChat}  // 👈 aqui chama a função que foi passada
+              aria-label="Chat IA"
+            />
+
+
             <IconButton icon={<FiBarChart2 />} variant="ghost" onClick={() => navigate('/admin/relatorio-dasboard')} aria-label="Métricas" />
             <IconButton icon={<FiUser />} variant="ghost" onClick={() => navigate('/admin/perfil')} aria-label="Perfil" />
           </>
@@ -127,7 +137,6 @@ function AdminBottomNav() {
           </>
         )}
       </Flex>
-
 
       {/* Modal de aviso */}
       <Modal isOpen={isOpen} onClose={onClose} isCentered>

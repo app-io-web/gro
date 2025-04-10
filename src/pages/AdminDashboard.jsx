@@ -27,6 +27,7 @@ function AdminDashboard({ setAuth }) {
   const isMobile = useBreakpointValue({ base: true, md: false })
   const [admin, setAdmin] = useState(null)
   const [dadosEmpresas, setDadosEmpresas] = useState(null) // 👈 cria o estado
+  const [abrirChatIA, setAbrirChatIA] = useState(false)
   
   const navigate = useNavigate()
 
@@ -72,7 +73,8 @@ function AdminDashboard({ setAuth }) {
       {!isMobile && <AdminSidebarDesktop />}
 
       <Box p={6} ml={!isMobile ? '250px' : 0} w="full" pb={isMobile ? '60px' : 0} position="relative">
-        {isMobile && <AdminBottomNav />}
+      {isMobile && <AdminBottomNav abrirChat={() => setAbrirChatIA(true)} />}
+
 
         {!isMobile && (
           <Box mb={6}>
@@ -89,7 +91,8 @@ function AdminDashboard({ setAuth }) {
 
         {/* Só renderiza o Agente se já carregou os dados */}
         {dadosEmpresas && (
-          <AgenteIAFlutuante empresasData={dadosEmpresas} />
+          <AgenteIAFlutuante empresasData={dadosEmpresas} forcarAbertura={abrirChatIA}   onFecharAbertura={() => setAbrirChatIA(false)} />
+
         )}
       </Box>
     </Flex>
