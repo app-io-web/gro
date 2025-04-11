@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  base: '/', // Rodando na raiz do domínio
+  base: '/gro/', // 👈 BASE OBRIGATÓRIA QUANDO É NO GITHUB PAGES
   plugins: [
     react(),
     VitePWA({
@@ -18,8 +18,8 @@ export default defineConfig({
         name: 'Ordens de Serviço App',
         short_name: 'OS App',
         description: 'Gerenciador de Ordens de Serviço',
-        start_url: '/',
-        scope: '/',
+        start_url: '/gro/',  // 👈 start_url certo também
+        scope: '/gro/',      // 👈 escopo correto
         display: 'standalone',
         background_color: '#ffffff',
         theme_color: '#3182ce',
@@ -55,8 +55,9 @@ export default defineConfig({
         ]
       },
       workbox: {
-        swDest: 'sw.js', // 👈 Service Worker será salvo na RAIZ (não dentro de assets!)
-        maximumFileSizeToCacheInBytes: 400 * 1024 * 1024, // 400MB
+        swDest: 'sw.js',
+        cleanupOutdatedCaches: true,
+        maximumFileSizeToCacheInBytes: 400 * 1024 * 1024,
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.origin === self.location.origin,
@@ -73,7 +74,7 @@ export default defineConfig({
       },
       devOptions: {
         enabled: true,
-        type: 'module' // para evitar erro local
+        type: 'module'
       }
     })
   ]
