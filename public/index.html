@@ -42,20 +42,20 @@
     <!-- Redirecionamento inteligente para SPA com hash -->
     <script>
       (function () {
-        const currentPath = window.location.pathname;
-        const isRoot = currentPath === "/" || currentPath === "";
-
-        if (!isRoot && !currentPath.startsWith("/#/")) {
-          const hashPath = "/#" + currentPath;
-          const newUrl =
-            window.location.origin +
-            hashPath +
-            window.location.search +
-            window.location.hash;
+        const basePath = "/gro";
+        const pathname = window.location.pathname;
+      
+        if (pathname === "/" || pathname === "") {
+          // Se abrir só "/" no GitHub Pages, redireciona para "/gro/"
+          window.location.replace(basePath + "/");
+        } else if (pathname.startsWith(basePath) && !pathname.startsWith(basePath + "/#/")) {
+          // Se abrir direto "/gro/alguma-pagina", corrige para usar hash mode
+          const newUrl = basePath + "/#" + pathname.slice(basePath.length) + window.location.search + window.location.hash;
           window.location.replace(newUrl);
         }
       })();
-    </script>
+      </script>
+      
 
     <!-- Fix iOS Keyboard Bug em PWAs -->
     <script>
