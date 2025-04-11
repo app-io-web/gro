@@ -14,6 +14,8 @@ import {
   import BotaoReagendar from '../../components/tecnico/botoes/BotaoReagendar'
   import TecnicoBottomNav from '../../components/tecnico/TecnicoBottomNav'
   import BotaoPendenciar from '../../components/tecnico/botoes/BotaoPendenciar'
+  import { corrigirHorario } from '../../components/utils/formatarHorario'; // importa a função
+
   
   function DetalheOrdemTecnico() {
     const { id } = useParams()
@@ -369,7 +371,8 @@ import {
         }
       }
       
-      
+
+        
       
 
       
@@ -413,8 +416,12 @@ import {
         <Stack spacing={3}>
           <Text><strong>Cliente:</strong> {ordem.Nome_Cliente}</Text>
           <Text><strong>Tipo:</strong> {ordem.Tipo_OS}</Text>
-          <Text><strong>Horário:</strong> {ordem.Horario_Agendamento_OS ? new Date(ordem.Horario_Agendamento_OS).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Não informado'}</Text>
-  
+          <Text><strong>Horário: </strong> 
+              {ordem.Horario_Agendamento_OS 
+                ? corrigirHorario(ordem.Horario_Agendamento_OS).split('T')[1]?.slice(0, 5) || corrigirHorario(ordem.Horario_Agendamento_OS).split(' ')[1]
+                : 'Não informado'}
+            </Text>
+
           <Divider />
   
           <Text fontWeight="bold">📍 Endereço:</Text>

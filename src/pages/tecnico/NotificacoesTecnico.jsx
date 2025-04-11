@@ -5,6 +5,7 @@ import { apiGet } from '../../services/api';
 import { useOfflineData } from '../../hooks/useOfflineData';
 import TecnicoBottomNav from '../../components/tecnico/TecnicoBottomNav';
 import { parseISO, format } from 'date-fns';
+import { corrigirHorario } from '../../components/utils/formatarHorario'; // importa a função
 
 function NotificacoesTecnico() {
   const [notificacoes, setNotificacoes] = useState([]);
@@ -33,10 +34,12 @@ function NotificacoesTecnico() {
   }, []);
 
   const formatarData = (data) => {
-    const parsedDate = parseISO(data); // Converte a string ISO para uma data
-    const dataSemHora = parsedDate.toISOString().slice(0, 10); // Retira a hora (ficando com o formato YYYY-MM-DD)
-    return dataSemHora.split('-').reverse().join('/'); // Formata para "dd/MM/yyyy"
-  };
+    if (!data) return '';
+    const parsedDate = parseISO(corrigirHorario(data));
+    const dataSemHora = parsedDate.toISOString().slice(0, 10);
+    return dataSemHora.split('-').reverse().join('/');
+  }
+  
 
   const getCorStatus = (status) => {
     switch (status) {
