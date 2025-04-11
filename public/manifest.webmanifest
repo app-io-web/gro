@@ -2,8 +2,8 @@
   "name": "Ordens de Serviço App",
   "short_name": "OS App",
   "description": "Gerenciador de Ordens de Serviço",
-  "start_url": "/gro/",
-  "scope": "/gro/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3182ce",
@@ -13,25 +13,25 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/gro/icons/icon-144x144.png",
+      "src": "/icons/icon-144x144.png",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/gro/icons/icon-192x192.png",
+      "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/gro/icons/icon-512x512.png",
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/gro/icons/icon-512x512.png",
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  base: '/gro/', // 👈 BASE OBRIGATÓRIA QUANDO É NO GITHUB PAGES
+  base: '/', // Site na raiz
   plugins: [
     react(),
     VitePWA({
@@ -12,14 +12,15 @@ export default defineConfig({
         'favicon.svg',
         'robots.txt',
         'apple-touch-icon.png',
-        'icons/*'
+        'icons/*',
+        'splash/*'
       ],
       manifest: {
         name: 'Ordens de Serviço App',
         short_name: 'OS App',
         description: 'Gerenciador de Ordens de Serviço',
-        start_url: '/gro/',  // 👈 start_url certo também
-        scope: '/gro/',      // 👈 escopo correto
+        start_url: '/',
+        scope: '/',
         display: 'standalone',
         background_color: '#ffffff',
         theme_color: '#3182ce',
@@ -44,13 +45,7 @@ export default defineConfig({
             src: 'icons/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: 'icons/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable'
+            purpose: 'any maskable'
           }
         ]
       },
@@ -66,7 +61,7 @@ export default defineConfig({
               cacheName: 'example-cache',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 24 * 60 * 60 // 1 dia
+                maxAgeSeconds: 24 * 60 * 60
               }
             }
           }
