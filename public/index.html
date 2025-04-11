@@ -25,22 +25,15 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
     
     <meta name="msapplication-TileImage" content="/icons/ms-icon-144x144.png">
-
-    <meta name="apple-mobile-web-app-title" content="Ordens de Serviço App" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  
     <meta name="theme-color" content="#3182ce" />
+
     <title>Ordens de Serviço</title>
   </head>
-  
+
   <body>
     <div id="root"></div>
 
-    <!-- Script principal -->
-    <script type="module" src="/gro/src/main.jsx"></script>
-    <!-- ⚡ O Vite depois do build gera o JS e CSS dentro de /assets/ -->
-
-    <!-- Fix iOS Keyboard Bug em PWAs -->
+    <!-- O Vite INJETA automaticamente os scripts corretos no build -->
     <script>
       document.addEventListener('touchstart', () => {}, true);
     </script>
