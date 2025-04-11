@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  base: '/', // Rodando na raiz
+  base: '/', // Rodando na raiz do domínio
   plugins: [
     react(),
     VitePWA({
@@ -55,6 +55,7 @@ export default defineConfig({
         ]
       },
       workbox: {
+        swDest: 'sw.js', // 👈 Service Worker será salvo na RAIZ (não dentro de assets!)
         maximumFileSizeToCacheInBytes: 400 * 1024 * 1024, // 400MB
         runtimeCaching: [
           {
@@ -69,6 +70,10 @@ export default defineConfig({
             }
           }
         ]
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module' // para evitar erro local
       }
     })
   ]
