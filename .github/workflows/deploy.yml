@@ -27,6 +27,9 @@ jobs:
       - name: 🔨 Build do projeto
         run: npm run build
 
+      - name: 🛠️ Copiar arquivos públicos (favicon, icons, splash)
+        run: cp -r public/* dist/
+
       - name: 🚀 Deploy no GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
