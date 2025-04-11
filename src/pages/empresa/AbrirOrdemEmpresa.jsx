@@ -122,9 +122,11 @@ function AbrirOrdemEmpresa() {
         'Ordem de Serviços': novaEstrutura
       })
 
+      
+
       const NomeEmpresa = localStorage.getItem('empresa_nome') || 'Empresa não informada';
 
-      await fetch('https://webhook.nexusnerds.com.br/webhook/novaordem', {
+      await fetch('https://n8n.nexusnerds.com.br/webhook-test/novaordem', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,9 +140,11 @@ function AbrirOrdemEmpresa() {
           tipo_cliente: form.TipoCliente,
           coordenadas: form.Coordenadas,
           data_envio: new Date().toISOString(),
-          empresa: NomeEmpresa // <<< AQUI
+          empresa: NomeEmpresa,
+          numero_ordem: novaOrdem.Numero_OS   // 🔥 AQUI ADICIONADO
         }),
       });
+      
       
 
       toast({ title: 'Ordem aberta com sucesso!', status: 'success' })
