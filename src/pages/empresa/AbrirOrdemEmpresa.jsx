@@ -122,12 +122,37 @@ function AbrirOrdemEmpresa() {
         'Ordem de Serviços': novaEstrutura
       })
 
+      const NomeEmpresa = localStorage.getItem('empresa_nome') || 'Empresa não informada';
+
+      await fetch('https://webhook.nexusnerds.com.br/webhook/novaordem', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mensagem: `🛠️ Nova Ordem aberta para o cliente ${form.Nome_Cliente} (${form.Tipo_OS}) pela empresa ${NomeEmpresa}`,
+          cliente: form.Nome_Cliente,
+          telefone: form.Telefone1_Cliente,
+          endereco: `${form.Rua}, nº ${form.Numero}, ${form.Bairro}, ${form.Cidade} - ${form.Estado}`,
+          tipo_ordem: form.Tipo_OS,
+          tipo_cliente: form.TipoCliente,
+          coordenadas: form.Coordenadas,
+          data_envio: new Date().toISOString(),
+          empresa: NomeEmpresa // <<< AQUI
+        }),
+      });
+      
+
       toast({ title: 'Ordem aberta com sucesso!', status: 'success' })
       setForm({
         Nome_Cliente: '', Telefone1_Cliente: '', Telefone2_Cliente: '',
         Rua: '', Numero: '', Bairro: '', Cidade: '', Estado: '',
         Tipo_OS: '', Observacao_Empresa: '', TipoCliente: '', Coordenadas: ''
       })
+
+
+
+      
     } catch (err) {
       console.error(err)
       toast({ title: 'Erro ao abrir ordem', status: 'error' })
