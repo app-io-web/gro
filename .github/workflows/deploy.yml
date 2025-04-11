@@ -24,6 +24,9 @@ jobs:
       - name: 📥 Instalar dependências
         run: npm install
 
+      - name: 🌎 Definir variável de ambiente para GitHub Pages
+        run: echo "GITHUB_PAGES=true" >> $GITHUB_ENV
+
       - name: 🔨 Build do projeto
         run: npm run build
 
