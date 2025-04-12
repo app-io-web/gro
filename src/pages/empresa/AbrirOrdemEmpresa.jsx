@@ -126,7 +126,7 @@ function AbrirOrdemEmpresa() {
 
       const NomeEmpresa = localStorage.getItem('empresa_nome') || 'Empresa não informada';
 
-      await fetch('https://n8n.nexusnerds.com.br/webhook-test/novaordem', {
+      await fetch('https://webhook.nexusnerds.com.br/webhook/novaordem', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
