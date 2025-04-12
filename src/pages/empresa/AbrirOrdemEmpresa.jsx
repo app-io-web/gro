@@ -69,7 +69,7 @@ function AbrirOrdemEmpresa() {
   const handleSubmit = async () => {
     const { Nome_Cliente, Telefone1_Cliente, Rua, Numero, Bairro, Cidade, Estado, Tipo_OS, TipoCliente, Coordenadas } = form
 
-    if (!Nome_Cliente || !Telefone1_Cliente || !Rua || !Numero || !Bairro || !Cidade || !Estado || !Tipo_OS || !TipoCliente || !Coordenadas) {
+    if (!Nome_Cliente || !Telefone1_Cliente || !Rua || !Numero || !Bairro || !Cidade || !Estado || !Tipo_OS || !TipoCliente ) {
       toast({ title: 'Preencha todos os campos obrigatórios', status: 'warning' })
       return
     }
@@ -141,7 +141,7 @@ function AbrirOrdemEmpresa() {
           coordenadas: form.Coordenadas,
           data_envio: new Date().toISOString(),
           empresa: NomeEmpresa,
-          numero_ordem: novaOrdem.Numero_OS   // 🔥 AQUI ADICIONADO
+          numero_ordem: novaOrdem.Numero_OS   // Adicionando numero de Ordem Antes de Enviar ao banco de dados
         }),
       });
       
