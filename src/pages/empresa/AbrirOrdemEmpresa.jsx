@@ -302,7 +302,7 @@ function AbrirOrdemEmpresa() {
     </Select>
   </FormControl>
 
-  <FormControl isRequired>
+  <FormControl>
     <FormLabel>Coordenadas (Latitude, Longitude)</FormLabel>
     <Input
       name="Coordenadas"
