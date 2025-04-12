@@ -11,27 +11,28 @@ import dashboard5 from '../assets/lotties/dashboard 5.json';
 
 function DashboardAnimado() {
   const [mostrarDashboards, setMostrarDashboards] = useState(false);
-  const [imagemIlustracao, setImagemIlustracao] = useState('/Imagem 1920x1080.png');
+  const [imagemIlustracao, setImagemIlustracao] = useState('/Imagem 1920x1080.svg');
 
   useEffect(() => {
-    // Detecta tamanho da tela ao abrir
+    // Detecta tamanho da tela
     const handleResize = () => {
       if (window.innerWidth > 1400) {
-        setImagemIlustracao('/Imagem 1920x1080.png');
+        setImagemIlustracao('/Imagem 1920x1080.svg');
       } else {
-        setImagemIlustracao('/Imagem 1080x1000.png');
+        setImagemIlustracao('/Imagem 1080x1000.svg');
       }
     };
 
-    handleResize(); // Executa ao carregar a página
-    window.addEventListener('resize', handleResize); // Atualiza se redimensionar
+    handleResize();
+    window.addEventListener('resize', handleResize);
 
-    const timer = setTimeout(() => {
-      setMostrarDashboards(true);
-    }, 12000); // Espera 12 segundos
+    // Alternar entre imagem e dashboards
+    const intervalo = setInterval(() => {
+      setMostrarDashboards(prev => !prev); // alterna true/false
+    }, 12000); // a cada 12 segundos troca
 
     return () => {
-      clearTimeout(timer);
+      clearInterval(intervalo);
       window.removeEventListener('resize', handleResize);
     };
   }, []);

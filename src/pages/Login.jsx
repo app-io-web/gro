@@ -17,28 +17,12 @@ function Login({ setAuth }) {
   const [carregandoLogin, setCarregandoLogin] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
   const [mobile, setMobile] = useState(isMobile());
-  const [imagemIlustracao, setImagemIlustracao] = useState('/Imagem 1920x1080.png'); // 🔥 imagem inicial
 
   const fullText = 'SGO';
   const toast = useToast();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleResize = () => {
-      setMobile(isMobile());
-      // Define a imagem correta baseado no tamanho da tela
-      if (window.innerWidth > 1400) {
-        setImagemIlustracao('/Imagem 1920x1080.png');
-      } else {
-        setImagemIlustracao('/Imagem 1080x1000.png');
-      }
-    };
 
-    handleResize(); // Atualiza logo ao abrir
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   // Seu useEffect de typing (SGO)
   useEffect(() => {
