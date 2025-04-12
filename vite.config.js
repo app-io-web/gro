@@ -19,7 +19,7 @@ export default defineConfig({
         theme_color: '#3182ce',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: '/gro/',
+        start_url: '/',
         scope: '/gro/',
         orientation: 'portrait',
         dir: 'ltr',
