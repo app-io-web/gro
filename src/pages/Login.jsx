@@ -1,140 +1,217 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { apiGet } from '../services/api'
-import { Box, Button, FormControl, FormLabel, Input, Flex, Heading, useToast } from '@chakra-ui/react'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { apiGet } from '../services/api';
+import { Box, Button, FormControl, FormLabel, Input, Flex, Heading, Image, useToast, Stack } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+
+// Detecta se é mobile
+function isMobile() {
+  return window.innerWidth <= 768;
+}
 
 function Login({ setAuth }) {
-  const [email, setEmail] = useState(() => sessionStorage.getItem('temp_email') || '')
-  const [senha, setSenha] = useState(() => sessionStorage.getItem('temp_senha') || '')
-  const [carregandoLogin, setCarregandoLogin] = useState(false)
-  const [displayedText, setDisplayedText] = useState('')
+  const [email, setEmail] = useState(() => sessionStorage.getItem('temp_email') || '');
+  const [senha, setSenha] = useState(() => sessionStorage.getItem('temp_senha') || '');
+  const [carregandoLogin, setCarregandoLogin] = useState(false);
+  const [displayedText, setDisplayedText] = useState('');
+  const [mobile, setMobile] = useState(isMobile());
+  const [imagemIlustracao, setImagemIlustracao] = useState('/Imagem 1920x1080.png'); // 🔥 imagem inicial
 
-  const fullText = 'SGO'
-
-  const toast = useToast()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    sessionStorage.setItem('temp_email', email)
-    sessionStorage.setItem('temp_senha', senha)
-  }, [email, senha])
+  const fullText = 'SGO';
+  const toast = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    let index = 0
-    const interval = setInterval(() => {
-      setDisplayedText(fullText.slice(0, index + 1))
-      index++
-      if (index === fullText.length) {
-        clearInterval(interval)
+    const handleResize = () => {
+      setMobile(isMobile());
+      // Define a imagem correta baseado no tamanho da tela
+      if (window.innerWidth > 1400) {
+        setImagemIlustracao('/Imagem 1920x1080.png');
+      } else {
+        setImagemIlustracao('/Imagem 1080x1000.png');
       }
-    }, 300)
-    return () => clearInterval(interval)
-  }, [])
+    };
+
+    handleResize(); // Atualiza logo ao abrir
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Seu useEffect de typing (SGO)
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      setDisplayedText(fullText.slice(0, index + 1));
+      index++;
+      if (index === fullText.length) {
+        clearInterval(interval);
+      }
+    }, 300);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    setCarregandoLogin(true)
+    e.preventDefault();
+    setCarregandoLogin(true);
 
-    const emailLimpo = email.trim().toLowerCase()
-    const senhaLimpa = senha.trim()
+    const emailLimpo = email.trim().toLowerCase();
+    const senhaLimpa = senha.trim();
 
     if (!emailLimpo || !senhaLimpa) {
-      toast({ title: 'Preencha todos os campos.', status: 'error', duration: 2000 })
-      setCarregandoLogin(false)
-      return
+      toast({ title: 'Preencha todos os campos.', status: 'error', duration: 2000 });
+      setCarregandoLogin(false);
+      return;
     }
 
     try {
-      const whereEmpresa = `(Email,eq,${emailLimpo})~and(password,eq,${senhaLimpa})`
-      const queryEmpresa = encodeURIComponent(whereEmpresa)
-      const resEmpresa = await apiGet(`/api/v2/tables/mga2sghx95o3ssp/records?where=${queryEmpresa}`)
+      const whereEmpresa = `(Email,eq,${emailLimpo})~and(password,eq,${senhaLimpa})`;
+      const queryEmpresa = encodeURIComponent(whereEmpresa);
+      const resEmpresa = await apiGet(`/api/v2/tables/mga2sghx95o3ssp/records?where=${queryEmpresa}`);
 
       if (resEmpresa.list && resEmpresa.list.length > 0) {
-        const user = resEmpresa.list[0]
-        const tipoUsuario = user.tipo?.toLowerCase()
+        const user = resEmpresa.list[0];
+        const tipoUsuario = user.tipo?.toLowerCase();
 
-        localStorage.setItem('token', 'empresa-logada')
-        localStorage.setItem('empresa_id', user.Id)
-        localStorage.setItem('empresa_nome', user.empresa_nome || '')
-        localStorage.setItem('email', user.Email)
-        localStorage.setItem('tipo', tipoUsuario)
-        localStorage.setItem('nome', user.nome || '')
-        localStorage.setItem('foto_perfil', user.picture_perfil || '')
-        localStorage.setItem('telefone', user.telefone || '')
-        localStorage.setItem('UnicID', user.UnicID || '')
-        localStorage.setItem('Limite_de_Ordem', user.Limite_de_Ordem || '')
-        localStorage.setItem('savedEmail', emailLimpo)
-        localStorage.setItem('savedSenha', senhaLimpa)
+        localStorage.setItem('token', 'empresa-logada');
+        localStorage.setItem('empresa_id', user.Id);
+        localStorage.setItem('empresa_nome', user.empresa_nome || '');
+        localStorage.setItem('email', user.Email);
+        localStorage.setItem('tipo', tipoUsuario);
+        localStorage.setItem('nome', user.nome || '');
+        localStorage.setItem('foto_perfil', user.picture_perfil || '');
+        localStorage.setItem('telefone', user.telefone || '');
+        localStorage.setItem('UnicID', user.UnicID || '');
+        localStorage.setItem('Limite_de_Ordem', user.Limite_de_Ordem || '');
+        localStorage.setItem('savedEmail', emailLimpo);
+        localStorage.setItem('savedSenha', senhaLimpa);
 
-        setAuth(true)
+        setAuth(true);
         setTimeout(() => {
-          navigate(tipoUsuario === 'admin' ? '/admin' : '/empresa')
-        }, 50)
+          navigate(tipoUsuario === 'admin' ? '/admin' : '/empresa');
+        }, 50);
 
-        return
+        return;
       }
 
-      const whereTecnico = `(email_tecnico,eq,${emailLimpo})~and(senha,eq,${senhaLimpa})`
-      const queryTecnico = encodeURIComponent(whereTecnico)
-      const resTecnico = await apiGet(`/api/v2/tables/mpyestriqe5a1kc/records?where=${queryTecnico}`)
+      const whereTecnico = `(email_tecnico,eq,${emailLimpo})~and(senha,eq,${senhaLimpa})`;
+      const queryTecnico = encodeURIComponent(whereTecnico);
+      const resTecnico = await apiGet(`/api/v2/tables/mpyestriqe5a1kc/records?where=${queryTecnico}`);
 
       if (resTecnico.list && resTecnico.list.length > 0) {
-        const tecnico = resTecnico.list[0]
+        const tecnico = resTecnico.list[0];
 
-        localStorage.setItem('token', 'tecnico-logado')
-        localStorage.setItem('tecnico_id', tecnico.Id)
-        localStorage.setItem('email', tecnico.email_tecnico)
-        localStorage.setItem('nome', tecnico.Tecnico_Responsavel || '')
-        localStorage.setItem('telefone', tecnico.telefone || '')
-        localStorage.setItem('ID_Tecnico_Responsavel', tecnico.ID_Tecnico_Responsavel || '')
-        localStorage.setItem('tipo', 'tecnico')
-        localStorage.setItem('savedEmail', emailLimpo)
-        localStorage.setItem('savedSenha', senhaLimpa)
+        localStorage.setItem('token', 'tecnico-logado');
+        localStorage.setItem('tecnico_id', tecnico.Id);
+        localStorage.setItem('email', tecnico.email_tecnico);
+        localStorage.setItem('nome', tecnico.Tecnico_Responsavel || '');
+        localStorage.setItem('telefone', tecnico.telefone || '');
+        localStorage.setItem('ID_Tecnico_Responsavel', tecnico.ID_Tecnico_Responsavel || '');
+        localStorage.setItem('tipo', 'tecnico');
+        localStorage.setItem('savedEmail', emailLimpo);
+        localStorage.setItem('savedSenha', senhaLimpa);
 
-        setAuth(true)
+        setAuth(true);
         setTimeout(() => {
-          navigate('/tecnico')
-        }, 50)
+          navigate('/tecnico');
+        }, 50);
 
-        return
+        return;
       }
 
-      toast({ title: 'E-mail ou senha inválidos.', status: 'error', duration: 3000 })
+      toast({ title: 'E-mail ou senha inválidos.', status: 'error', duration: 3000 });
     } catch (err) {
-      console.error(err)
-      toast({ title: 'Erro ao conectar com o servidor.', status: 'error', duration: 3000 })
+      console.error(err);
+      toast({ title: 'Erro ao conectar com o servidor.', status: 'error', duration: 3000 });
     } finally {
-      setCarregandoLogin(false)
+      setCarregandoLogin(false);
     }
+  };
+  if (mobile) {
+    // 🔵 MOBILE
+    return (
+      <Flex minH="100vh" align="center" justify="center" bgGradient="linear(to-br, blue.500, indigo.700)">
+        <Box bg="white" p={8} rounded="xl" shadow="lg" w="full" maxW="md">
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}
+          >
+            {displayedText}
+          </motion.h1>
+          <Heading size="lg" textAlign="center" mb={6}>Login - Sistema O.S</Heading>
+          <form onSubmit={handleLogin}>
+            <FormControl mb={4}>
+              <FormLabel>E-mail</FormLabel>
+              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Senha</FormLabel>
+              <Input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
+            </FormControl>
+            <Button bg="#3498db" color="white" _hover={{ bg: '#2980b9' }} w="full" type="submit" isLoading={carregandoLogin}>
+              Entrar
+            </Button>
+          </form>
+        </Box>
+      </Flex>
+    );
   }
 
+  // 🖥️ DESKTOP
   return (
-    <Flex minH="100vh" align="center" justify="center" bgGradient="linear(to-br, blue.500, indigo.700)">
-      <Box bg="white" p={8} rounded="xl" shadow="lg" w="full" maxW="md">
+    <Flex minH="100vh">
+      {/* Esquerda */}
+      <Flex flex="0.6" align="center" justify="center" bg="blue.500" color="white" flexDirection="column" p={8}>
         <motion.h1
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}
+          style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}
         >
           {displayedText}
         </motion.h1>
-        <Heading size="lg" textAlign="center" mb={6}>Login - Sistema O.S</Heading>
-        <form onSubmit={handleLogin}>
-          <FormControl mb={4}>
-            <FormLabel>E-mail</FormLabel>
-            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email@empresa.com" />
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel>Senha</FormLabel>
-            <Input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} placeholder="••••••••" />
-          </FormControl>
-          <Button colorScheme="blue" type="submit" w="full" isLoading={carregandoLogin}>Entrar</Button>
-        </form>
-      </Box>
+        <Heading size="md" mb={6} textAlign="center">
+          Bem-vindo ao Sistema O.S
+        </Heading>
+        <Box w="full" maxW="sm">
+          <form onSubmit={handleLogin}>
+            <Stack spacing={4}>
+              <FormControl>
+                <FormLabel>Email</FormLabel>
+                <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} bg="white" color="black" />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Senha</FormLabel>
+                <Input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} bg="white" color="black" />
+              </FormControl>
+              <Button
+                type="submit"
+                w="full"
+                bg="#3498db"
+                color="white"
+                _hover={{ bg: '#2980b9' }}
+                isLoading={carregandoLogin}
+              >
+                Entrar
+              </Button>
+            </Stack>
+          </form>
+        </Box>
+      </Flex>
+
+      {/* Direita - Imagem */}
+      <Flex flex="1.4" bg="white" align="center" justify="center">
+        <Image
+          src={imagemIlustracao} // 🔥 imagem escolhida automaticamente
+          alt="Login illustration"
+          w="100%"
+          objectFit="cover"
+        />
+      </Flex>
     </Flex>
-  )
+  );
 }
 
-export default Login
+export default Login;
