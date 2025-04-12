@@ -27,7 +27,7 @@ export default defineConfig({
         prefer_related_applications: false,
         icons: [
           {
-            src: '/gro/icons/icon-144x144.png',
+            src: 'https://i.ibb.co/PsrdVYVc/ms-icon-310x310.png',
             sizes: '144x144',
             type: 'image/png',
             purpose: 'any'
