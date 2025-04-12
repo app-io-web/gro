@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { apiGet } from '../services/api';
 import { Box, Button, FormControl, FormLabel, Input, Flex, Heading, Image, useToast, Stack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import DashboardAnimado from './DashboardAnimado';
+
 
 // Detecta se é mobile
 function isMobile() {
@@ -130,33 +132,83 @@ function Login({ setAuth }) {
   if (mobile) {
     // 🔵 MOBILE
     return (
-      <Flex minH="100vh" align="center" justify="center" bgGradient="linear(to-br, blue.500, indigo.700)">
-        <Box bg="white" p={8} rounded="xl" shadow="lg" w="full" maxW="md">
-          <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-            style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}
-          >
-            {displayedText}
-          </motion.h1>
-          <Heading size="lg" textAlign="center" mb={6}>Login - Sistema O.S</Heading>
+      <Flex minH="100vh" align="center" justify="center" bg="white">
+        <Box
+          w="full"
+          maxW="xs"
+          p={6}
+          borderRadius="xl"
+          textAlign="center"
+          boxShadow="lg"
+        >
+          {/* Logo ou Ícone */}
+          <Flex justify="center" mb={4}>
+            <Image src="/logo.png" alt="Logo" boxSize="60px" />
+          </Flex>
+    
+          {/* Título */}
+          <Heading as="h2" size="lg" mb={2} color="black">
+            Login
+          </Heading>
+    
+          <Box fontSize="sm" color="gray.500" mb={6}>
+            Sign in to continue.
+          </Box>
+    
+          {/* Formulário */}
           <form onSubmit={handleLogin}>
             <FormControl mb={4}>
-              <FormLabel>E-mail</FormLabel>
-              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <FormLabel fontSize="sm" color="gray.700" textAlign="left">
+                Nome
+              </FormLabel>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                bg="gray.100"
+                borderRadius="md"
+                placeholder="Digite seu e-mail"
+              />
             </FormControl>
+    
             <FormControl mb={4}>
-              <FormLabel>Senha</FormLabel>
-              <Input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
+              <FormLabel fontSize="sm" color="gray.700" textAlign="left">
+                Senha
+              </FormLabel>
+              <Input
+                type="password"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                bg="gray.100"
+                borderRadius="md"
+                placeholder="••••••••"
+              />
             </FormControl>
-            <Button bg="#3498db" color="white" _hover={{ bg: '#2980b9' }} w="full" type="submit" isLoading={carregandoLogin}>
-              Entrar
+    
+            <Button
+              bg="black"
+              color="white"
+              _hover={{ bg: "gray.800" }}
+              w="full"
+              type="submit"
+              isLoading={carregandoLogin}
+              mt={2}
+              mb={4}
+              borderRadius="md"
+            >
+              Log in
             </Button>
           </form>
+    
+          {/* Links abaixo 
+          <Box fontSize="sm" color="gray.500">
+            <Box as="span" mr={1}>Forgot Password?</Box>
+            <Box as="span" color="blue.500" fontWeight="bold" cursor="pointer">Signup!</Box>
+          </Box>*/}
         </Box>
       </Flex>
     );
+    
   }
 
   // 🖥️ DESKTOP
@@ -203,13 +255,9 @@ function Login({ setAuth }) {
 
       {/* Direita - Imagem */}
       <Flex flex="1.4" bg="white" align="center" justify="center">
-        <Image
-          src={imagemIlustracao} // 🔥 imagem escolhida automaticamente
-          alt="Login illustration"
-          w="100%"
-          objectFit="cover"
-        />
+        <DashboardAnimado />
       </Flex>
+
     </Flex>
   );
 }
