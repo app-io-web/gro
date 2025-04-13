@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Box, Heading, Text, VStack, Spinner, Flex, Badge, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react'
+import { Box, Heading, Text, VStack, Spinner, Flex, Badge, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, Input, Button } from '@chakra-ui/react'
 import { useBreakpointValue } from '@chakra-ui/react'
 import ReactMarkdown from 'react-markdown'
 
@@ -13,8 +13,18 @@ export default function HistoricoConversas() {
   const [conversasSelecionadas, setConversasSelecionadas] = useState([])
   const [dataSelecionada, setDataSelecionada] = useState('')
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [senhaModal, setSenhaModal] = useState('');
+  const [senhaCorreta] = useState('dev01-admin1234'); // 🔵 aqui define a senha que libera acesso
+  const { isOpen: isSenhaOpen, onOpen: onSenhaOpen, onClose: onSenhaClose } = useDisclosure();
+  const [autorizado, setAutorizado] = useState(false);
+
 
   const isMobile = useBreakpointValue({ base: true, md: false })
+
+  useEffect(() => {
+    onSenhaOpen(); // abre o modal de senha ao carregar
+  }, []);
+  
 
   useEffect(() => {
     const buscarHistorico = async () => {
@@ -37,6 +47,38 @@ export default function HistoricoConversas() {
     setDataSelecionada(data)
     onOpen()
   }
+
+  if (!autorizado) {
+    return (
+      <Modal isOpen={isSenhaOpen} onClose={() => {}} isCentered closeOnOverlayClick={false}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Digite a senha de acesso 🔒</ModalHeader>
+          <ModalBody>
+            <VStack spacing={4}>
+              <Input
+                placeholder="Senha"
+                type="password"
+                value={senhaModal}
+                onChange={(e) => setSenhaModal(e.target.value)}
+              />
+              <Button colorScheme="blue" w="full" onClick={() => {
+                if (senhaModal === senhaCorreta) {
+                  setAutorizado(true);
+                  onSenhaClose();
+                } else {
+                  alert('Senha incorreta!');
+                }
+              }}>
+                Acessar
+              </Button>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    );
+  }
+  
 
   return (
     <Box display="flex" minH="100vh" bg="gray.100">
@@ -120,6 +162,34 @@ export default function HistoricoConversas() {
           </ModalBody>
         </ModalContent>
       </Modal>
+
+      <Modal isOpen={isSenhaOpen} onClose={() => {}} isCentered closeOnOverlayClick={false}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Digite a senha de acesso 🔒</ModalHeader>
+          <ModalBody>
+            <VStack spacing={4}>
+              <Input
+                placeholder="Senha"
+                type="password"
+                value={senhaModal}
+                onChange={(e) => setSenhaModal(e.target.value)}
+              />
+              <Button colorScheme="blue" w="full" onClick={() => {
+                if (senhaModal === senhaCorreta) {
+                  setAutorizado(true);
+                  onSenhaClose();
+                } else {
+                  alert('Senha incorreta!');
+                }
+              }}>
+                Acessar
+              </Button>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
     </Box>
   )
 }

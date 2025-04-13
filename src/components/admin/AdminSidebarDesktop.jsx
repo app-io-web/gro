@@ -107,6 +107,16 @@ function SidebarAdminDesktop() {
             >
               Histórico de IA
             </Button>
+            <Button
+              leftIcon={<FiTerminal color="white" />}
+              color="white"
+              justifyContent="start"
+              variant="ghost"
+              _hover={{ bg: 'purple.600' }}
+              onClick={() => navigate('/admin/metricas')}
+            >
+              Status da API
+            </Button>
           </>
         )}
 
@@ -387,16 +397,6 @@ function SidebarAdminDesktop() {
                           Técnicos
                         </Button>
 
-                        <Button
-                          leftIcon={<FiSettings color="white" />}
-                          color="white"
-                          justifyContent="start"
-                          variant="ghost"
-                          _hover={{ bg: 'blue.600' }}
-                          onClick={() => navigate('/admin/config')}
-                        >
-                          Configurações
-                        </Button>
                       </>
                     )}
 

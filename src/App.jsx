@@ -20,6 +20,7 @@ import PerfilTecnico from './pages/tecnico/PerfilTecnico.jsx'
 import OrdensEmAbertoEmpresa from './pages/empresa/OrdensEmAbertoEmpresa'
 
 import HistoricoConversas from './pages/admin/historico-conversas.jsx'
+import AdminMetricas from './components/admin/AdminMetricas.jsx'
 
 import OrdensFinalizadas from './pages/admin/OrdensFinalizadas.jsx'
 import DetalheOrdemFinalizadaAdmin from './pages/admin/DetalheOrdemFinalizadaAdmin.jsx'
@@ -305,6 +306,8 @@ function App() {
           <Route path="/admin/relatorios/empresa/:nomeEmpresa/analise" element={<RelatorioEmpresaAnalise />} />
           
           <Route path="/admin/historico-conversas" element={<HistoricoConversas />} />
+          <Route path="/admin/metricas" element={<AdminMetricas />} />
+
 
           <Route path="/admin/perfil" element={<PerfilAdmin />} />
           <Route path="/empresa/perfil" element={<PerfilEmpresaPage />} />

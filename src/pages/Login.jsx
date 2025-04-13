@@ -59,6 +59,13 @@ function Login({ setAuth }) {
         const user = resEmpresa.list[0];
         const tipoUsuario = user.tipo?.toLowerCase();
 
+      // 🔥 NOVA VERIFICAÇÃO: Bloqueia login se a empresa estiver inativa
+      if (tipoUsuario === 'empresa' && user.status?.toLowerCase() === 'inativo') {
+        toast({ title: 'Empresa desativada. Contate o suporte.', status: 'error', duration: 3000 });
+        setCarregandoLogin(false);
+        return;
+      }
+
         localStorage.setItem('token', 'empresa-logada');
         localStorage.setItem('empresa_id', user.Id);
         localStorage.setItem('empresa_nome', user.empresa_nome || '');
