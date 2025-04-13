@@ -305,7 +305,7 @@ function EmpresasCadastradas() {
                       onClick={() => {
                         const texto = `
                     🔗 Acesso à Plataforma:\n
-https://maxfibra.com.br/login
+http://sgo.maxfibraltda.com.br
 
 📧 Email: ${empresa.Email}
 🔑 Senha: ${empresa.password || '[senha não definida]'}

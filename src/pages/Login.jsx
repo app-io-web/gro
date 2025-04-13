@@ -113,6 +113,12 @@ function Login({ setAuth }) {
       setCarregandoLogin(false);
     }
   };
+
+  const handleForgotPassword = () => {
+    navigate('/esqueci-senha');
+  };
+
+  
   if (mobile) {
     // 🔵 MOBILE
     return (
@@ -184,11 +190,21 @@ function Login({ setAuth }) {
             </Button>
           </form>
     
-          {/* Links abaixo 
-          <Box fontSize="sm" color="gray.500">
-            <Box as="span" mr={1}>Forgot Password?</Box>
-            <Box as="span" color="blue.500" fontWeight="bold" cursor="pointer">Signup!</Box>
-          </Box>*/}
+
+          {/* Links abaixo */}
+          <Box fontSize="sm" color="gray.500" mt={4}>
+            <Box as="span" mr={1}>Esqueceu a senha?</Box>
+            <Box
+              as="span"
+              color="blue.500"
+              fontWeight="bold"
+              cursor="pointer"
+              onClick={handleForgotPassword}
+            >
+              Recuperar
+            </Box>
+          </Box>
+
         </Box>
       </Flex>
     );
@@ -232,6 +248,20 @@ function Login({ setAuth }) {
               >
                 Entrar
               </Button>
+
+              {/* Links abaixo */}
+              <Box fontSize="sm" color="black" mt={0}>
+                <Box as="span" mr={1}>Esqueceu a senha?</Box>
+                <Box
+                  as="span"
+                  color="white"
+                  fontWeight="bold"
+                  cursor="pointer"
+                  onClick={handleForgotPassword}
+                >
+                  Recuperar
+                </Box>
+              </Box>
             </Stack>
           </form>
         </Box>

@@ -62,6 +62,10 @@ import { useSyncReagendamentos } from './hooks/useSyncReagendamentos'
 import AdminAgenda from './pages/admin/AdminAgenda'
 
 
+import EsqueciSenha from './pages/EsqueciSenha';
+import RedefinirSenha from './pages/RedefinirSenha';
+
+
 
 function App() {
   useSyncReagendamentos()
@@ -367,6 +371,9 @@ function App() {
               )
             }
           />
+
+          <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+          <Route path="/redefinir-senha" element={<RedefinirSenha />} />
 
 
 
