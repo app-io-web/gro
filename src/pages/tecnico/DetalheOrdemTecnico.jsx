@@ -84,7 +84,23 @@ import {
       fetchOrdem()
     }, [id, ordemNavegacao])
     
-      
+    function gerarLinkMapa(ordem) {
+      if (ordem.LinkLocalizacao) {
+        return ordem.LinkLocalizacao
+      }
+    
+      if (ordem.Coordenadas && ordem.Coordenadas.includes(',')) {
+        const [lat, lng] = ordem.Coordenadas.split(',').map(coord => coord.trim())
+        return `https://www.google.com/maps/@${lat},${lng},17z`
+      }
+    
+      if (ordem.Geolocalizacao?.latitude && ordem.Geolocalizacao?.longitude) {
+        return `https://www.google.com/maps/@${ordem.Geolocalizacao.latitude},${ordem.Geolocalizacao.longitude},17z`
+      }
+    
+      return null
+    }
+    
 
       
   
@@ -439,11 +455,12 @@ import {
   
         <Flex direction="column" gap={2} mt={6}>
             <Flex gap={2}>
-              <BotaoLocalizacao
-                endereco={ordem.Endereco_Cliente}
-                latitude={ordem.Geolocalizacao?.latitude}
-                longitude={ordem.Geolocalizacao?.longitude}
+            <BotaoLocalizacao
+                link={gerarLinkMapa(ordem)}
+                fallbackEndereco={ordem.Endereco_Cliente}
               />
+
+
               <BotaoChamarCliente telefone1={ordem.Telefone1_Cliente} telefone2={ordem.Telefone2_Cliente} flex="1" />
             </Flex>
 

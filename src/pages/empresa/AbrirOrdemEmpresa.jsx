@@ -2,6 +2,8 @@ import {
   Box, Button, FormControl, FormLabel, Input, Select, Textarea, useToast,
   Heading, useBreakpointValue, VStack, Text, Icon, Flex
 } from '@chakra-ui/react'
+import { Radio, RadioGroup, Stack } from '@chakra-ui/react'
+
 import {
   Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon
 } from '@chakra-ui/react'
@@ -27,7 +29,9 @@ function AbrirOrdemEmpresa() {
     Rua: '', Numero: '', Bairro: '', Cidade: '', Estado: '',
     Tipo_OS: '', Observacao_Empresa: '',
     TipoCliente: '', // Novo
-    Coordenadas: ''  // Novo
+    Coordenadas: '',  // Novo
+    LinkLocalizacao: '', // novo campo
+    tipoLocalizacao: '',
   })
   const [linkPdf, setLinkPdf] = useState('')
   const [limiteAtingido, setLimiteAtingido] = useState(false)
@@ -59,12 +63,73 @@ function AbrirOrdemEmpresa() {
   }, [])
   
 
+  function extrairLatLngDeLinkGoogleMaps(link) {
+    try {
+      // Se já for uma URL do tipo "place", apenas retorna sem alterar
+      if (link.includes('/maps/place/') || link.includes('maps.app.goo.gl')) {
+        return link;
+      }
+  
+      const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
+      const match = link.match(regex);
+  
+      if (match) {
+        const latitude = match[1];
+        const longitude = match[2];
+  
+        // Usa o endereço completo para montar o caminho /place
+        const endereco = `${form.Rua}, ${form.Numero} - ${form.Bairro}, ${form.Cidade} - ${form.Estado}`.replace(/\s+/g, '+');
+        return `https://www.google.com/maps/place/${endereco}/@${latitude},${longitude},17z`;
+      }
+  
+    } catch (e) {
+      console.warn('Erro ao extrair link do Google Maps:', e);
+    }
+  
+    return link; // fallback
+  }
+  
+  
+  
+  function contemLink(texto) {
+    return /(https?:\/\/|www\.|\.[a-z]{2,})/i.test(texto);
+  }
+  
+
   
 
   const handleChange = e => {
-    const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
+    const { name, value } = e.target;
+  
+    const camposSemLink = [
+      'Nome_Cliente',
+      'Telefone1_Cliente',
+      'Telefone2_Cliente',
+      'Rua',
+      'Numero',
+      'Bairro',
+      'Cidade',
+      'Estado'
+    ];
+  
+    if (camposSemLink.includes(name) && contemLink(value)) {
+      toast({
+        title: '❌ Não é permitido inserir links nesse campo.',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+  
+    if (name === 'LinkLocalizacao') {
+      const linkConvertido = extrairLatLngDeLinkGoogleMaps(value);
+      setForm(prev => ({ ...prev, [name]: linkConvertido }));
+    } else {
+      setForm(prev => ({ ...prev, [name]: value }));
+    }
   }
+  
 
   const handleSubmit = async () => {
     const { Nome_Cliente, Telefone1_Cliente, Rua, Numero, Bairro, Cidade, Estado, Tipo_OS, TipoCliente, Coordenadas } = form
@@ -103,7 +168,8 @@ function AbrirOrdemEmpresa() {
         Status_OS: 'Em Aberto',
         Numero_OS: Date.now(),
         Data_Envio_OS: new Date().toISOString(),
-        Link_Ordem_PDF: linkPdf || ''
+        Link_Ordem_PDF: linkPdf || '',
+        LinkLocalizacao: form.LinkLocalizacao, // aqui
       }
 
       const novaEstrutura = {
@@ -141,7 +207,8 @@ function AbrirOrdemEmpresa() {
           coordenadas: form.Coordenadas,
           data_envio: new Date().toISOString(),
           empresa: NomeEmpresa,
-          numero_ordem: novaOrdem.Numero_OS   // Adicionando numero de Ordem Antes de Enviar ao banco de dados
+          numero_ordem: novaOrdem.Numero_OS,   // Adicionando numero de Ordem Antes de Enviar ao banco de dados,
+          LinkLocalizacao: form.LinkLocalizacao, // aqui
         }),
       });
       
@@ -151,7 +218,8 @@ function AbrirOrdemEmpresa() {
       setForm({
         Nome_Cliente: '', Telefone1_Cliente: '', Telefone2_Cliente: '',
         Rua: '', Numero: '', Bairro: '', Cidade: '', Estado: '',
-        Tipo_OS: '', Observacao_Empresa: '', TipoCliente: '', Coordenadas: ''
+        Tipo_OS: '', Observacao_Empresa: '', TipoCliente: '', Coordenadas: '', LinkLocalizacao: '', tipoLocalizacao: '',
+        
       })
 
 
@@ -173,6 +241,8 @@ function AbrirOrdemEmpresa() {
       </Box>
     )
   }
+
+
 
 
   return (
@@ -302,15 +372,47 @@ function AbrirOrdemEmpresa() {
     </Select>
   </FormControl>
 
-  <FormControl>
-    <FormLabel>Coordenadas (Latitude, Longitude)</FormLabel>
-    <Input
-      name="Coordenadas"
-      value={form.Coordenadas}
-      onChange={handleChange}
-      placeholder="Ex: -20.3155, -40.3128"
-    />
-  </FormControl>
+
+  <FormControl isRequired>
+  <FormLabel>Selecione o tipo de localização</FormLabel>
+  <RadioGroup
+    name="tipoLocalizacao"
+    value={form.tipoLocalizacao}
+    onChange={(value) => setForm(prev => ({ ...prev, tipoLocalizacao: value }))}
+  >
+    <Stack direction="row">
+      <Radio value="coordenadas">Coordenadas</Radio>
+      <Radio value="link">Link de Localização</Radio>
+    </Stack>
+  </RadioGroup>
+</FormControl>
+
+
+      {form.tipoLocalizacao === 'coordenadas' && (
+        <FormControl isRequired>
+          <FormLabel>Coordenadas (Latitude, Longitude)</FormLabel>
+          <Input
+            name="Coordenadas"
+            value={form.Coordenadas}
+            onChange={handleChange}
+            placeholder="Ex: -20.3155, -40.3128"
+          />
+        </FormControl>
+      )}
+
+      {form.tipoLocalizacao === 'link' && (
+        <FormControl isRequired>
+          <FormLabel>Link de Localização</FormLabel>
+          <Input
+            name="LinkLocalizacao"
+            value={form.LinkLocalizacao}
+            onChange={handleChange}
+            placeholder="https://maps.google.com/?q=..."
+          />
+        </FormControl>
+      )}
+
+
 
   <FormControl isRequired>
     <FormLabel>Tipo de O.S.</FormLabel>
@@ -339,7 +441,7 @@ function AbrirOrdemEmpresa() {
   >
     Abrir Ordem
   </Button>
-</VStack>
+    </VStack>
 
 
     <Modal isOpen={isOpen} onClose={onClose} isCentered>

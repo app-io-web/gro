@@ -1,29 +1,28 @@
 import { Button, useToast } from '@chakra-ui/react'
 
-function BotaoLocalizacao({ endereco, latitude, longitude, ...props }) {
+function BotaoLocalizacao({ link, fallbackEndereco, ...props }) {
   const toast = useToast()
 
   const abrirMaps = () => {
-    if (latitude && longitude) {
-      // 🎯 Latitude e longitude disponíveis
-      const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
-      window.open(url, '_blank')
-    } else if (endereco) {
-      // 📍 Usando endereço aproximado
-      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(endereco)}`
+    if (link) {
+      // 🌐 Abrir link direto (LinkLocalizacao ou link gerado por coordenadas)
+      window.open(link, '_blank')
+    } else if (fallbackEndereco) {
+      // 📍 Fallback com endereço
+      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fallbackEndereco)}`
       window.open(url, '_blank')
       toast({
         title: 'Localização aproximada',
-        description: 'Estamos usando o endereço informado para localizar o cliente.',
+        description: 'Endereço aproximado usado para buscar no mapa.',
         status: 'info',
         duration: 4000,
         isClosable: true
       })
     } else {
-      // 🚫 Sem localização disponível
+      // 🚫 Sem localização
       toast({
         title: 'Localização indisponível',
-        description: 'Não foi possível abrir a localização. Dados ausentes.',
+        description: 'Nenhuma informação de localização foi fornecida.',
         status: 'warning',
         duration: 4000,
         isClosable: true

@@ -99,9 +99,9 @@ function AgendaTecnico() {
             dataReferencia = ordem?.Data_Entrega_OS?.slice(0, 10); // Data de entrega
           } else if (statusOS === 'agendada' || statusOS === 'execução' || statusOS === 'reagendada') {
             // Comparar apenas a data de "Horario_Agendamento_OS", ignorando a hora
-            const horarioAgendamento = ordem?.Horario_Agendamento_OS;
+            const horarioAgendamento = ordem?.Horario_Agendamento_OS || ordem?.Data_Agendamento_OS;
             if (horarioAgendamento) {
-              dataReferencia = horarioAgendamento.slice(0, 10); // Pega a data (sem hora)
+              dataReferencia = horarioAgendamento.slice(0, 10);
             }
           } else {
             dataReferencia = ordem?.Data_Envio_OS?.slice(0, 10); // Data de envio
